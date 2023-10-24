@@ -1,6 +1,8 @@
 package search
 
-import "github.com/itihey/tikuAdapter/model"
+import (
+	"github.com/itihey/tikuAdapter/internal/model"
+)
 
 type SearchClient struct {
 	Wanneng searchWannengClient

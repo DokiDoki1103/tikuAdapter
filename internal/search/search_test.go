@@ -2,7 +2,7 @@ package search
 
 import (
 	"fmt"
-	"github.com/itihey/tikuAdapter/model"
+	"github.com/itihey/tikuAdapter/internal/model"
 	"testing"
 )
 

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/itihey/tikuAdapter/model"
+	"github.com/itihey/tikuAdapter/internal/model"
 	"net/http"
 )
 
@@ -50,7 +50,11 @@ func (c *searchWannengClient) SearchAnswer(req model.SearchRequest) (res model.S
 		// 提取answers数组的第一个元素
 		if len(response.Result.Answers) > 0 {
 			return model.SearchResponse{
-				Answer: response.Result.Answers[0],
+				Question: req.Question,
+				Plat:     req.Plat,
+				Options:  req.Options,
+				Type:     req.Type,
+				Answer:   response.Result.Answers[0],
 			}, nil
 		}
 		return res, errors.New("未找到答案")
