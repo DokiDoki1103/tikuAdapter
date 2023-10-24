@@ -1,5 +1,5 @@
 package global
 
 var (
-	ErrDistApiFlow = NewError(400429, "对方API接口限流")
+	ErrorQuestionNotFound = NewError(400404, "题目未找到")
 )

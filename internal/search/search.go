@@ -6,12 +6,13 @@ import (
 )
 
 type SearchClient struct {
-	Wanneng searchWannengClient
-	Enncy   searchEnncyClient
+	Wanneng *SearchWannengClient
+	Enncy   *SearchEnncyClient
+	Icodef  *SearchIcodefClient
 }
 
 // Search 所有的请求外部的题库接口都需要自行实现此接口
 type search interface {
 	getHttpClient() *resty.Client
-	SearchAnswer(req model.SearchRequest) (res model.SearchResponse, err error)
+	SearchAnswer(req model.SearchRequest) (answer [][]string, err error)
 }

@@ -7,10 +7,10 @@ import (
 	"testing"
 )
 
-func TestSearchWanneng(t *testing.T) {
-	var client = searchWannengClient{}
+func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
+	var client = SearchIcodefClient{}
 	testRequest := model.SearchRequest{
-		Question: "中国最美丽的风景",
+		Question: "下面选项中,属于男性在青春期生理变化的内容有?()",
 	}
 
 	// 调用被测试的方法
@@ -21,5 +21,21 @@ func TestSearchWanneng(t *testing.T) {
 	}
 	marshal, _ := json.Marshal(response)
 
-	fmt.Println("成功搜题", string(marshal))
+	fmt.Println("TestSearchIcodefClient_SearchAnswer 成功搜题", string(marshal))
+}
+func TestSearchWanneng(t *testing.T) {
+	var client = SearchClient{}
+	testRequest := model.SearchRequest{
+		Question: "下面选项中,属于男性在青春期生理变化的内容有?()",
+	}
+
+	// 调用被测试的方法
+	response, err := client.Wanneng.SearchAnswer(testRequest)
+
+	if err != nil {
+		t.Errorf("Expected no error, but got an error: %v", err)
+	}
+	marshal, _ := json.Marshal(response)
+
+	fmt.Println("TestSearchWanneng 成功搜题", string(marshal))
 }

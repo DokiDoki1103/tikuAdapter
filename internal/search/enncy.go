@@ -3,16 +3,16 @@ package search
 import (
 	"github.com/go-resty/resty/v2"
 	"github.com/itihey/tikuAdapter/internal/model"
+	"github.com/itihey/tikuAdapter/pkg/errors"
 )
 
-type searchEnncyClient struct {
-	s search
+type SearchEnncyClient struct {
 }
 
-func (in *searchEnncyClient) getHttpClient() *resty.Client {
+func (in *SearchEnncyClient) getHttpClient() *resty.Client {
 	return resty.New()
 }
 
-func (in *searchEnncyClient) SearchAnswer(req model.SearchRequest) (res model.SearchResponse, err error) {
-	panic("impl me")
+func (in *SearchEnncyClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	return nil, errors.ErrTargetNoAnswer
 }
