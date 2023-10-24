@@ -27,7 +27,10 @@ type Result struct {
 }
 
 func (in *searchWannengClient) getHttpClient() *resty.Client {
-	return resty.New().SetTimeout(5 * time.Second)
+	return resty.New().
+		SetTimeout(5*time.Second).
+		SetRetryCount(3).
+		SetHeader("Content-Type", "application/json")
 }
 
 func (in *searchWannengClient) SearchAnswer(req model.SearchRequest) (res model.SearchResponse, err error) {
@@ -36,7 +39,6 @@ func (in *searchWannengClient) SearchAnswer(req model.SearchRequest) (res model.
 	data, _ := json.Marshal(req)
 
 	resp, err := client.R().
-		SetHeader("Content-Type", "application/json").
 		SetBody(string(data)).
 		Post("http://lyck6.cn/scriptService/api/autoFreeAnswer")
 
