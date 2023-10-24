@@ -6,9 +6,8 @@ import (
 )
 
 type SearchClient struct {
-	HttpClient *resty.Client
-	Wanneng    searchWannengClient
-	Enncy      searchEnncyClient
+	Wanneng searchWannengClient
+	Enncy   searchEnncyClient
 }
 
 // Search 所有的请求外部的题库接口都需要自行实现此接口
