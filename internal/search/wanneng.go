@@ -1,12 +1,11 @@
 package search
 
 import (
-	"bytes"
 	"encoding/json"
-	"errors"
-	"fmt"
+	"github.com/go-resty/resty/v2"
 	"github.com/itihey/tikuAdapter/internal/model"
-	"net/http"
+	"github.com/itihey/tikuAdapter/pkg/errors"
+	"time"
 )
 
 type searchWannengClient struct {
@@ -27,39 +26,45 @@ type Result struct {
 	Success bool       `json:"success"`
 }
 
-func (c *searchWannengClient) SearchAnswer(req model.SearchRequest) (res model.SearchResponse, err error) {
-	postData := []byte(fmt.Sprintf(`{
-        "question": "%s"
-    }`, req.Question))
+func (in *searchWannengClient) getHttpClient() *resty.Client {
+	return resty.New().SetTimeout(5 * time.Second)
+}
 
-	resp, err := http.Post("http://lyck6.cn/scriptService/api/autoFreeAnswer", "application/json", bytes.NewBuffer(postData))
+func (in *searchWannengClient) SearchAnswer(req model.SearchRequest) (res model.SearchResponse, err error) {
+	client := in.getHttpClient()
+
+	data, _ := json.Marshal(req)
+
+	resp, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(string(data)).
+		Post("http://lyck6.cn/scriptService/api/autoFreeAnswer")
+
+	if err != nil || resp.StatusCode() != 200 {
+		return res, errors.ErrTargetServerError
+	}
+
+	var response ApiResponse
+	err = json.Unmarshal(resp.Body(), &response)
 	if err != nil {
-		return res, err
+		return model.SearchResponse{}, errors.ErrTargetServerError
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == 200 {
-		var response ApiResponse
-		if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-			return res, err
+	// 不等于0就是请求失败
+	if response.Code != 0 {
+		if response.Code == 429 {
+			return res, errors.ErrTargetApiFlow
 		}
-
-		if response.Code != 0 {
-			return res, errors.New(fmt.Sprintf("请求失败状态码 %d", response.Code))
-		}
-		// 提取answers数组的第一个元素
-		if len(response.Result.Answers) > 0 {
-			return model.SearchResponse{
-				Question: req.Question,
-				Plat:     req.Plat,
-				Options:  req.Options,
-				Type:     req.Type,
-				Answer:   response.Result.Answers[0],
-			}, nil
-		}
-		return res, errors.New("未找到答案")
-
-	} else {
-		return res, errors.New(fmt.Sprintf("请求失败状态码 %d", resp.StatusCode))
+		return res, errors.ErrTargetServerError
 	}
+	if len(response.Result.Answers) == 0 {
+		return res, errors.ErrTargetNoAnswer
+	}
+	return model.SearchResponse{
+		Question:   req.Question,
+		Plat:       req.Plat,
+		Options:    req.Options,
+		Type:       req.Type,
+		Answer:     response.Result.Answers[0],
+		MoreAnswer: response.Result.Answers,
+	}, nil
 }
