@@ -13,11 +13,7 @@ builds:
     # Default is `.`.
     main: ./cmd/adapter-service
 
-    # Binary name.
-    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
-    #
-    # Default: Project directory name
-    binary: program
+
 
 
     # Custom Go build mode.
@@ -106,4 +102,20 @@ builds:
     #
     # Since: v1.9
     no_main_check: true
+    archives:
+      - id: binary
+        builds:
+          - win
+        name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+        format_overrides:
+          - goos: windows
+            format: binary
+      - id: nowin
+        builds:
+          - nowin
+          - win
+        name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+        format_overrides:
+          - goos: windows
+            format: zip
 
