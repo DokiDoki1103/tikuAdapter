@@ -8,6 +8,9 @@ builds:
     goarch:
       - amd64
       - arm64
-    ldflags: '-extldflags "-static"'
+    ldflags: "-s -w -extldflags '-static'"
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
 checksum:
   name_template: checksums.txt
