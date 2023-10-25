@@ -5,6 +5,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/itihey/tikuAdapter/internal/model"
 	"github.com/itihey/tikuAdapter/pkg/errors"
+	"log"
 	"time"
 )
 
@@ -23,6 +24,8 @@ type wapiResponse struct {
 }
 
 type SearchWannengClient struct {
+	Disable bool
+	Token   string
 }
 
 func (in *SearchWannengClient) getHttpClient() *resty.Client {
@@ -33,11 +36,19 @@ func (in *SearchWannengClient) getHttpClient() *resty.Client {
 }
 
 func (in *SearchWannengClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	log.Println(in.Disable)
+	if in.Disable {
+		return nil, errors.ErrDisable
+	}
 	data, _ := json.Marshal(req)
 
+	url := "http://lyck6.cn/scriptService/api/autoFreeAnswer"
+	if in.Token != "" && len(in.Token) == 10 {
+		url = "http://lyck6.cn/scriptService/api/autoAnswer/" + in.Token
+	}
 	resp, err := in.getHttpClient().R().
 		SetBody(string(data)).
-		Post("http://lyck6.cn/scriptService/api/autoFreeAnswer")
+		Post(url)
 
 	if err != nil || resp.StatusCode() != 200 {
 		return nil, errors.ErrTargetServerError
