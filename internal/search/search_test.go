@@ -25,13 +25,15 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 	fmt.Println("TestSearchIcodefClient_SearchAnswer 成功搜题", string(marshal))
 }
 func TestSearchWannengClient_SearchAnswer(t *testing.T) {
-	var client = SearchClient{}
+	var client = SearchWannengClient{
+		Disable: false,
+	}
 	testRequest := model.SearchRequest{
 		Question: "下面选项中,属于男性在青春期生理变化的内容有?()",
 	}
 
 	// 调用被测试的方法
-	response, err := client.Wanneng.SearchAnswer(testRequest)
+	response, err := client.SearchAnswer(testRequest)
 
 	if err != nil {
 		t.Errorf("Expected no error, but got an error: %v", err)
