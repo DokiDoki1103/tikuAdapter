@@ -22,7 +22,7 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 	}
 	marshal, _ := json.Marshal(response)
 
-	fmt.Println("TestSearchIcodefClient_SearchAnswer 成功搜题", string(marshal))
+	fmt.Println("测试icodef题库 成功搜题", string(marshal))
 }
 func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 	var client = SearchWannengClient{
@@ -40,5 +40,5 @@ func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 	}
 	marshal, _ := json.Marshal(response)
 
-	fmt.Println("TestSearchWanneng 成功搜题", string(marshal))
+	fmt.Println("测试万能题库 成功搜题", string(marshal))
 }
