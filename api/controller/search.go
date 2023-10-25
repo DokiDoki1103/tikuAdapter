@@ -68,7 +68,7 @@ func Search(c *gin.Context) {
 	}
 
 	if len(result) > 0 {
-		resp.Answer = util.SearchRightAnswer(result)
+		resp.Answer = util.SearchRightAnswer(result, req.Type)
 		warpResponse(&resp)
 		c.JSON(http.StatusOK, resp)
 	} else {

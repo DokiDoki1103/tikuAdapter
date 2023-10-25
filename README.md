@@ -10,21 +10,37 @@
 
 ## 如何部署使用
 
-[快速部署](https://github.com/itihey/tikuAdapter/blob/main/deploy/README.md)
+### 部署
 
-### API 接口
+- windows 直接从release中下载对应的版本即可，解压后运行即可
+- linux 直接从release中下载对应的版本即可，解压后运行即可
+- macos 直接从release中下载对应的版本即可，解压后运行即可
+
+### 使用API接口
 
 POST `127.0.0.1:8060/adapter-service/search`
 
-### Body
+#### 请求体
 
 ```json
 {
-  "question": "王牌飞行员"
+  "question": "健康妇女的阴道内尽管有细菌,但是不会影响到个人的安全",
+  "type": 3,
+  "options": [
+    "正确",
+    "错误"
+  ]
 }
 ```
 
-### Query Parameters
+| 参数      | 示例值                        | 是否必填  |
+|-----------|----------------------------|-------|
+| question  | 健康妇女的阴道内尽管有细菌，但是不会影响到个人的安全 | **是** |
+| type      | 3                          | 否     |
+| options   | ["正确", "错误"]               | 否     |
+
+
+#### URL 请求参数
 
 | 参数             | 描述                    | 是否必须 | 示例值              | Token获取方式                |
 |----------------|-----------------------|------|------------------|--------------------------|
@@ -33,36 +49,40 @@ POST `127.0.0.1:8060/adapter-service/search`
 | icodefToken    | Icodef 题库Token值       | 否    | UafYcHViJMGzSVNh | 关注微信公众号"一之哥哥"发送"token"获取 |
 | icodefDisable  | 是否禁用icodef题库(此值传1将禁用) | 否    | 1                |
 
-## Response
+例如您想禁用万能题库并且想要使用icodef的token，您的url应为`127.0.0.1:8060/adapter-service/search?wannengDisable=1&icodefToken=UafYcHViJMGzSVNh`
+
+#### 响应示例
+
 ```json
 {
-    "plat": 0,
-    "question": "健康妇女的阴道内尽管有细菌,但是不会影响到个人的安全",
-    "options": [],
-    "type": 0,
-    "answerIndex": [],
-    "answer": [
-        "×"
+  "plat": 0,
+  "question": "健康妇女的阴道内尽管有细菌,但是不会影响到个人的安全",
+  "options": [],
+  "type": 0,
+  "answerIndex": [],
+  "answer": [
+    "×"
+  ],
+  "moreAnswer": [
+    [
+      "对"
     ],
-    "moreAnswer": [
-        [
-            "对"
-        ],
-        [
-            "正确"
-        ],
-        [
-            "×"
-        ],
-        [
-            "错"
-        ],
-        [
-            "错误"
-        ]
+    [
+      "正确"
+    ],
+    [
+      "×"
+    ],
+    [
+      "错"
+    ],
+    [
+      "错误"
     ]
+  ]
 }
 ```
+
 ## 如何贡献
 
 #### 提出您的issue

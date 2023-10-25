@@ -5,7 +5,6 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/itihey/tikuAdapter/internal/model"
 	"github.com/itihey/tikuAdapter/pkg/errors"
-	"log"
 	"time"
 )
 
@@ -36,7 +35,6 @@ func (in *SearchWannengClient) getHttpClient() *resty.Client {
 }
 
 func (in *SearchWannengClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
-	log.Println(in.Disable)
 	if in.Disable {
 		return nil, errors.ErrDisable
 	}

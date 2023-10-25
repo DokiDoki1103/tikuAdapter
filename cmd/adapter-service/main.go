@@ -22,6 +22,6 @@ func main() {
 
 	err := server.Run("0.0.0.0:8060")
 	if err != nil {
-		log.Println(err)
+		log.Fatalf(err.Error())
 	}
 }

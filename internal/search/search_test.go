@@ -23,6 +23,7 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 
 	fmt.Println("测试icodef题库 成功搜题", string(marshal))
 }
+
 func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 	var client = SearchWannengClient{
 		Disable: false,
