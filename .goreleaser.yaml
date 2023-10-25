@@ -1,0 +1,109 @@
+# .goreleaser.yaml
+builds:
+  # You can have multiple builds defined as a yaml list
+  - #
+    # ID of the build.
+    #
+    # Default: Binary name
+    id: "tikuAdapter"
+
+    # Path to main.go file or main package.
+    # Notice: when used with `gomod.proxy`, this must be a package.
+    #
+    # Default is `.`.
+    main: ./cmd/adapter-service
+
+    # Binary name.
+    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
+    #
+    # Default: Project directory name
+    binary: program
+
+
+    # Custom Go build mode.
+    #
+    # Valid options:
+    # - `c-shared`
+    # - `c-archive`
+    #
+    # Since: v1.13
+    buildmode: c-shared
+
+
+
+    # Custom environment variables to be set during the builds.
+    # Invalid environment variables will be ignored.
+    #
+    # Default: os.Environ() ++ env config section
+    # Templates: allowed (since v1.14)
+    env:
+      - CGO_ENABLED=0
+      # complex, templated envs (v1.14+):
+      - >-
+        {{- if eq .Os "darwin" }}
+          {{- if eq .Arch "amd64"}}CC=o64-clang{{- end }}
+          {{- if eq .Arch "arm64"}}CC=aarch64-apple-darwin20.2-clang{{- end }}
+        {{- end }}
+        {{- if eq .Os "windows" }}
+          {{- if eq .Arch "amd64" }}CC=x86_64-w64-mingw32-gcc{{- end }}
+        {{- end }}
+
+    # GOOS list to build for.
+    # For more info refer to: https://golang.org/doc/install/source#environment
+    #
+    # Default: [ 'darwin', 'linux', 'windows' ]
+    goos:
+      - linux
+      - darwin
+      - windows
+
+    # GOARCH to build for.
+    # For more info refer to: https://golang.org/doc/install/source#environment
+    #
+    # Default: [ '386', 'amd64', 'arm64' ]
+    goarch:
+      - amd64
+      - arm
+      - arm64
+
+
+    # List of combinations of GOOS + GOARCH + GOARM to ignore.
+    ignore:
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: '386'
+
+
+
+    # Set the modified timestamp on the output binary, typically
+    # you would do this to ensure a build was reproducible. Pass
+    # empty string to skip modifying the output.
+    #
+    # Templates: allowed.
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+
+    # If true, skip the build.
+    # Useful for library projects.
+    skip: true
+
+    # By default, GoReleaser will create your binaries inside
+    # `dist/${BuildID}_${BuildTarget}`, which is a unique directory per build
+    # target in the matrix.
+    # You can set subdirs within that folder using the `binary` property.
+    #
+    # However, if for some reason you don't want that unique directory to be
+    # created, you can set this property.
+    # If you do, you are responsible for keeping different builds from
+    # overriding each other.
+    no_unique_dist_dir: true
+
+    # By default, GoReleaser will check if the main filepath has a main
+    # function.
+    # This can be used to skip that check, in case you're building tests, for
+    # example.
+    #
+    # Since: v1.9
+    no_main_check: true
+
