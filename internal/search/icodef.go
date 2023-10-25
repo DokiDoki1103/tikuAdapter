@@ -16,16 +16,22 @@ type iapiResponse struct {
 }
 
 type SearchIcodefClient struct {
+	Disable bool
+	Token   string
 }
 
 func (in *SearchIcodefClient) getHttpClient() *resty.Client {
-	return resty.New().SetTimeout(5 * time.Second).SetRetryCount(2)
+	return resty.New().
+		SetTimeout(5*time.Second).
+		SetRetryCount(2).
+		SetHeader("Authorization", in.Token)
 }
 
 func (in *SearchIcodefClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
-	post, err := in.getHttpClient().R().SetFormData(map[string]string{
-		"question": req.Question,
-	}).Post("https://cx.icodef.com/wyn-nb?v=4")
+	post, err := in.getHttpClient().R().
+		SetFormData(map[string]string{
+			"question": req.Question,
+		}).Post("https://cx.icodef.com/wyn-nb?v=4")
 	if err != nil {
 		return nil, errors.ErrTargetServerError
 	}

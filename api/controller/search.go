@@ -13,11 +13,14 @@ import (
 )
 
 func Search(c *gin.Context) {
-
 	searchClient := search.SearchClient{
 		Wanneng: &search.SearchWannengClient{
 			Token:   c.Query("wannengToken"),
 			Disable: c.Query("wannengDisable") == "1",
+		},
+		Icodef: &search.SearchIcodefClient{
+			Token:   c.Query("icodefToken"),
+			Disable: c.Query("icodefDisable") == "1",
 		},
 	}
 
@@ -28,7 +31,7 @@ func Search(c *gin.Context) {
 		return
 	}
 
-	var result [][]string //最后所有的答案的二维数组
+	var result [][]string // 最后所有的答案的二维数组
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	val := reflect.ValueOf(&searchClient).Elem()
@@ -43,7 +46,7 @@ func Search(c *gin.Context) {
 			requestValue := reflect.ValueOf(req)
 			res := methodValue.Call([]reflect.Value{requestValue})
 
-			if len(res) > 1 && !res[1].IsNil() { //出现错误
+			if len(res) > 1 && !res[1].IsNil() { // 出现错误
 				logger.SysError(res[1].Interface().(error).Error())
 			} else {
 				mu.Lock()

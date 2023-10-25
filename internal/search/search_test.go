@@ -17,8 +17,7 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 	response, err := client.SearchAnswer(testRequest)
 
 	if err != nil {
-		fmt.Println("TestSearchIcodefClient_SearchAnswer 测试失败 只是对方的接口禁止了国外访问，故直接pass")
-		return
+		t.Errorf("请求icodef题库异常: %v", err)
 	}
 	marshal, _ := json.Marshal(response)
 
@@ -36,7 +35,7 @@ func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 	response, err := client.SearchAnswer(testRequest)
 
 	if err != nil {
-		t.Errorf("Expected no error, but got an error: %v", err)
+		t.Errorf("请求万能题库异常: %v", err)
 	}
 	marshal, _ := json.Marshal(response)
 
