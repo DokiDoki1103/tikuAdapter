@@ -18,13 +18,13 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 
 	if err != nil {
 		fmt.Println("TestSearchIcodefClient_SearchAnswer 测试失败 只是对方的接口禁止了国外访问，故直接pass")
-		// t.Errorf("Expected no error, but got an error: %v", err)
+		return
 	}
 	marshal, _ := json.Marshal(response)
 
 	fmt.Println("TestSearchIcodefClient_SearchAnswer 成功搜题", string(marshal))
 }
-func TestSearchWanneng(t *testing.T) {
+func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 	var client = SearchClient{}
 	testRequest := model.SearchRequest{
 		Question: "下面选项中,属于男性在青春期生理变化的内容有?()",

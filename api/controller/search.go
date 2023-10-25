@@ -6,6 +6,7 @@ import (
 	"github.com/itihey/tikuAdapter/internal/model"
 	"github.com/itihey/tikuAdapter/internal/search"
 	"github.com/itihey/tikuAdapter/pkg/global"
+	"github.com/itihey/tikuAdapter/pkg/util"
 	"net/http"
 	"reflect"
 	"sync"
@@ -20,7 +21,7 @@ func Search(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	var result [][]string
+	var result [][]string //最后所有的答案的二维数组
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	val := reflect.ValueOf(&searchClient).Elem()
@@ -35,7 +36,7 @@ func Search(c *gin.Context) {
 			requestValue := reflect.ValueOf(req)
 			res := methodValue.Call([]reflect.Value{requestValue})
 
-			if len(res) > 1 && !res[1].IsNil() {
+			if len(res) > 1 && !res[1].IsNil() { //出现错误
 				fmt.Println(res[1].Interface().(error).Error())
 			} else {
 				mu.Lock()
@@ -56,10 +57,21 @@ func Search(c *gin.Context) {
 		Type:       req.Type,
 		Plat:       req.Plat,
 	}
+
 	if len(result) > 0 {
-		resp.Answer = result[0]
+		resp.Answer = util.SearchRightAnswer(result)
+		warpResponse(&resp)
 		c.JSON(http.StatusOK, resp)
 	} else {
 		c.JSON(http.StatusNotFound, global.ErrorQuestionNotFound)
+	}
+}
+
+func warpResponse(resp *model.SearchResponse) {
+	if resp.Options == nil {
+		resp.Options = make([]string, 0)
+	}
+	if resp.AnswerIndex == nil {
+		resp.AnswerIndex = make([]int, 0)
 	}
 }
