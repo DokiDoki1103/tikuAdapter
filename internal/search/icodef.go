@@ -2,9 +2,11 @@ package search
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/itihey/tikuAdapter/internal/model"
 	"github.com/itihey/tikuAdapter/pkg/errors"
+	"github.com/itihey/tikuAdapter/pkg/logger"
 	"strings"
 	"time"
 )
@@ -23,7 +25,15 @@ type SearchIcodefClient struct {
 func (in *SearchIcodefClient) getHttpClient() *resty.Client {
 	return resty.New().
 		SetTimeout(5*time.Second).
-		SetRetryCount(2).
+		SetRetryCount(3).
+		SetRetryWaitTime(time.Second).
+		AddRetryCondition(func(r *resty.Response, err error) bool {
+			return err != nil || strings.Contains(r.String(), "触发流控限制")
+		}).
+		AddRetryHook(func(r *resty.Response, err error) {
+			logger.SysError(fmt.Sprintf("iCodef触发流控限制，正在重试...%s", r.String()))
+		}).
+		SetRetryMaxWaitTime(10*time.Second).
 		SetHeader("Authorization", in.Token)
 }
 
