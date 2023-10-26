@@ -1,74 +1,90 @@
 package util
 
 import (
-	"regexp"
+	"github.com/gookit/goutil/arrutil"
+	"github.com/itihey/tikuAdapter/internal/model"
 	"sort"
 	"strings"
 )
 
 var sep = "**=====^_^======^_^=====**" // 用于分割答案的分隔符
 
+func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
+	resp := model.SearchResponse{
+		MoreAnswer: answers,
+		Question:   req.Question,
+		Options:    req.Options,
+		Type:       req.Type,
+		Plat:       req.Plat,
+	}
+	formatAnswer(answers, req.Type) // 先把答案统一格式化
+	for i := range resp.Options {
+		resp.Options[i] = formatString(resp.Options[i])
+	}
+
+	if resp.AnswerIndex == nil {
+		resp.AnswerIndex = make([]int, 0)
+	}
+
+	if req.Options == nil || len(req.Options) == 0 { // 用户没有传选项，那么只能返回出现次数最多的答案。
+		resp.Answer = SearchRightAnswer(answers, req)
+	} else {
+		answerCount := make(map[string]int)
+		for i := range answers {
+			ans := arrutil.Intersects(req.Options, answers[i], arrutil.StringEqualsComparer)
+			if uint(len(ans)) > resp.Type {
+				answerCount[strings.Join(ans, sep)]++
+			}
+		}
+		resp.Answer = getMaxCountAnswer(answerCount)
+
+		// if len(resp.Answer) == 0 {
+		// 	for i := range answers {
+		// 		match := strsim.FindBestMatch(answers[i][0], req.Options)
+		// 		resp.AnswerIndex = append(resp.AnswerIndex, match.BestIndex)
+		// 	}
+		// 	resp.Answer = []string{req.Options[resp.AnswerIndex[0]]}
+		// }
+		resp.AnswerIndex = findIndices(resp.Answer, req.Options)
+	}
+
+	return resp
+}
+
 // SearchRightAnswer 此方法还有巨大的优化空间
-// 1: 统一格式化每个答案的内容后再比对  ✅
-// 2: 字符串相似度匹配-模糊搜索
-// 3: 如果类型是判断题那么 对|正确|True 应该统一格式化为正确 ✅
-// 4: 如果用户给了 options 直接计算出答案的角标进行返回 [0,1,2]
-func SearchRightAnswer(answers [][]string, type_ uint) []string {
-	formatAnswer(answers, type_)
+func SearchRightAnswer(answers [][]string, s *model.SearchRequest) []string {
 	answerCount := make(map[string]int)
 	for _, answer := range answers {
 		sort.Strings(answer)
 		sortedAnswer := strings.Join(answer, sep)
 		answerCount[sortedAnswer]++
 	}
+	return getMaxCountAnswer(answerCount)
+}
 
+func getMaxCountAnswer(answerCount map[string]int) []string {
 	maxCount := 0
 	var correctAnswers []string
 
 	for answer, count := range answerCount {
-		if count > maxCount {
+		newAnswers := strings.Split(answer, sep)
+		if count > maxCount || len(newAnswers) > len(correctAnswers) {
 			maxCount = count
-			correctAnswers = strings.Split(answer, sep)
+			correctAnswers = newAnswers
 		}
 	}
 	return correctAnswers
 }
 
-func formatString(src string) string {
-	// 中文常见符号转英文
-	src = strings.ReplaceAll(src, "“", `"`)
-	src = strings.ReplaceAll(src, "”", `"`)
-	src = strings.ReplaceAll(src, "‘", "'")
-	src = strings.ReplaceAll(src, "’", "'")
-	src = strings.ReplaceAll(src, "。", ".")
-
-	// 去除末尾的常见字符
-	src = strings.TrimRightFunc(src, func(r rune) bool {
-		return strings.ContainsRune(",.?:!;", r)
-	})
-
-	return strings.TrimSpace(src)
-}
-
-func formatSingleAnswer(answer []string, type_ uint) []string {
-	if type_ == 3 && len(answer) > 0 { // 判断题
-		isTrue := regexp.MustCompile(`^(正确|是|对|√|T|ri|true|A)$`).MatchString(answer[0])
-		isFalse := regexp.MustCompile(`^(错误|否|错|×|F|fa|false|B)$`).MatchString(answer[0])
-		if isTrue {
-			return []string{"正确"}
-		} else if isFalse {
-			return []string{"错误"}
-		}
-	} else if type_ <= 1 { // 选择题的格式化暂时还没有实现
-		for i := range answer {
-			answer[i] = formatString(answer[i])
+func findIndices(answers []string, options []string) []int {
+	indices := make([]int, 0)
+	for _, answer := range answers {
+		for i, option := range options {
+			if option == answer {
+				indices = append(indices, i)
+				break
+			}
 		}
 	}
-	return answer
-}
-
-func formatAnswer(answers [][]string, type_ uint) {
-	for i := range answers {
-		answers[i] = formatSingleAnswer(answers[i], type_)
-	}
+	return indices
 }

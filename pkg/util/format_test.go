@@ -2,9 +2,11 @@ package util
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
-func TestName(t *testing.T) {
-	fmt.Println(formatString("你好....???."))
+func TestName2(t *testing.T) {
+
+	fmt.Println(strings.Split("answer", sep))
 }

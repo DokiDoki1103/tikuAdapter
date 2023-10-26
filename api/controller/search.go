@@ -59,17 +59,8 @@ func Search(c *gin.Context) {
 	}
 	wg.Wait()
 
-	resp := model.SearchResponse{
-		MoreAnswer: result,
-		Question:   req.Question,
-		Options:    req.Options,
-		Type:       req.Type,
-		Plat:       req.Plat,
-	}
-
 	if len(result) > 0 {
-		resp.Answer = util.SearchRightAnswer(result, req.Type)
-		warpResponse(&resp)
+		resp := util.FillAnswerResponse(result, &req)
 		c.JSON(http.StatusOK, resp)
 	} else {
 		c.JSON(http.StatusNotFound, global.ErrorQuestionNotFound)
@@ -77,10 +68,5 @@ func Search(c *gin.Context) {
 }
 
 func warpResponse(resp *model.SearchResponse) {
-	if resp.Options == nil {
-		resp.Options = make([]string, 0)
-	}
-	if resp.AnswerIndex == nil {
-		resp.AnswerIndex = make([]int, 0)
-	}
+
 }

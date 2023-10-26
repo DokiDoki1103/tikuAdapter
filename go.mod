@@ -6,6 +6,7 @@ require (
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-resty/resty/v2 v2.10.0
+	github.com/gookit/goutil v0.6.14
 )
 
 require (

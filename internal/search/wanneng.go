@@ -33,7 +33,7 @@ type SearchWannengClient struct {
 func (in *SearchWannengClient) getHttpClient() *resty.Client {
 	return resty.New().
 		SetTimeout(5*time.Second).
-		SetRetryCount(3). //目前来看万能免费题库限流措施是4秒一次，所以做最大重试次数为3
+		SetRetryCount(3). // 目前来看万能免费题库限流措施是4秒一次，所以做最大重试次数为3
 		SetRetryWaitTime(2*time.Second).
 		AddRetryCondition(func(r *resty.Response, err error) bool {
 			return err != nil || strings.Contains(r.String(), "已限流,正在重新请求...")
@@ -49,6 +49,7 @@ func (in *SearchWannengClient) SearchAnswer(req model.SearchRequest) (answer [][
 	if in.Disable {
 		return nil, errors.ErrDisable
 	}
+	req.Options = make([]string, 0)
 	data, _ := json.Marshal(req)
 
 	url := "http://lyck6.cn/scriptService/api/autoFreeAnswer"
