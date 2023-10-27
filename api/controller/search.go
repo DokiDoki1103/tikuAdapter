@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/itihey/tikuAdapter/internal/model"
 	"github.com/itihey/tikuAdapter/internal/search"
 	"github.com/itihey/tikuAdapter/pkg/global"
 	"github.com/itihey/tikuAdapter/pkg/logger"
+	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
 	"net/http"
 	"reflect"
@@ -42,12 +43,12 @@ func Search(c *gin.Context) {
 			defer wg.Done()
 			clientField := val.Field(idx)
 			methodValue := clientField.MethodByName("SearchAnswer")
-
 			requestValue := reflect.ValueOf(req)
 			res := methodValue.Call([]reflect.Value{requestValue})
 
 			if len(res) > 1 && !res[1].IsNil() { // 出现错误
-				logger.SysError(res[1].Interface().(error).Error())
+				e := res[1].Interface().(error).Error()
+				logger.SysError(fmt.Sprintf("调用%s接口出错：%s", clientField.Type().String(), e))
 			} else {
 				mu.Lock()
 				defer mu.Unlock()

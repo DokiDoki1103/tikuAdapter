@@ -3,7 +3,7 @@ package search
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/itihey/tikuAdapter/internal/model"
+	"github.com/itihey/tikuAdapter/pkg/model"
 	"testing"
 )
 

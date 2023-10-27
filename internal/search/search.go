@@ -2,7 +2,7 @@ package search
 
 import (
 	"github.com/go-resty/resty/v2"
-	"github.com/itihey/tikuAdapter/internal/model"
+	"github.com/itihey/tikuAdapter/pkg/model"
 )
 
 type SearchClient struct {

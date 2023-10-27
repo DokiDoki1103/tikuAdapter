@@ -1,8 +1,9 @@
 package util
 
 import (
+	"fmt"
 	"github.com/gookit/goutil/arrutil"
-	"github.com/itihey/tikuAdapter/internal/model"
+	"github.com/itihey/tikuAdapter/pkg/model"
 	"sort"
 	"strings"
 )
@@ -11,32 +12,32 @@ var sep = "**=====^_^======^_^=====**" // 用于分割答案的分隔符
 
 func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
 	resp := model.SearchResponse{
-		MoreAnswer: answers,
-		Question:   req.Question,
-		Options:    req.Options,
-		Type:       req.Type,
-		Plat:       req.Plat,
+
+		Question: req.Question,
+		Options:  req.Options,
+		Type:     req.Type,
+		Plat:     req.Plat,
+		Answer: model.Answer{
+			AllAnswer: answers,
+		},
 	}
 	formatAnswer(answers, req.Type) // 先把答案统一格式化
 	for i := range resp.Options {
 		resp.Options[i] = formatString(resp.Options[i])
 	}
 
-	if resp.AnswerIndex == nil {
-		resp.AnswerIndex = make([]int, 0)
-	}
-
 	if req.Options == nil || len(req.Options) == 0 { // 用户没有传选项，那么只能返回出现次数最多的答案。
-		resp.Answer = SearchRightAnswer(answers, req)
+		resp.Answer.BestAnswer = SearchRightAnswer(answers, req)
 	} else {
 		answerCount := make(map[string]int)
 		for i := range answers {
 			ans := arrutil.Intersects(req.Options, answers[i], arrutil.StringEqualsComparer)
 			if uint(len(ans)) > resp.Type {
+				sort.Strings(ans)
 				answerCount[strings.Join(ans, sep)]++
 			}
 		}
-		resp.Answer = getMaxCountAnswer(answerCount)
+		resp.Answer.BestAnswer = getMaxCountAnswer(answerCount)
 
 		// if len(resp.Answer) == 0 {
 		// 	for i := range answers {
@@ -45,10 +46,22 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		// 	}
 		// 	resp.Answer = []string{req.Options[resp.AnswerIndex[0]]}
 		// }
-		resp.AnswerIndex = findIndices(resp.Answer, req.Options)
-	}
 
+	}
+	fillAnswer(&resp.Answer, req)
 	return resp
+}
+
+func fillAnswer(a *model.Answer, req *model.SearchRequest) {
+	a.AnswerIndex = findIndices(a.BestAnswer, req.Options)
+	a.AnswerText = strings.Join(a.BestAnswer, "#")
+
+	a.AnswerKey = make([]string, len(a.AnswerIndex))
+
+	for i, index := range a.AnswerIndex {
+		a.AnswerKey[i] = string(rune(index + 65))
+	}
+	a.AnswerKeyText = arrutil.JoinStrings("", a.AnswerKey...)
 }
 
 // SearchRightAnswer 此方法还有巨大的优化空间
@@ -86,5 +99,6 @@ func findIndices(answers []string, options []string) []int {
 			}
 		}
 	}
+	fmt.Println(indices)
 	return indices
 }

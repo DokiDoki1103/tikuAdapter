@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"github.com/itihey/tikuAdapter/internal/model"
 	"github.com/itihey/tikuAdapter/pkg/errors"
 	"github.com/itihey/tikuAdapter/pkg/logger"
+	"github.com/itihey/tikuAdapter/pkg/model"
 	"strings"
 	"time"
 )
