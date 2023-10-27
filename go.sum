@@ -1,3 +1,5 @@
+github.com/antlabs/strsim v0.0.3 h1:J9AHxnybJZHKBoxeup1VZNWt3ST8QD+ieDJsm/nEpRo=
+github.com/antlabs/strsim v0.0.3/go.mod h1:bIcymn+2jtt01korFun0bs8PsYZeQa82aHoYMi7cm30=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.10.0-rc/go.mod h1:ElCzW+ufi8qKqNW0FY314xriJhyJhuoJ3gFZdAHF7NM=
 github.com/bytedance/sonic v1.10.2 h1:GQebETVBxYB7JGWJtLBi07OVzWwt+8dWA00gEVW2ZFE=

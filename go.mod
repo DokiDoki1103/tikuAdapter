@@ -3,6 +3,7 @@ module github.com/itihey/tikuAdapter
 go 1.21
 
 require (
+	github.com/antlabs/strsim v0.0.3
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-resty/resty/v2 v2.10.0
