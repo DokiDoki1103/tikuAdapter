@@ -4,21 +4,18 @@
 
 ![image.png](https://img.cdn.apipost.cn/client/user/1010721/avatar/78805a221a988e79ef3f42d7c5bfd41865389e5a65048.png "image.png")
 
-## 为什么诞生它？
-
 市面上有很多题库接口，比如您想要在 ```【万能】全平台自动答题脚本``` 使用```言溪enncy题库```您就可以通过此题库适配器轻松实现。
+
 
 ## 如何部署使用
 
 ### 部署
 
-- windows 直接从release中下载对应的版本即可，解压后运行即可
-- linux 直接从release中下载对应的版本即可，解压后运行即可
-- macos 直接从release中下载对应的版本即可，解压后运行即可
+- 直接从release中下载对应的版本即可，解压后运行即可
 
 ### 使用API接口
 
-POST `127.0.0.1:8060/adapter-service/search`
+POST `localhost:8060/adapter-service/search`
 
 #### 请求体
 
@@ -34,7 +31,6 @@ POST `127.0.0.1:8060/adapter-service/search`
   "type": 1
 }
 ```
-
 
 #### URL 请求参数
 
