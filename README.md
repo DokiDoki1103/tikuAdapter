@@ -6,12 +6,23 @@
 
 市面上有很多题库接口，比如您想要在 ```【万能】全平台自动答题脚本``` 使用```言溪enncy题库```您就可以通过此题库适配器轻松实现。
 
+## 功能
+1. 支持多种输入源：
+    + [x] [enncy 言溪题库](https://tk.enncy.cn/)
+    + [x] [万能题库](https://lyck6.cn/pay)
+2. 支持多种输出源：
+    + [x] [tikuAdapter标准格式](https://github.com/itihey/tikuAdapter#%E5%93%8D%E5%BA%94%E7%A4%BA%E4%BE%8B) **强烈推荐**您为您的软件适配标准格式
+    + [ ] **微信公众号** 微信开发者后台填写tikuAdapter的url即可
+
+3. [自定义请求参数](https://github.com/itihey/tikuAdapter#url-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0) 个性化**禁用题库**或者**配置题库Token**
+
+
+
 
 ## 如何部署使用
 
 ### 部署
-
-- 直接从release中下载对应的版本即可，解压后运行即可
+从 [GitHub Releases](https://github.com/itihey/tikuAdapter/releases) 下载对应的版本，解压后运行即可
 
 ### 使用API接口
 

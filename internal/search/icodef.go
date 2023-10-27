@@ -51,13 +51,9 @@ func (in *SearchIcodefClient) SearchAnswer(req model.SearchRequest) (answer [][]
 	if err != nil {
 		return nil, errors.ErrTargetServerError
 	}
-
 	if response.Code != 1 {
 		return nil, errors.ErrTargetNoAnswer
 	}
-
 	ans := strings.Split(response.Data, "#")
-
 	return [][]string{ans}, nil
-
 }
