@@ -10,6 +10,7 @@
 1. 支持多种输入源：
     + [x] [enncy 言溪题库](https://tk.enncy.cn/)
     + [x] [万能题库](https://lyck6.cn/pay)
+    + [x] [icodef 题库](https://q.icodef.com)
 2. 支持多种输出源：
     + [x] [tikuAdapter标准格式](https://github.com/itihey/tikuAdapter#%E5%93%8D%E5%BA%94%E7%A4%BA%E4%BE%8B) **强烈推荐**您为您的软件适配标准格式
     + [ ] **微信公众号** 微信开发者后台填写tikuAdapter的url即可
@@ -45,12 +46,14 @@ POST `localhost:8060/adapter-service/search`
 
 #### URL 请求参数
 
-| 参数             | 描述                    | 是否必须 | 示例值              | Token获取方式                |
-|----------------|-----------------------|------|------------------|--------------------------|
-| wannengToken   | 万能付费题库的Token值(10位)    | 否    | E196FD8B49       | https://lyck6.cn/pay     |
-| wannengDisable | 是否禁用万能题库(此值传1将禁用)     | 否    | 1                |
-| icodefToken    | Icodef 题库Token值       | 否    | UafYcHViJMGzSVNh | 关注微信公众号"一之哥哥"发送"token"获取 |
-| icodefDisable  | 是否禁用icodef题库(此值传1将禁用) | 否    | 1                |
+| 参数             | 描述                    | 是否必须 | 示例值                              | Token获取方式                |
+|----------------|-----------------------|------|----------------------------------|--------------------------|
+| wannengToken   | 万能付费题库的Token值(10位)    | 否    | E196FD8B49                       | https://lyck6.cn/pay     |
+| wannengDisable | 是否禁用万能题库(此值传1将禁用)     | 否    | 1                                |
+| icodefToken    | Icodef 题库Token值       | 否    | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"发送"token"获取 |
+| icodefDisable  | 是否禁用icodef题库(此值传1将禁用) | 否    | 1                                |
+| enncyToken     | enncy 题库Token值       | 否    | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn |
+| enncyDisable   | 是否禁用enncy题库(此值传1将禁用) | 否    | 1                                |
 
 例如您想禁用万能题库并且想要使用icodef的token，您的url应为`127.0.0.1:8060/adapter-service/search?wannengDisable=1&icodefToken=UafYcHViJMGzSVNh`
 

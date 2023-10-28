@@ -25,4 +25,7 @@ jobs:
         run: go build -o temp cmd/adapter-service/main.go
 
       - name: Test
+        env:
+          ENNCY_TOKEN: ${{ secrets.ENNCY_TOKEN }}
+
         run: go test -v ./...

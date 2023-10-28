@@ -23,6 +23,10 @@ func Search(c *gin.Context) {
 			Token:   c.Query("icodefToken"),
 			Disable: c.Query("icodefDisable") == "1",
 		},
+		Enncy: &search.SearchEnncyClient{
+			Token:   c.Query("enncyToken"),
+			Disable: c.Query("enncyDisable") == "1",
+		},
 	}
 
 	var req model.SearchRequest
