@@ -22,8 +22,12 @@
 
 ## 如何部署使用
 
-### 部署
+### 自行部署
 从 [GitHub Releases](https://github.com/itihey/tikuAdapter/releases) 下载对应的版本，解压后运行即可
+### 使用在线服务
+在线服务均不能保证稳定性，并可能会泄漏您的Token，强烈建议自行部署。
+
+- DokiDoki提供 `http://adapter.xmig6.cn/adapter-service/search`
 
 ### 使用API接口
 
@@ -55,7 +59,7 @@ POST `localhost:8060/adapter-service/search`
 | enncyToken     | enncy 题库Token值       | 否    | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn |
 | enncyDisable   | 是否禁用enncy题库(此值传1将禁用) | 否    | 1                                |
 
-例如您想禁用万能题库并且想要使用icodef的token，您的url应为`127.0.0.1:8060/adapter-service/search?wannengDisable=1&icodefToken=UafYcHViJMGzSVNh`
+例如您想禁用万能题库并且想要使用icodef的token，您的url应为`localhost:8060/adapter-service/search?wannengDisable=1&icodefToken=UafYcHViJMGzSVNh`
 
 #### 响应示例
 
