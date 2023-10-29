@@ -28,6 +28,9 @@ func (in *SearchEnncyClient) SearchAnswer(req model.SearchRequest) (answer [][]s
 	}
 	var response enncyResponse
 	err = json.Unmarshal(post.Body(), &response)
+	if err != nil {
+		return nil, errors.ErrTargetServerError
+	}
 	if response.Code == 1 {
 		ans := strings.Split(response.Data.Answer, "#")
 		return [][]string{ans}, nil
