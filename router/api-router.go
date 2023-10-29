@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/itihey/tikuAdapter/api/controller"
+	"github.com/itihey/tikuAdapter/internal/controller"
 )
 
 func SetApiRouter(router *gin.Engine) {

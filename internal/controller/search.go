@@ -71,7 +71,3 @@ func Search(c *gin.Context) {
 		c.JSON(http.StatusNotFound, global.ErrorQuestionNotFound)
 	}
 }
-
-func warpResponse(resp *model.SearchResponse) {
-
-}

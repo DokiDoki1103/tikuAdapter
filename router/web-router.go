@@ -29,8 +29,14 @@ func embedFolder(fsEmbed embed.FS, targetPath string) static.ServeFileSystem {
 	}
 }
 
-func setWebRouter(router *gin.Engine, buildFS embed.FS, indexPage []byte) {
-	router.Use(static.Serve("/", embedFolder(buildFS, "cmd/adapter-service/dist")))
+//go:embed dist
+var buildFS embed.FS
+
+//go:embed dist/index.html
+var indexPage []byte
+
+func SetWebRouter(router *gin.Engine) {
+	router.Use(static.Serve("/", embedFolder(buildFS, "router/dist")))
 	router.NoRoute(func(c *gin.Context) {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", indexPage)
 	})
