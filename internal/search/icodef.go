@@ -30,7 +30,7 @@ func (in *IcodefClient) getHTTPClient() *resty.Client {
 		SetRetryCount(3).
 		SetRetryWaitTime(time.Second).
 		AddRetryCondition(func(r *resty.Response, err error) bool {
-			return err != nil || strings.Contains(r.String(), "触发流控限制")
+			return err != nil || (strings.Contains(r.String(), "触发流控限制") && !strings.Contains(r.String(), "IP超出每日限额"))
 		}).
 		AddRetryHook(func(r *resty.Response, err error) {
 			logger.SysError(fmt.Sprintf("iCodef触发流控限制，正在重试...%s", r.String()))
