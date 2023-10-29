@@ -17,12 +17,14 @@ type iapiResponse struct {
 	Msg  string `json:"msg"`
 }
 
-type SearchIcodefClient struct {
+// IcodefClient icodef题库
+type IcodefClient struct {
 	Disable bool
 	Token   string
 }
 
-func (in *SearchIcodefClient) getHttpClient() *resty.Client {
+// getHTTPClient 获取HTTP客户端
+func (in *IcodefClient) getHTTPClient() *resty.Client {
 	return resty.New().
 		SetTimeout(5*time.Second).
 		SetRetryCount(3).
@@ -37,8 +39,9 @@ func (in *SearchIcodefClient) getHttpClient() *resty.Client {
 		SetHeader("Authorization", in.Token)
 }
 
-func (in *SearchIcodefClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
-	post, err := in.getHttpClient().R().
+// SearchAnswer 搜索答案
+func (in *IcodefClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	post, err := in.getHTTPClient().R().
 		SetFormData(map[string]string{
 			"question": req.Question,
 		}).Post("https://cx.icodef.com/wyn-nb?v=4")

@@ -5,13 +5,15 @@ import (
 	"github.com/itihey/tikuAdapter/pkg/model"
 )
 
-type SearchClient struct {
-	Wanneng *SearchWannengClient
-	Enncy   *SearchEnncyClient
-	Icodef  *SearchIcodefClient
+// Client 搜题
+type Client struct {
+	Wanneng *WannengClient
+	Enncy   *EnncyClient
+	Icodef  *IcodefClient
 }
 
+// Search 搜题接口
 type Search interface {
-	getHttpClient() *resty.Client
+	getHTTPClient() *resty.Client
 	SearchAnswer(req model.SearchRequest) (answer [][]string, err error)
 }

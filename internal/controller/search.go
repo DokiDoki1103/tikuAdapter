@@ -13,17 +13,18 @@ import (
 	"sync"
 )
 
+// Search 搜题接口
 func Search(c *gin.Context) {
-	searchClient := search.SearchClient{
-		Wanneng: &search.SearchWannengClient{
+	searchClient := search.Client{
+		Wanneng: &search.WannengClient{
 			Token:   c.Query("wannengToken"),
 			Disable: c.Query("wannengDisable") == "1",
 		},
-		Icodef: &search.SearchIcodefClient{
+		Icodef: &search.IcodefClient{
 			Token:   c.Query("icodefToken"),
 			Disable: c.Query("icodefDisable") == "1",
 		},
-		Enncy: &search.SearchEnncyClient{
+		Enncy: &search.EnncyClient{
 			Token:   c.Query("enncyToken"),
 			Disable: c.Query("enncyDisable") == "1",
 		},

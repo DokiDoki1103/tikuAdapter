@@ -9,7 +9,7 @@ import (
 )
 
 func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
-	var client = SearchIcodefClient{}
+	var client = IcodefClient{}
 	testRequest := model.SearchRequest{
 		Question: "下面选项中,属于男性在青春期生理变化的内容有?()",
 	}
@@ -27,7 +27,7 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 }
 
 func TestSearchWannengClient_SearchAnswer(t *testing.T) {
-	var client = SearchWannengClient{
+	var client = WannengClient{
 		Disable: false,
 	}
 	testRequest := model.SearchRequest{
@@ -47,7 +47,7 @@ func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 }
 
 func TestSearchEnncyClient_SearchAnswer(t *testing.T) {
-	var client = SearchEnncyClient{
+	var client = EnncyClient{
 		Disable: false,
 		Token:   os.Getenv("ENNCY_TOKEN"),
 	}

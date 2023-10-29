@@ -11,8 +11,10 @@ import (
 	"time"
 )
 
+// LogDir 日志目录
 var LogDir = flag.String("log-dir", "", "specify the log directory")
 
+// SetupGinLog 设置gin日志
 func SetupGinLog() {
 	if *LogDir != "" {
 		commonLogPath := filepath.Join(*LogDir, "common.log")
@@ -30,16 +32,19 @@ func SetupGinLog() {
 	}
 }
 
+// SysLog 系统日志
 func SysLog(s string) {
 	t := time.Now()
 	_, _ = fmt.Fprintf(gin.DefaultWriter, "[SYS] %v | %s \n", t.Format("2006/01/02 - 15:04:05"), s)
 }
 
+// SysError 系统错误日志
 func SysError(s string) {
 	t := time.Now()
 	_, _ = fmt.Fprintf(gin.DefaultErrorWriter, "[SYS] %v | %s \n", t.Format("2006/01/02 - 15:04:05"), s)
 }
 
+// FatalLog 系统错误日志
 func FatalLog(v ...any) {
 	t := time.Now()
 	_, _ = fmt.Fprintf(gin.DefaultErrorWriter, "[FATAL] %v | %v \n", t.Format("2006/01/02 - 15:04:05"), v)

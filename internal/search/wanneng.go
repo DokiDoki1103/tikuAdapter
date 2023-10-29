@@ -25,12 +25,14 @@ type wapiResponse struct {
 	Result    result `json:"result"`
 }
 
-type SearchWannengClient struct {
+// WannengClient icodef题库
+type WannengClient struct {
 	Disable bool
 	Token   string
 }
 
-func (in *SearchWannengClient) getHttpClient() *resty.Client {
+// getHTTPClient 获取HTTP客户端
+func (in *WannengClient) getHTTPClient() *resty.Client {
 	return resty.New().
 		SetTimeout(5*time.Second).
 		SetRetryCount(3). // 目前来看万能免费题库限流措施是4秒一次，所以做最大重试次数为3
@@ -45,7 +47,8 @@ func (in *SearchWannengClient) getHttpClient() *resty.Client {
 		SetHeader("Content-Type", "application/json")
 }
 
-func (in *SearchWannengClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+// SearchAnswer 搜索答案
+func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	if in.Disable {
 		return nil, errors.ErrDisable
 	}
@@ -56,7 +59,7 @@ func (in *SearchWannengClient) SearchAnswer(req model.SearchRequest) (answer [][
 	if in.Token != "" && len(in.Token) == 10 {
 		url = "http://lyck6.cn/scriptService/api/autoAnswer/" + in.Token
 	}
-	resp, err := in.getHttpClient().R().
+	resp, err := in.getHTTPClient().R().
 		SetBody(string(data)).
 		Post(url)
 
@@ -72,7 +75,7 @@ func (in *SearchWannengClient) SearchAnswer(req model.SearchRequest) (answer [][
 	// 不等于0就是请求失败
 	if response.Code != 0 {
 		if response.Code == 429 {
-			return nil, errors.ErrTargetApiFlow
+			return nil, errors.ErrTargetAPIFlow
 		}
 		return nil, errors.ErrTargetServerError
 	}

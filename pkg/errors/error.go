@@ -3,8 +3,12 @@ package errors
 import "errors"
 
 var (
-	ErrDisable           = errors.New("关闭本接口的搜题")
-	ErrTargetApiFlow     = errors.New("对方API接口限流")
+	// ErrDisable 关闭本接口的搜题
+	ErrDisable = errors.New("关闭本接口的搜题")
+	// ErrTargetAPIFlow 对方API接口限流
+	ErrTargetAPIFlow = errors.New("对方API接口限流")
+	// ErrTargetServerError 对方服务器异常
 	ErrTargetServerError = errors.New("对方服务器异常")
-	ErrTargetNoAnswer    = errors.New("对方没有答案")
+	// ErrTargetNoAnswer 对方没有答案
+	ErrTargetNoAnswer = errors.New("对方没有答案")
 )

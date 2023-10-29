@@ -9,17 +9,20 @@ import (
 	"time"
 )
 
-type SearchEnncyClient struct {
+// EnncyClient enncy题库
+type EnncyClient struct {
 	Disable bool   // 是否禁用
 	Token   string // token
 }
 
-func (in *SearchEnncyClient) getHttpClient() *resty.Client {
+// getHTTPClient 获取HTTP客户端
+func (in *EnncyClient) getHTTPClient() *resty.Client {
 	return resty.New().SetTimeout(5 * time.Second)
 }
 
-func (in *SearchEnncyClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
-	post, err := in.getHttpClient().R().
+// SearchAnswer 搜索答案
+func (in *EnncyClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	post, err := in.getHTTPClient().R().
 		SetQueryParam("token", in.Token).
 		SetQueryParam("title", req.Question).
 		Get("https://tk.enncy.cn/query")

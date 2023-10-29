@@ -10,6 +10,7 @@ import (
 
 var sep = "**=====^_^======^_^=====**" // 用于分割答案的分隔符
 
+// FillAnswerResponse 根据搜题结果填充答案
 func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
 	resp := model.SearchResponse{
 
@@ -38,7 +39,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		}
 		resp.Answer.BestAnswer = SearchRightAnswer(filterAnswer, req)
 
-		if len(resp.Answer.BestAnswer) == 0 { //开始模糊匹配
+		if len(resp.Answer.BestAnswer) == 0 { // 开始模糊匹配
 			for i := range answers {
 				if resp.Type == 0 {
 					match := strsim.FindBestMatch(strings.Join(answers[i], ""), req.Options)

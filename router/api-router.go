@@ -5,7 +5,8 @@ import (
 	"github.com/itihey/tikuAdapter/internal/controller"
 )
 
-func SetApiRouter(router *gin.Engine) {
+// SetAPIRouter 设置API路由
+func SetAPIRouter(router *gin.Engine) {
 	apiRouter := router.Group("/adapter-service")
 
 	apiRouter.POST("/search", controller.Search)
