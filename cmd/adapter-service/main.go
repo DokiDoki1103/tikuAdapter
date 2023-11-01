@@ -36,8 +36,7 @@ func closeDB() error {
 	if err != nil {
 		return err
 	}
-	err = sqlDB.Close()
-	return err
+	return sqlDB.Close()
 }
 func main() {
 	logger.SetupGinLog()

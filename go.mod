@@ -11,7 +11,6 @@ require (
 	github.com/go-resty/resty/v2 v2.10.0
 	github.com/gookit/goutil v0.6.14
 	gorm.io/driver/mysql v1.5.2
-	gorm.io/driver/sqlite v1.4.3
 	gorm.io/gen v0.3.23
 	gorm.io/gorm v1.25.5
 	gorm.io/plugin/dbresolver v1.3.0
@@ -47,7 +46,6 @@ require (
 	github.com/levigross/exp-html v0.0.0-20120902181939-8df60c69a8f5 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
-	github.com/mattn/go-sqlite3 v1.14.16 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
