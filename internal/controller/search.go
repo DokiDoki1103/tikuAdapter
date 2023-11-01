@@ -33,7 +33,7 @@ func Search(c *gin.Context) {
 	var req model.SearchRequest
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, global.ErrorParam)
 		return
 	}
 

@@ -13,7 +13,7 @@ type embedFileSystem struct {
 }
 
 // Exists 判断文件是否存在
-func (e embedFileSystem) Exists(prefix string, path string) bool {
+func (e embedFileSystem) Exists(_ string, path string) bool {
 	_, err := e.Open(path)
 	return err == nil
 }

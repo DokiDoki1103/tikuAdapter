@@ -10,4 +10,5 @@ func SetAPIRouter(router *gin.Engine) {
 	apiRouter := router.Group("/adapter-service")
 
 	apiRouter.POST("/search", controller.Search)
+	apiRouter.POST("/parser", controller.Parse)
 }
