@@ -31,7 +31,7 @@ func init() {
 	}
 }
 
-func CloseDB() error {
+func closeDB() error {
 	sqlDB, err := db.DB()
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func main() {
 	logger.SetupGinLog()
 	http.HandleFunc("/", api.Handler)
 	defer func() {
-		err := CloseDB()
+		err := closeDB()
 		if err != nil {
 			logger.FatalLog(err)
 		}
