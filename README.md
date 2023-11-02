@@ -42,8 +42,7 @@
 
 在线服务均不能保证稳定性，并可能会泄漏您的Token，强烈建议自行部署。
 
-- 【**main**】国外vercel提供 `http://tiku-adapter.vercel.app/adapter-service/search`
-- 【v0.1.0-alpha.2】xmig提供 `http://adapter.xmig6.cn/adapter-service/search`
+- 【v0.1.0-alpha.4】xmig提供 `http://adapter.xmig6.cn/adapter-service/search`
 
 ### 使用API接口
 
