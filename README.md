@@ -8,17 +8,29 @@
 
 ## 功能
 
-1. 支持多种输入源：
-    + [x] [enncy 言溪题库](https://tk.enncy.cn/)
-    + [x] [万能题库](https://lyck6.cn/pay)
-    + [x] [icodef 题库](https://q.icodef.com)
-2. 支持多种输出源：
-    + [x] [tikuAdapter标准格式](https://github.com/itihey/tikuAdapter#%E5%93%8D%E5%BA%94%E7%A4%BA%E4%BE%8B) **强烈推荐**
-      您为您的软件适配标准格式
-    + [ ] **微信公众号** 微信开发者后台填写tikuAdapter的url即可
+### 1.支持多种题库接口输入源
+排名顺序为免费优先于付费。
+- [x] [icodef 题库](https://q.icodef.com) [![免费](https://img.shields.io/badge/-免费-brightgreen)](url)
+- [x] [万能题库](https://lyck6.cn/pay) [![付费](https://img.shields.io/badge/免费-付费-brightgreen?color=red&labelColor=4c1)](https://lyck6.cn/pay)
+- [x] [enncy 言溪题库](https://tk.enncy.cn/) [![付费](https://img.shields.io/badge/-付费-red)](https://tk.enncy.cn/)
 
-3. [自定义请求参数](https://github.com/itihey/tikuAdapter#url-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0) 个性化**禁用题库**或者
-   **配置题库Token**
+访问第三方题库接口时，自动将答案持久化到本地，下次搜题优先搜索本地题库的答案。
+
+### 2.支持多种文件自动解析到题库
+
++ [ ] [Word题库](https://github.com/itihey/tikuAdapter/raw/main/test/test.docx)将您的word文档自动解析到本地数据库，方便您的搜索。
+
+### 3. 支持多种输出源：
+
++ [x] [tikuAdapter标准格式](https://github.com/itihey/tikuAdapter#%E5%93%8D%E5%BA%94%E7%A4%BA%E4%BE%8B) **强烈推荐**
+  您为您的软件适配标准格式
++ [ ] **微信公众号** 微信开发者后台填写tikuAdapter的url即可
+
+### 4.个性化配置
+
+- [自定义请求参数](https://github.com/itihey/tikuAdapter#url-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0) 个性化**禁用题库**或者
+  **配置题库Token**
+- 搜题接口的限流措施(个人使用一般不需要开启) [配置限流](https://github.com/itihey/tikuAdapter/tree/main/configs#%E9%99%90%E6%B5%81%E9%85%8D%E7%BD%AE)
 
 ## 如何部署使用
 
@@ -125,12 +137,12 @@ POST `http://localhost:8060/adapter-service/search`
 ### 大方向分为
 
 - 支持多题库接口输入源，支持格式化为标准格式或常见格式 ✅
-- 将题库私有化持久化 ❌
+- 将题库私有化持久化 ✅
 
 ### 支持多题库接口输入源
 
 其他题库接口或者提供商欢迎Pr或者issue，我们会将其加入到适配器中。
 
-- 【言溪enncy】OCS 网课助手 ❌
+- 【言溪enncy】OCS 网课助手 ✅
 - 【万能】全平台自动答题脚本 ✅
 - 【一之哥哥】icodef 题库 ✅
