@@ -1,4 +1,4 @@
-package s
+package m
 
 import (
 	"github.com/itihey/tikuAdapter/configs"
@@ -9,6 +9,7 @@ import (
 
 var defaultManager Manager
 
+// Manager db manager
 type Manager struct {
 	Config    *configs.Config
 	Query     *dao.Query
@@ -20,6 +21,7 @@ func GetManager() Manager {
 	return defaultManager
 }
 
+// CreateManager create db manager
 func CreateManager() {
 	config := registry.Config()
 	defaultManager = Manager{

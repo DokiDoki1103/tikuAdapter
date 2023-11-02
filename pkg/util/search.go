@@ -21,6 +21,9 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 			AllAnswer: answers,
 		},
 	}
+	if resp.Options == nil {
+		resp.Options = []string{}
+	}
 	formatAnswer(answers, req.Type) // 先把答案统一格式化
 	for i := range resp.Options {
 		resp.Options[i] = formatString(resp.Options[i])

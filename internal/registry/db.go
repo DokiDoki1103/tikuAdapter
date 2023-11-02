@@ -21,6 +21,8 @@ func closeDB() error {
 	}
 	return sqlDB.Close()
 }
+
+// DB get db instance
 func DB() *dao.Query {
 	once.Do(func() {
 		var err error

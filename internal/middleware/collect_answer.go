@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"github.com/gookit/goutil/strutil"
 	"github.com/itihey/tikuAdapter/internal/entity"
-	"github.com/itihey/tikuAdapter/internal/registry/s"
+	"github.com/itihey/tikuAdapter/internal/registry/m"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
 )
 
 // CollectAnswer 收集答案
 func CollectAnswer(resp model.SearchResponse) {
-	tiku := s.GetManager().Query.Tiku
+	tiku := m.GetManager().Query.Tiku
 
 	if len(resp.Answer.BestAnswer) > 0 {
 

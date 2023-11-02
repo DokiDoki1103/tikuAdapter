@@ -15,6 +15,7 @@ limit:
   requests: 1  # 允许用户在3秒内通过1个请求
 `)
 
+// Config get config instance
 func Config() *configs.Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

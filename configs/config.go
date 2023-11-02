@@ -5,6 +5,7 @@ type Config struct {
 	Limit LimitConfig
 }
 
+// LimitConfig 限流配置
 type LimitConfig struct {
 	Enable        bool
 	LimitDuration uint

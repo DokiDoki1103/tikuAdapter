@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/itihey/tikuAdapter/api"
-	"github.com/itihey/tikuAdapter/internal/registry/s"
+	"github.com/itihey/tikuAdapter/internal/registry/m"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"net/http"
 )
 
 func main() {
-	s.CreateManager()
+	m.CreateManager()
 
 	logger.SetupGinLog()
 	http.HandleFunc("/", api.Handler)
