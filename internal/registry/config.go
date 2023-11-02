@@ -28,8 +28,9 @@ func Config() *configs.Config {
 
 	return &configs.Config{
 		Limit: configs.LimitConfig{
-			LimitDuration: viper.GetUint("limit.duration"),
-			LimitRequests: viper.GetUint64("limit.duration"),
+			Enable:   viper.GetBool("limit.enable"),
+			Duration: viper.GetUint("limit.duration"),
+			Requests: viper.GetUint64("limit.requests"),
 		},
 	}
 }

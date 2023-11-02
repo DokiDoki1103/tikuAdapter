@@ -2,6 +2,8 @@ package registry
 
 import (
 	"fmt"
+	l "gorm.io/gorm/logger"
+
 	"github.com/glebarez/sqlite"
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/entity"
@@ -26,7 +28,10 @@ func closeDB() error {
 func DB() *dao.Query {
 	once.Do(func() {
 		var err error
-		db, err = gorm.Open(sqlite.Open(dbName), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(dbName), &gorm.Config{
+			PrepareStmt: true,
+			Logger:      l.Default.LogMode(l.Warn),
+		})
 		if err != nil {
 			logger.FatalLog(fmt.Errorf("open sqlite %q fail: %w", dbName, err))
 		}

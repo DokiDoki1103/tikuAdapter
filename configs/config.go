@@ -7,7 +7,7 @@ type Config struct {
 
 // LimitConfig 限流配置
 type LimitConfig struct {
-	Enable        bool
-	LimitDuration uint
-	LimitRequests uint64
+	Enable   bool
+	Duration uint
+	Requests uint64
 }

@@ -79,7 +79,9 @@ func Search(c *gin.Context) {
 
 	if len(result) > 0 {
 		resp := util.FillAnswerResponse(result, &req)
-		middleware.CollectAnswer(resp)
+		if len(answer) == 0 {
+			middleware.CollectAnswer(resp)
+		}
 		c.JSON(http.StatusOK, resp)
 	} else {
 		c.JSON(http.StatusNotFound, global.ErrorQuestionNotFound)
