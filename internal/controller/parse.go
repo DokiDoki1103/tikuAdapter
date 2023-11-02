@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// Parse 解析文件接口
+// Parser 解析文件接口
 func Parser(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
