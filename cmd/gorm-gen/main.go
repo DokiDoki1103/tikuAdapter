@@ -9,10 +9,11 @@ import (
 
 func main() {
 	g := gen.NewGenerator(gen.Config{
-		OutPath:      "./internal/dao",
-		ModelPkgPath: "./internal/model",
-		WithUnitTest: true,
-		Mode:         gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface,
+		OutPath:           "./internal/dao",
+		ModelPkgPath:      "./internal/entity",
+		WithUnitTest:      false,
+		Mode:              gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface,
+		FieldWithIndexTag: true,
 	})
 	db, _ := gorm.Open(mysql.Open(os.Getenv("DB_DSN")))
 	g.UseDB(db)

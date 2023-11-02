@@ -5,7 +5,7 @@ import (
 	"github.com/itihey/tikuAdapter/pkg/model"
 )
 
-// Client 搜题
+// Client -
 type Client struct {
 	Wanneng *WannengClient
 	Enncy   *EnncyClient

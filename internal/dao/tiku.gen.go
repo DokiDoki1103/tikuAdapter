@@ -16,14 +16,14 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"github.com/itihey/tikuAdapter/internal/model"
+	"github.com/itihey/tikuAdapter/internal/entity"
 )
 
 func newTiku(db *gorm.DB, opts ...gen.DOOption) tiku {
 	_tiku := tiku{}
 
 	_tiku.tikuDo.UseDB(db, opts...)
-	_tiku.tikuDo.UseModel(&model.Tiku{})
+	_tiku.tikuDo.UseModel(&entity.Tiku{})
 
 	tableName := _tiku.tikuDo.TableName()
 	_tiku.ALL = field.NewAsterisk(tableName)
@@ -33,6 +33,8 @@ func newTiku(db *gorm.DB, opts ...gen.DOOption) tiku {
 	_tiku.Options = field.NewString(tableName, "options")
 	_tiku.Answer = field.NewString(tableName, "answer")
 	_tiku.Plat = field.NewInt32(tableName, "plat")
+	_tiku.QuestionHash = field.NewString(tableName, "question_hash")
+	_tiku.Hash = field.NewString(tableName, "hash")
 
 	_tiku.fillFieldMap()
 
@@ -42,13 +44,15 @@ func newTiku(db *gorm.DB, opts ...gen.DOOption) tiku {
 type tiku struct {
 	tikuDo
 
-	ALL      field.Asterisk
-	ID       field.Int32
-	Question field.String
-	Type     field.Int32
-	Options  field.String
-	Answer   field.String
-	Plat     field.Int32
+	ALL          field.Asterisk
+	ID           field.Int32
+	Question     field.String
+	Type         field.Int32
+	Options      field.String
+	Answer       field.String
+	Plat         field.Int32
+	QuestionHash field.String
+	Hash         field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -71,6 +75,8 @@ func (t *tiku) updateTableName(table string) *tiku {
 	t.Options = field.NewString(table, "options")
 	t.Answer = field.NewString(table, "answer")
 	t.Plat = field.NewInt32(table, "plat")
+	t.QuestionHash = field.NewString(table, "question_hash")
+	t.Hash = field.NewString(table, "hash")
 
 	t.fillFieldMap()
 
@@ -87,13 +93,15 @@ func (t *tiku) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *tiku) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 6)
+	t.fieldMap = make(map[string]field.Expr, 8)
 	t.fieldMap["id"] = t.ID
 	t.fieldMap["question"] = t.Question
 	t.fieldMap["type"] = t.Type
 	t.fieldMap["options"] = t.Options
 	t.fieldMap["answer"] = t.Answer
 	t.fieldMap["plat"] = t.Plat
+	t.fieldMap["question_hash"] = t.QuestionHash
+	t.fieldMap["hash"] = t.Hash
 }
 
 func (t tiku) clone(db *gorm.DB) tiku {
@@ -137,17 +145,17 @@ type ITikuDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ITikuDo
 	Unscoped() ITikuDo
-	Create(values ...*model.Tiku) error
-	CreateInBatches(values []*model.Tiku, batchSize int) error
-	Save(values ...*model.Tiku) error
-	First() (*model.Tiku, error)
-	Take() (*model.Tiku, error)
-	Last() (*model.Tiku, error)
-	Find() ([]*model.Tiku, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Tiku, err error)
-	FindInBatches(result *[]*model.Tiku, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*entity.Tiku) error
+	CreateInBatches(values []*entity.Tiku, batchSize int) error
+	Save(values ...*entity.Tiku) error
+	First() (*entity.Tiku, error)
+	Take() (*entity.Tiku, error)
+	Last() (*entity.Tiku, error)
+	Find() ([]*entity.Tiku, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*entity.Tiku, err error)
+	FindInBatches(result *[]*entity.Tiku, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.Tiku) (info gen.ResultInfo, err error)
+	Delete(...*entity.Tiku) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -159,9 +167,9 @@ type ITikuDo interface {
 	Assign(attrs ...field.AssignExpr) ITikuDo
 	Joins(fields ...field.RelationField) ITikuDo
 	Preload(fields ...field.RelationField) ITikuDo
-	FirstOrInit() (*model.Tiku, error)
-	FirstOrCreate() (*model.Tiku, error)
-	FindByPage(offset int, limit int) (result []*model.Tiku, count int64, err error)
+	FirstOrInit() (*entity.Tiku, error)
+	FirstOrCreate() (*entity.Tiku, error)
+	FindByPage(offset int, limit int) (result []*entity.Tiku, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) ITikuDo
@@ -261,57 +269,57 @@ func (t tikuDo) Unscoped() ITikuDo {
 	return t.withDO(t.DO.Unscoped())
 }
 
-func (t tikuDo) Create(values ...*model.Tiku) error {
+func (t tikuDo) Create(values ...*entity.Tiku) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Create(values)
 }
 
-func (t tikuDo) CreateInBatches(values []*model.Tiku, batchSize int) error {
+func (t tikuDo) CreateInBatches(values []*entity.Tiku, batchSize int) error {
 	return t.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (t tikuDo) Save(values ...*model.Tiku) error {
+func (t tikuDo) Save(values ...*entity.Tiku) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Save(values)
 }
 
-func (t tikuDo) First() (*model.Tiku, error) {
+func (t tikuDo) First() (*entity.Tiku, error) {
 	if result, err := t.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Tiku), nil
+		return result.(*entity.Tiku), nil
 	}
 }
 
-func (t tikuDo) Take() (*model.Tiku, error) {
+func (t tikuDo) Take() (*entity.Tiku, error) {
 	if result, err := t.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Tiku), nil
+		return result.(*entity.Tiku), nil
 	}
 }
 
-func (t tikuDo) Last() (*model.Tiku, error) {
+func (t tikuDo) Last() (*entity.Tiku, error) {
 	if result, err := t.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Tiku), nil
+		return result.(*entity.Tiku), nil
 	}
 }
 
-func (t tikuDo) Find() ([]*model.Tiku, error) {
+func (t tikuDo) Find() ([]*entity.Tiku, error) {
 	result, err := t.DO.Find()
-	return result.([]*model.Tiku), err
+	return result.([]*entity.Tiku), err
 }
 
-func (t tikuDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Tiku, err error) {
-	buf := make([]*model.Tiku, 0, batchSize)
+func (t tikuDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*entity.Tiku, err error) {
+	buf := make([]*entity.Tiku, 0, batchSize)
 	err = t.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -319,7 +327,7 @@ func (t tikuDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error)
 	return results, err
 }
 
-func (t tikuDo) FindInBatches(result *[]*model.Tiku, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (t tikuDo) FindInBatches(result *[]*entity.Tiku, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return t.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -345,23 +353,23 @@ func (t tikuDo) Preload(fields ...field.RelationField) ITikuDo {
 	return &t
 }
 
-func (t tikuDo) FirstOrInit() (*model.Tiku, error) {
+func (t tikuDo) FirstOrInit() (*entity.Tiku, error) {
 	if result, err := t.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Tiku), nil
+		return result.(*entity.Tiku), nil
 	}
 }
 
-func (t tikuDo) FirstOrCreate() (*model.Tiku, error) {
+func (t tikuDo) FirstOrCreate() (*entity.Tiku, error) {
 	if result, err := t.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Tiku), nil
+		return result.(*entity.Tiku), nil
 	}
 }
 
-func (t tikuDo) FindByPage(offset int, limit int) (result []*model.Tiku, count int64, err error) {
+func (t tikuDo) FindByPage(offset int, limit int) (result []*entity.Tiku, count int64, err error) {
 	result, err = t.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -390,7 +398,7 @@ func (t tikuDo) Scan(result interface{}) (err error) {
 	return t.DO.Scan(result)
 }
 
-func (t tikuDo) Delete(models ...*model.Tiku) (result gen.ResultInfo, err error) {
+func (t tikuDo) Delete(models ...*entity.Tiku) (result gen.ResultInfo, err error) {
 	return t.DO.Delete(models)
 }
 

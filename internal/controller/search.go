@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/itihey/tikuAdapter/internal/middleware"
 	"github.com/itihey/tikuAdapter/internal/search"
 	"github.com/itihey/tikuAdapter/pkg/global"
 	"github.com/itihey/tikuAdapter/pkg/logger"
@@ -67,6 +68,7 @@ func Search(c *gin.Context) {
 
 	if len(result) > 0 {
 		resp := util.FillAnswerResponse(result, &req)
+		middleware.CollectAnswer(resp)
 		c.JSON(http.StatusOK, resp)
 	} else {
 		c.JSON(http.StatusNotFound, global.ErrorQuestionNotFound)
