@@ -1,15 +1,16 @@
-package search
+package test
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/itihey/tikuAdapter/internal/search"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"os"
 	"testing"
 )
 
 func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
-	var client = IcodefClient{}
+	var client = search.IcodefClient{}
 	testRequest := model.SearchRequest{
 		Question: "下面选项中,属于男性在青春期生理变化的内容有?()",
 	}
@@ -27,7 +28,7 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 }
 
 func TestSearchWannengClient_SearchAnswer(t *testing.T) {
-	var client = WannengClient{
+	var client = search.WannengClient{
 		Disable: false,
 	}
 	testRequest := model.SearchRequest{
@@ -47,7 +48,7 @@ func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 }
 
 func TestSearchEnncyClient_SearchAnswer(t *testing.T) {
-	var client = EnncyClient{
+	var client = search.EnncyClient{
 		Disable: false,
 		Token:   os.Getenv("ENNCY_TOKEN"),
 	}

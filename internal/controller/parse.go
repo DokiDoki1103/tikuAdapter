@@ -9,7 +9,7 @@ import (
 )
 
 // Parse 解析文件接口
-func Parse(c *gin.Context) {
+func Parser(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, global.ErrorParam)

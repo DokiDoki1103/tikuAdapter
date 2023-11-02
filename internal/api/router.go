@@ -1,12 +1,23 @@
-package router
+package api
 
 import (
 	"embed"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	"github.com/itihey/tikuAdapter/internal/controller"
+	"github.com/itihey/tikuAdapter/internal/middleware"
 	"io/fs"
 	"net/http"
 )
+
+// SetAPIRouter 设置API路由
+func SetAPIRouter(router *gin.Engine) {
+	apiRouter := router.Group("/adapter-service")
+	apiRouter.Use(middleware.GlobalAPIRateLimit) // 全局限流
+
+	apiRouter.POST("/search", controller.Search)
+	apiRouter.POST("/parser", controller.Parser)
+}
 
 type embedFileSystem struct {
 	http.FileSystem
@@ -28,15 +39,9 @@ func embedFolder(fsEmbed embed.FS, targetPath string) static.ServeFileSystem {
 	}
 }
 
-//go:embed dist
-var buildFS embed.FS
-
-//go:embed dist/index.html
-var indexPage []byte
-
 // SetWebRouter 设置web路由
-func SetWebRouter(router *gin.Engine) {
-	router.Use(static.Serve("/", embedFolder(buildFS, "router/dist")))
+func SetWebRouter(buildFS embed.FS, indexPage []byte, router *gin.Engine) {
+	router.Use(static.Serve("/", embedFolder(buildFS, "dist")))
 	router.NoRoute(func(c *gin.Context) {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", indexPage)
 	})

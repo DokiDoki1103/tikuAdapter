@@ -1,18 +1,27 @@
 package main
 
 import (
-	"github.com/itihey/tikuAdapter/api"
+	"embed"
+	"github.com/gin-gonic/gin"
+	"github.com/itihey/tikuAdapter/internal/api"
 	"github.com/itihey/tikuAdapter/internal/registry/m"
 	"github.com/itihey/tikuAdapter/pkg/logger"
-	"net/http"
 )
+
+//go:embed dist
+var buildFS embed.FS
+
+//go:embed dist/index.html
+var indexPage []byte
 
 func main() {
 	m.CreateManager()
 
-	logger.SetupGinLog()
-	http.HandleFunc("/", api.Handler)
-	if err := http.ListenAndServe(":8060", nil); err != nil {
+	server := gin.Default()
+	api.SetAPIRouter(server)
+	api.SetWebRouter(buildFS, indexPage, server)
+	err := server.Run(":8060")
+	if err != nil {
 		logger.FatalLog(err)
 	}
 }

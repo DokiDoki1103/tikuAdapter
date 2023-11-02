@@ -4,6 +4,7 @@ import (
 	"github.com/itihey/tikuAdapter/configs"
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/registry"
+	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/ratelimit"
 )
 
@@ -24,6 +25,7 @@ func GetManager() Manager {
 // CreateManager create db manager
 func CreateManager() {
 	config := registry.Config()
+	logger.SetupGinLog()
 	defaultManager = Manager{
 		Config:    config,
 		Query:     registry.DB(),
