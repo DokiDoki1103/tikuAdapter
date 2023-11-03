@@ -2,6 +2,7 @@ package search
 
 import (
 	"encoding/base64"
+	"github.com/antlabs/strsim"
 	"github.com/go-resty/resty/v2"
 	"github.com/itihey/tikuAdapter/pkg/errors"
 	"github.com/itihey/tikuAdapter/pkg/model"
@@ -25,7 +26,6 @@ func (in *BuguakeClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 		return nil, errors.ErrDisable
 	}
 	answer = make([][]string, 0)
-	//TODO implement me
 	client := in.getHTTPClient()
 	resp, err := client.R().
 		SetQueryParam("query", req.Question).
@@ -40,6 +40,11 @@ func (in *BuguakeClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 
 	for _, value := range list {
 		dec := decrypt(value.Get("bdjson").Str, value.Get("actk").Str)
+
+		s := strsim.Compare(req.Question, gjson.Get(dec, "que_stem.0.c.0.c").String())
+		if s < 0.8 { // 百度题库太多不相似然后随机返回的，低于0.8的不要
+			continue
+		}
 		as := make([]string, 0)
 		// 优先读取选项
 		for _, val := range gjson.Get(dec, "que_options.0.#(yes=true).ret.0.c.0.c").Array() {

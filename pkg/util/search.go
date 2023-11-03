@@ -44,6 +44,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		if len(resp.Answer.BestAnswer) == 0 { // 开始模糊匹配
 			for i := range answers {
 				if resp.Type == 0 {
+
 					match := strsim.FindBestMatch(strings.Join(answers[i], ""), req.Options)
 					filterAnswer = append(filterAnswer, []string{resp.Options[match.BestIndex]})
 				} else {
