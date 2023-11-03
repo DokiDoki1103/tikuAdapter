@@ -35,8 +35,8 @@ type WannengClient struct {
 func (in *WannengClient) getHTTPClient() *resty.Client {
 	return resty.New().
 		SetTimeout(5*time.Second).
-		SetRetryCount(3). // 目前来看万能免费题库限流措施是4秒一次，所以做最大重试次数为3
-		SetRetryWaitTime(2*time.Second).
+		SetRetryCount(1).
+		SetRetryWaitTime(1*time.Second).
 		AddRetryCondition(func(r *resty.Response, err error) bool {
 			return err != nil || strings.Contains(r.String(), "已限流,正在重新请求...")
 		}).

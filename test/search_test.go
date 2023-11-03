@@ -68,3 +68,24 @@ func TestSearchEnncyClient_SearchAnswer(t *testing.T) {
 
 	fmt.Println("测试enncy题库 成功搜题", string(marshal))
 }
+
+func TestBuguake_SearchAnswer(t *testing.T) {
+	var client = search.BuguakeClient{
+		Disable: false,
+	}
+
+	testRequest := model.SearchRequest{
+		Question: "苏轼的《西江月》是其在哪里所创作的?( )",
+	}
+
+	// 调用被测试的方法
+	response, err := client.SearchAnswer(testRequest)
+
+	if err != nil {
+		fmt.Printf("请求不挂科题库异常: %v", err)
+		return
+	}
+	marshal, _ := json.Marshal(response)
+
+	fmt.Println("测试不挂科题库 成功搜题", string(marshal))
+}

@@ -11,4 +11,6 @@ var (
 	ErrTargetServerError = errors.New("对方服务器异常")
 	// ErrTargetNoAnswer 对方没有答案
 	ErrTargetNoAnswer = errors.New("对方没有答案")
+	// ErrParserJSON 解析json错误
+	ErrParserJSON = errors.New("解析json错误")
 )

@@ -27,7 +27,7 @@ type IcodefClient struct {
 func (in *IcodefClient) getHTTPClient() *resty.Client {
 	return resty.New().
 		SetTimeout(5*time.Second).
-		SetRetryCount(3).
+		SetRetryCount(1).
 		SetRetryWaitTime(time.Second).
 		AddRetryCondition(func(r *resty.Response, err error) bool {
 			return err != nil || (strings.Contains(r.String(), "触发流控限制") && !strings.Contains(r.String(), "IP超出每日限额"))

@@ -29,6 +29,9 @@ func Search(c *gin.Context) {
 			Token:   c.Query("enncyToken"),
 			Disable: c.Query("enncyDisable") == "1",
 		},
+		Buguake: &search.BuguakeClient{
+			Disable: c.Query("buguakeDisable") == "1",
+		},
 	}
 
 	var req model.SearchRequest

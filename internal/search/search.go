@@ -10,6 +10,7 @@ type Client struct {
 	Wanneng *WannengClient
 	Enncy   *EnncyClient
 	Icodef  *IcodefClient
+	Buguake *BuguakeClient
 }
 
 // Search 搜题接口
