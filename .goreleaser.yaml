@@ -1,6 +1,12 @@
 project_name: tikuAdapter
 builds:
   - main: ./cmd/adapter-service
+    # https://go.dev/doc/install/source#environment
+    ignore:
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: '386'
     goos:
       - windows
       - linux
@@ -8,9 +14,12 @@ builds:
     goarch:
       - amd64
       - arm64
+      - '386'
+      - arm
     ldflags: "-s -w -extldflags '-static'"
     env:
       - CGO_ENABLED=0
       - GO111MODULE=on
 checksum:
   name_template: checksums.txt
+
