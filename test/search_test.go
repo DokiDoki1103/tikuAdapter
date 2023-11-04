@@ -32,7 +32,9 @@ func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 		Disable: false,
 	}
 	testRequest := model.SearchRequest{
-		Question: "下面选项中,属于男性在青春期生理变化的内容有?()",
+		Question: "大学生缓解性欲的常见途径是()",
+		Options:  []string{"自然缓解", "升华", "转移", "克制"},
+		Type:     0,
 	}
 
 	// 调用被测试的方法

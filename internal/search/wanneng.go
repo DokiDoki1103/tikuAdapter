@@ -12,10 +12,10 @@ import (
 )
 
 type result struct {
-	Group   string     `json:"group"`
-	Num     int        `json:"num"`
-	Answers [][]string `json:"answers"`
-	Success bool       `json:"success"`
+	Group   string        `json:"group"`
+	Num     int           `json:"num"`
+	Answers []interface{} `json:"answers"`
+	Success bool          `json:"success"`
 }
 
 type wapiResponse struct {
@@ -49,10 +49,10 @@ func (in *WannengClient) getHTTPClient() *resty.Client {
 
 // SearchAnswer 搜索答案
 func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	answer = make([][]string, 0)
 	if in.Disable {
 		return nil, errors.ErrDisable
 	}
-	req.Options = make([]string, 0)
 	data, _ := json.Marshal(req)
 
 	url := "http://lyck6.cn/scriptService/api/autoFreeAnswer"
@@ -62,7 +62,6 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 	resp, err := in.getHTTPClient().R().
 		SetBody(string(data)).
 		Post(url)
-
 	if err != nil || resp.StatusCode() != 200 {
 		return nil, errors.ErrTargetServerError
 	}
@@ -79,8 +78,20 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 		}
 		return nil, errors.ErrTargetServerError
 	}
-	if len(response.Result.Answers) == 0 {
-		return nil, errors.ErrTargetNoAnswer
+	if response.Result.Success {
+		var as []string
+		for _, v := range response.Result.Answers {
+			as = append(as, req.Options[(int)(v.(float64))])
+		}
+		return [][]string{as, as, as, as, as}, nil
 	}
-	return response.Result.Answers, nil
+
+	for _, ans := range response.Result.Answers {
+		var innerArray []string
+		for _, val := range ans.([]interface{}) {
+			innerArray = append(innerArray, val.(string))
+		}
+		answer = append(answer, innerArray)
+	}
+	return answer, nil
 }
