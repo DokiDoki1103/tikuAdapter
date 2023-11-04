@@ -53,14 +53,13 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 	if in.Disable {
 		return nil, errors.ErrDisable
 	}
-	data, _ := json.Marshal(req)
 
 	url := "http://lyck6.cn/scriptService/api/autoFreeAnswer"
 	if in.Token != "" && len(in.Token) == 10 {
 		url = "http://lyck6.cn/scriptService/api/autoAnswer/" + in.Token
 	}
 	resp, err := in.getHTTPClient().R().
-		SetBody(string(data)).
+		SetBody(req).
 		Post(url)
 	if err != nil || resp.StatusCode() != 200 {
 		return nil, errors.ErrTargetServerError

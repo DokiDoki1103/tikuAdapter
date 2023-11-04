@@ -9,10 +9,13 @@
 ## 功能
 
 ### 1.支持多种题库接口输入源
+
 排名顺序为免费优先于付费。
+
 - [x] [icodef 题库](https://q.icodef.com) [![免费](https://img.shields.io/badge/-免费-brightgreen)](url)
 - [x] [不挂科 题库](https://easylearn.baidu.com/edu-page/tiangong/bgklist) [![免费](https://img.shields.io/badge/-免费-brightgreen)](url)
 - [x] [万能题库](https://lyck6.cn/pay) [![付费](https://img.shields.io/badge/免费-付费-brightgreen?color=red&labelColor=4c1)](https://lyck6.cn/pay)
+- [x] [爱点题库](https://www.51aidian.com) [![付费](https://img.shields.io/badge/免费-付费-brightgreen?color=red&labelColor=4c1)](https://www.51aidian.com)
 - [x] [enncy 言溪题库](https://tk.enncy.cn/) [![付费](https://img.shields.io/badge/-付费-red)](https://tk.enncy.cn/)
 
 访问第三方题库接口时，自动将答案持久化到本地，下次搜题优先搜索本地题库的答案。
@@ -31,7 +34,8 @@
 
 - [自定义请求参数](https://github.com/itihey/tikuAdapter#url-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0) 个性化**禁用题库**或者
   **配置题库Token**
-- 搜题接口的限流措施(个人使用一般不需要开启) [配置限流](https://github.com/itihey/tikuAdapter/tree/main/configs#%E9%99%90%E6%B5%81%E9%85%8D%E7%BD%AE)
+- 搜题接口的限流措施(
+  个人使用一般不需要开启) [配置限流](https://github.com/itihey/tikuAdapter/tree/main/configs#%E9%99%90%E6%B5%81%E9%85%8D%E7%BD%AE)
 
 ## 如何部署使用
 
@@ -66,16 +70,17 @@ POST `http://localhost:8060/adapter-service/search`
 
 #### URL 请求参数
 
-| 参数             | 描述                   | 是否必须 | 示例值                              | Token获取方式                |
-|----------------|----------------------|------|----------------------------------|--------------------------|
-| wannengToken   | 万能付费题库的Token值(10位)   | 否    | E196FD8B49                       | https://lyck6.cn/pay     |
-| wannengDisable | 是否禁用万能题库(此值传1将禁用)    | 否    | 1                                |
-| icodefToken    | Icodef 题库Token值      | 否    | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"发送"token"获取 |
-| icodefDisable  | 是否禁用icodef题库(此值传1将禁用) | 否    | 1                                |
-| enncyToken     | enncy 题库Token值       | 否    | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn      |
-| enncyDisable   | 是否禁用enncy题库(此值传1将禁用) | 否    | 1                                |
-| buguakeDisable   | 是否禁用不挂科题库(此值传1将禁用)   | 否    | 1                                |
-
+| 参数             | 描述                  | 是否必须 | 示例值                              | Token获取方式                |
+|----------------|---------------------|------|----------------------------------|--------------------------|
+| wannengToken   | 万能付费题库的Token值(10位)  | 否    | E196FD8B49                       | https://lyck6.cn/pay     |
+| wannengDisable | 是否禁用万能题库(           | 否    | 1此值传1将禁用)                        |
+| icodefToken    | Icodef 题库Token值     | 否    | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"发送"token"获取 |
+| icodefDisable  | 是否禁用icodef题库        | 否    | 1(此值传1将禁用)                       |
+| enncyToken     | enncy 题库Token值      | 否    | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn      |
+| enncyDisable   | 是否禁用enncy题库         | 否    | 1(此值传1将禁用)                       |
+| buguakeDisable | 是否禁用不挂科题库           | 否    | 1(此值传1将禁用)                       |
+| aidianDisable  | 是否禁用爱点题库            | 否    | 1 (此值传1将禁用)                      |
+| aidianYToken   | 爱点题库(亿级题库API)Token值 | 否    | cvor7f3HxZ7nF2M3ljmA             | https://www.51aidian.com |
 
 例如您想禁用万能题库并且想要使用icodef的token，您的url应为`http://localhost:8060/adapter-service/search?wannengDisable=1&icodefToken=UafYcHViJMGzSVNh`
 
@@ -133,18 +138,3 @@ POST `http://localhost:8060/adapter-service/search`
 
 - 您可以参考 ```internal/search/wanneng.go``` 来实现 ```internal/search/search.go```接口
 - 编写 ```internal/search/search_test.go``` 来测试您的接口
-
-## 计划如下
-
-### 大方向分为
-
-- 支持多题库接口输入源，支持格式化为标准格式或常见格式 ✅
-- 将题库私有化持久化 ✅
-
-### 支持多题库接口输入源
-
-其他题库接口或者提供商欢迎Pr或者issue，我们会将其加入到适配器中。
-
-- 【言溪enncy】OCS 网课助手 ✅
-- 【万能】全平台自动答题脚本 ✅
-- 【一之哥哥】icodef 题库 ✅

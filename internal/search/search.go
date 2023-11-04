@@ -11,6 +11,7 @@ type Client struct {
 	Enncy   *EnncyClient
 	Icodef  *IcodefClient
 	Buguake *BuguakeClient
+	AiDian  *AidianClient
 }
 
 // Search 搜题接口

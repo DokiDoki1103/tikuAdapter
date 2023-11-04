@@ -1,6 +1,7 @@
 package util
 
 import (
+	"github.com/gookit/goutil/strutil"
 	"regexp"
 	"strings"
 )
@@ -26,6 +27,17 @@ func formatSingleAnswer(answer []string, questionType uint) []string {
 		}
 	}
 	return answer
+}
+
+// FormatOptions 格式化选项
+func FormatOptions(options []string) []string {
+	var formattedOptions []string
+	re := regexp.MustCompile(`^[A-Z][.．:：、]\s?`)
+	for _, option := range options {
+		formattedOption := strutil.Trim(re.ReplaceAllString(option, ""), " \t\n\r")
+		formattedOptions = append(formattedOptions, formattedOption)
+	}
+	return formattedOptions
 }
 
 func formatString(src string) string {

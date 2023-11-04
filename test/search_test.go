@@ -91,3 +91,25 @@ func TestBuguake_SearchAnswer(t *testing.T) {
 
 	fmt.Println("测试不挂科题库 成功搜题", string(marshal))
 }
+
+func TestAidian_SearchAnswer(t *testing.T) {
+
+	var client = search.AidianClient{
+		Disable: false,
+	}
+
+	testRequest := model.SearchRequest{
+		Question: "9.十进制数(9)10比十六进制数(9)16小.( )",
+	}
+
+	// 调用被测试的方法
+	response, err := client.SearchAnswer(testRequest)
+
+	if err != nil {
+		fmt.Printf("请求爱点题库异常: %v", err)
+		return
+	}
+	marshal, _ := json.Marshal(response)
+
+	fmt.Println("测试爱点题库 成功搜题", string(marshal))
+}

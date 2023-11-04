@@ -51,6 +51,10 @@ func Search(c *gin.Context) {
 			Buguake: &search.BuguakeClient{
 				Disable: c.Query("buguakeDisable") == "1",
 			},
+			AiDian: &search.AidianClient{
+				Disable: c.Query("aidianDisable") == "1",
+				YToken:  c.Query("aidianYToken"),
+			},
 		}
 		var wg sync.WaitGroup
 		var mu sync.Mutex
