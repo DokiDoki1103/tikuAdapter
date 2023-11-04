@@ -22,6 +22,9 @@ func (in *EnncyClient) getHTTPClient() *resty.Client {
 
 // SearchAnswer 搜索答案
 func (in *EnncyClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	if in.Disable || in.Token == "" {
+		return nil, errors.ErrDisable
+	}
 	post, err := in.getHTTPClient().R().
 		SetQueryParam("token", in.Token).
 		SetQueryParam("title", req.Question).
