@@ -65,27 +65,27 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 		return nil, errors.ErrTargetServerError
 	}
 
-	var response wapiResponse
-	err = json.Unmarshal(resp.Body(), &response)
+	var res wapiResponse
+	err = json.Unmarshal(resp.Body(), &res)
 	if err != nil {
 		return nil, errors.ErrTargetServerError
 	}
 	// 不等于0就是请求失败
-	if response.Code != 0 {
-		if response.Code == 429 {
+	if res.Code != 0 {
+		if res.Code == 429 {
 			return nil, errors.ErrTargetAPIFlow
 		}
 		return nil, errors.ErrTargetServerError
 	}
-	if response.Result.Success {
+	if res.Result.Success {
 		var as []string
-		for _, v := range response.Result.Answers {
+		for _, v := range res.Result.Answers {
 			as = append(as, req.Options[(int)(v.(float64))])
 		}
 		return [][]string{as, as, as, as, as}, nil
 	}
 
-	for _, ans := range response.Result.Answers {
+	for _, ans := range res.Result.Answers {
 		var innerArray []string
 		for _, val := range ans.([]interface{}) {
 			innerArray = append(innerArray, val.(string))
