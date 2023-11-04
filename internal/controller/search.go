@@ -16,24 +16,6 @@ import (
 
 // Search 搜题接口
 func Search(c *gin.Context) {
-	searchClient := search.Client{
-		Wanneng: &search.WannengClient{
-			Token:   c.Query("wannengToken"),
-			Disable: c.Query("wannengDisable") == "1",
-		},
-		Icodef: &search.IcodefClient{
-			Token:   c.Query("icodefToken"),
-			Disable: c.Query("icodefDisable") == "1",
-		},
-		Enncy: &search.EnncyClient{
-			Token:   c.Query("enncyToken"),
-			Disable: c.Query("enncyDisable") == "1",
-		},
-		Buguake: &search.BuguakeClient{
-			Disable: c.Query("buguakeDisable") == "1",
-		},
-	}
-
 	var req model.SearchRequest
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
@@ -42,6 +24,7 @@ func Search(c *gin.Context) {
 	}
 
 	var result [][]string // 最后所有的答案的二维数组
+
 	// 先查询本地
 	db := search.DB{}
 	answer, err := db.SearchAnswer(req)
@@ -52,6 +35,23 @@ func Search(c *gin.Context) {
 
 	// 再查询第三方
 	if len(result) == 0 {
+		searchClient := search.Client{
+			Wanneng: &search.WannengClient{
+				Token:   c.Query("wannengToken"),
+				Disable: c.Query("wannengDisable") == "1",
+			},
+			Icodef: &search.IcodefClient{
+				Token:   c.Query("icodefToken"),
+				Disable: c.Query("icodefDisable") == "1",
+			},
+			Enncy: &search.EnncyClient{
+				Token:   c.Query("enncyToken"),
+				Disable: c.Query("enncyDisable") == "1",
+			},
+			Buguake: &search.BuguakeClient{
+				Disable: c.Query("buguakeDisable") == "1",
+			},
+		}
 		var wg sync.WaitGroup
 		var mu sync.Mutex
 		val := reflect.ValueOf(&searchClient).Elem()

@@ -95,7 +95,7 @@ func getMaxCountAnswer(answerCount map[string]int) []string {
 
 	for answer, count := range answerCount {
 		newAnswers := strings.Split(answer, sep)
-		if count > maxCount || len(newAnswers) > len(correctAnswers) {
+		if count > maxCount /*|| len(newAnswers) > len(correctAnswers)*/ {
 			maxCount = count
 			correctAnswers = newAnswers
 		}
