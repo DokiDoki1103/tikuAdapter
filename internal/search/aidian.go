@@ -6,7 +6,6 @@ import (
 	"github.com/itihey/tikuAdapter/pkg/errors"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
-	"unicode"
 )
 
 type question struct {
@@ -34,6 +33,9 @@ func (in *AidianClient) getHTTPClient() *resty.Client {
 
 // SearchAnswer 搜索答案
 func (in *AidianClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	if in.Disable {
+		return nil, errors.ErrDisable
+	}
 	answer = make([][]string, 0)
 
 	url := "http://new.api.51aidian.com/publics/newapi/freedirect" // 免费接口 会限流
@@ -59,7 +61,7 @@ func (in *AidianClient) SearchAnswer(req model.SearchRequest) (answer [][]string
 		q.Options = util.FormatOptions(q.Options)
 		var as = make([]string, 0)
 		for _, s := range q.Answer {
-			if isAlpha(s) { // ABCD 或者A 这种
+			if util.IsAlpha(s) { // ABCD 或者A 这种
 				for _, i := range s {
 					index := int(i - 65)
 					if len(q.Options) > index {
@@ -75,13 +77,4 @@ func (in *AidianClient) SearchAnswer(req model.SearchRequest) (answer [][]string
 		}
 	}
 	return answer, nil
-}
-
-func isAlpha(s string) bool {
-	for _, r := range s {
-		if !unicode.IsLetter(r) {
-			return false
-		}
-	}
-	return true
 }
