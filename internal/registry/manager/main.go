@@ -17,8 +17,8 @@ type Manager struct {
 	ipLimiter *ratelimit.IPRateLimiter
 }
 
-// ManagerInterface manager interface
-type ManagerInterface interface {
+// RegistryManagerInterface manager interface
+type RegistryManagerInterface interface {
 	CloseManager() error
 	GetDB() *gorm.DB
 	GetIPLimiter() *ratelimit.IPRateLimiter

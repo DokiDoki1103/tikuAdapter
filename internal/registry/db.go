@@ -16,6 +16,7 @@ var dbName = "tiku.db"
 var db *gorm.DB
 var once sync.Once
 
+// CloseDB close db
 func CloseDB() error {
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -28,7 +29,7 @@ func CloseDB() error {
 	return nil
 }
 
-// DB get db instance
+// RegisterDB 注册数据库
 func RegisterDB() *gorm.DB {
 	once.Do(func() {
 		var err error
