@@ -22,10 +22,11 @@ func (in *BuguakeClient) getHTTPClient() *resty.Client {
 
 // SearchAnswer 搜索答案
 func (in *BuguakeClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
-	if in.Disable {
-		return nil, errors.ErrDisable
-	}
 	answer = make([][]string, 0)
+	if in.Disable {
+		return answer, nil
+	}
+
 	client := in.getHTTPClient()
 	resp, err := client.R().
 		SetQueryParam("query", req.Question).
@@ -65,7 +66,7 @@ func (in *BuguakeClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 				continue
 			}
 		} else if ans.IsArray() {
-			//options := gjson.Get(dec, "que_stem.1.c.0.c").String()
+			// options := gjson.Get(dec, "que_stem.1.c.0.c").String()
 			// 需要从选项中提取 比较麻烦，暂时没做
 		}
 

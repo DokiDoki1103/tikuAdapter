@@ -41,6 +41,11 @@ func (in *IcodefClient) getHTTPClient() *resty.Client {
 
 // SearchAnswer 搜索答案
 func (in *IcodefClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	answer = make([][]string, 0)
+	if in.Disable {
+		return answer, nil
+	}
+
 	post, err := in.getHTTPClient().R().
 		SetFormData(map[string]string{
 			"question": req.Question,
@@ -49,14 +54,14 @@ func (in *IcodefClient) SearchAnswer(req model.SearchRequest) (answer [][]string
 		return nil, errors.ErrTargetServerError
 	}
 
-	var response iapiResponse
-	err = json.Unmarshal(post.Body(), &response)
+	var r iapiResponse
+	err = json.Unmarshal(post.Body(), &r)
 	if err != nil {
 		return nil, errors.ErrTargetServerError
 	}
-	if response.Code != 1 {
+	if r.Code != 1 {
 		return nil, errors.ErrTargetNoAnswer
 	}
-	ans := strings.Split(response.Data, "#")
+	ans := strings.Split(r.Data, "#")
 	return [][]string{ans}, nil
 }

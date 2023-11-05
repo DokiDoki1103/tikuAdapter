@@ -9,14 +9,21 @@ import (
 )
 
 // DB mysql 或者sqlite3
-type DB struct{}
+type dBSearch struct{}
 
-func (in *DB) getHTTPClient() *resty.Client {
+var defaultDBSearch = &dBSearch{}
+
+// GetDBSearch 获取DB搜索实例
+func GetDBSearch() Search {
+	return defaultDBSearch
+}
+func (in *dBSearch) getHTTPClient() *resty.Client {
 	panic("implement me")
 }
 
 // SearchAnswer 搜索答案
-func (in *DB) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
+	answer = make([][]string, 0)
 	questionHash := strutil.ShortMd5(req.Question)
 	tiku := m.GetManager().Query.Tiku
 	find, err := tiku.Where(tiku.QuestionHash.Eq(questionHash)).Find()

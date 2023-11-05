@@ -23,15 +23,15 @@ func Search(c *gin.Context) {
 		return
 	}
 
-	var result [][]string // 最后所有的答案的二维数组
-
-	// 先查询本地
-	db := search.DB{}
-	answer, err := db.SearchAnswer(req)
-	if err != nil {
-		return
+	var result [][]string               // 最后所有的答案的二维数组
+	var answer [][]string               // 本地答案
+	if c.Query("localDisable") != "1" { // 没有禁用本地搜索的话，先查询本地
+		answer, err = search.GetDBSearch().SearchAnswer(req)
+		if err != nil {
+			logger.SysError(fmt.Sprintf("查询本地答案出错：%s", err.Error()))
+		}
+		result = append(result, answer...)
 	}
-	result = append(result, answer...)
 
 	// 再查询第三方
 	if len(result) == 0 {

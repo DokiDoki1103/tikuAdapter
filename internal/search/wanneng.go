@@ -51,7 +51,7 @@ func (in *WannengClient) getHTTPClient() *resty.Client {
 func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
 	if in.Disable {
-		return nil, errors.ErrDisable
+		return answer, nil
 	}
 
 	url := "http://lyck6.cn/scriptService/api/autoFreeAnswer"

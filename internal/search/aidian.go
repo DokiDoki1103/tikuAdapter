@@ -33,10 +33,10 @@ func (in *AidianClient) getHTTPClient() *resty.Client {
 
 // SearchAnswer 搜索答案
 func (in *AidianClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
-	if in.Disable {
-		return nil, errors.ErrDisable
-	}
 	answer = make([][]string, 0)
+	if in.Disable {
+		return answer, nil
+	}
 
 	url := "http://new.api.51aidian.com/publics/newapi/freedirect" // 免费接口 会限流
 	if in.YToken != "" {

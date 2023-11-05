@@ -3,8 +3,6 @@ package errors
 import "errors"
 
 var (
-	// ErrDisable 关闭本接口的搜题
-	ErrDisable = errors.New("关闭本接口的搜题")
 	// ErrTargetAPIFlow 对方API接口限流
 	ErrTargetAPIFlow = errors.New("对方API接口限流")
 	// ErrTargetServerError 对方服务器异常

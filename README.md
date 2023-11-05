@@ -47,7 +47,7 @@
 
 在线服务均不能保证稳定性，并可能会泄漏您的Token，强烈建议自行部署。
 
-- 【v0.1.0-alpha.4】xmig提供 `http://adapter.xmig6.cn/adapter-service/search`
+- 【v0.1.0-alpha.6】xmig提供 `http://adapter.xmig6.cn/adapter-service/search`
 
 ### 使用API接口
 
@@ -73,7 +73,8 @@ POST `http://localhost:8060/adapter-service/search`
 | 参数             | 描述                  | 是否必须 | 示例值                              | Token获取方式                |
 |----------------|---------------------|------|----------------------------------|--------------------------|
 | wannengToken   | 万能付费题库的Token值(10位)  | 否    | E196FD8B49                       | https://lyck6.cn/pay     |
-| wannengDisable | 是否禁用万能题库(           | 否    | 1此值传1将禁用)                        |
+| localDisable | **是否禁用本地搜索**        | 否    | 1此值传1将禁用)                        |
+| wannengDisable | 是否禁用万能题库            | 否    | 1此值传1将禁用)                        |
 | icodefToken    | Icodef 题库Token值     | 否    | UafYcHViJMGzSVNh                 | 关注微信公众号"一之哥哥"发送"token"获取 |
 | icodefDisable  | 是否禁用icodef题库        | 否    | 1(此值传1将禁用)                       |
 | enncyToken     | enncy 题库Token值      | 否    | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn      |
