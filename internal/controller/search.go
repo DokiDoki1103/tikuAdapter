@@ -86,7 +86,7 @@ func Search(c *gin.Context) {
 
 	if len(result) > 0 {
 		resp := util.FillAnswerResponse(result, &req)
-		if len(answer) == 0 {
+		if len(answer) == 0 && c.Query("localDisable") != "1" {
 			middleware.CollectAnswer(resp)
 		}
 		c.JSON(http.StatusOK, resp)

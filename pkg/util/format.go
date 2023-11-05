@@ -8,11 +8,17 @@ import (
 
 func formatAnswer(answers [][]string, questionType uint) {
 	for i := range answers {
-		answers[i] = formatSingleAnswer(answers[i], questionType)
+		answers[i] = FormatOptions(answers[i], questionType)
 	}
 }
 
-func formatSingleAnswer(answer []string, questionType uint) []string {
+// FormatOptions 格式化选项
+func FormatOptions(answer []string, questionType uint) []string {
+	if answer == nil || len(answer) == 0 {
+		return []string{}
+	}
+
+	answer = formatOptions(answer)
 	if questionType == 3 && len(answer) > 0 { // 判断题
 		isTrue := regexp.MustCompile(`^(正确|是|对|√|T|ri|true|A)$`).MatchString(answer[0])
 		isFalse := regexp.MustCompile(`^(错误|否|错|×|F|fa|false|B)$`).MatchString(answer[0])
@@ -29,8 +35,7 @@ func formatSingleAnswer(answer []string, questionType uint) []string {
 	return answer
 }
 
-// FormatOptions 格式化选项
-func FormatOptions(options []string) []string {
+func formatOptions(options []string) []string {
 	var formattedOptions []string
 	re := regexp.MustCompile(`^[A-Z][.．:：、]\s?`)
 	for _, option := range options {

@@ -58,7 +58,7 @@ func (in *AidianClient) SearchAnswer(req model.SearchRequest) (answer [][]string
 		return nil, errors.ErrParserJSON
 	}
 	for _, q := range res.QList {
-		q.Options = util.FormatOptions(q.Options)
+		q.Options = util.FormatOptions(q.Options, req.Type)
 		var as = make([]string, 0)
 		for _, s := range q.Answer {
 			if util.IsAlpha(s) { // ABCD 或者A 这种

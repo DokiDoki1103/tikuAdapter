@@ -4,7 +4,6 @@ import (
 	"github.com/antlabs/strsim"
 	"github.com/gookit/goutil/arrutil"
 	"github.com/itihey/tikuAdapter/pkg/model"
-	"sort"
 	"strings"
 )
 
@@ -14,20 +13,14 @@ var sep = "**=====^_^======^_^=====**" // 用于分割答案的分隔符
 func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
 	resp := model.SearchResponse{
 		Question: req.Question,
-		Options:  req.Options,
+		Options:  FormatOptions(req.Options, req.Type),
 		Type:     req.Type,
 		Plat:     req.Plat,
 		Answer: model.Answer{
 			AllAnswer: answers,
 		},
 	}
-	if resp.Options == nil {
-		resp.Options = []string{}
-	}
 	formatAnswer(answers, req.Type) // 先把答案统一格式化
-	for i := range resp.Options {
-		resp.Options[i] = formatString(resp.Options[i])
-	}
 
 	if req.Options == nil || len(req.Options) == 0 { // 用户没有传选项，那么只能返回出现次数最多的答案。
 		resp.Answer.BestAnswer = SearchRightAnswer(answers, req)
@@ -35,7 +28,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		var filterAnswer [][]string
 		for i := range answers {
 			ans := arrutil.Intersects(req.Options, answers[i], arrutil.StringEqualsComparer)
-			if uint(len(ans)) > resp.Type {
+			if ((resp.Type == 0 || resp.Type == 3) && len(ans) > 0) || (resp.Type == 1 && len(ans) > 1) {
 				filterAnswer = append(filterAnswer, ans)
 			}
 		}
@@ -43,8 +36,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 
 		if len(resp.Answer.BestAnswer) == 0 { // 开始模糊匹配
 			for i := range answers {
-				if resp.Type == 0 {
-
+				if resp.Type == 0 { // 单选或判断题
 					match := strsim.FindBestMatch(strings.Join(answers[i], ""), req.Options)
 					filterAnswer = append(filterAnswer, []string{resp.Options[match.BestIndex]})
 				} else {
@@ -82,7 +74,6 @@ func fillAnswer(a *model.Answer, req *model.SearchRequest) {
 func SearchRightAnswer(answers [][]string, s *model.SearchRequest) []string {
 	answerMap := make(map[string]int)
 	for _, answer := range answers {
-		sort.Strings(answer)
 		sortedAnswer := strings.Join(answer, sep)
 		answerMap[sortedAnswer]++
 	}
