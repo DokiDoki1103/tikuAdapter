@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/go-resty/resty/v2"
 	"github.com/gookit/goutil/strutil"
-	"github.com/itihey/tikuAdapter/internal/registry/m"
+	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/pkg/model"
 )
 
@@ -25,7 +25,7 @@ func (in *dBSearch) getHTTPClient() *resty.Client {
 func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
 	questionHash := strutil.ShortMd5(req.Question)
-	tiku := m.GetManager().Query.Tiku
+	tiku := dao.Tiku
 	find, err := tiku.Where(tiku.QuestionHash.Eq(questionHash)).Find()
 	if err != nil {
 		return nil, err

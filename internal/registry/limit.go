@@ -7,7 +7,7 @@ import (
 )
 
 // Limit get ratelimit instance
-func Limit(cfg *configs.Config) *ratelimit.IPRateLimiter {
+func Limit(cfg configs.Config) *ratelimit.IPRateLimiter {
 	limit := cfg.Limit
 	r := rate.Limit(float64(limit.Duration) / float64(limit.Requests))
 	return ratelimit.NewIPRateLimiter(r, 1)

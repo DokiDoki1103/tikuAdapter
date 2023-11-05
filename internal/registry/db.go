@@ -16,16 +16,20 @@ var dbName = "tiku.db"
 var db *gorm.DB
 var once sync.Once
 
-func closeDB() error {
+func CloseDB() error {
 	sqlDB, err := db.DB()
 	if err != nil {
 		return err
 	}
-	return sqlDB.Close()
+	err = sqlDB.Close()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // DB get db instance
-func DB() *dao.Query {
+func RegisterDB() *gorm.DB {
 	once.Do(func() {
 		var err error
 		db, err = gorm.Open(sqlite.Open(dbName), &gorm.Config{
@@ -41,5 +45,5 @@ func DB() *dao.Query {
 	if err != nil {
 		logger.FatalLog(fmt.Errorf("auto migrate fail: %w", err))
 	}
-	return dao.Q
+	return db
 }

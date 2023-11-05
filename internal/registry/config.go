@@ -16,7 +16,7 @@ limit:
 `)
 
 // Config get config instance
-func Config() *configs.Config {
+func Config() configs.Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
@@ -26,7 +26,7 @@ func Config() *configs.Config {
 		_ = viper.ReadConfig(bytes.NewBuffer(defaultConfig))
 	}
 
-	return &configs.Config{
+	return configs.Config{
 		Limit: configs.LimitConfig{
 			Enable:   viper.GetBool("limit.enable"),
 			Duration: viper.GetUint("limit.duration"),
