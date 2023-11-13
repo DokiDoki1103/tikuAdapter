@@ -11,9 +11,10 @@ var sep = "**=====^_^======^_^=====**" // 用于分割答案的分隔符
 
 // FillAnswerResponse 根据搜题结果填充答案
 func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
+	req.Options = FormatOptions(req.Options, req.Type)
 	resp := model.SearchResponse{
 		Question: req.Question,
-		Options:  FormatOptions(req.Options, req.Type),
+		Options:  req.Options,
 		Type:     req.Type,
 		Plat:     req.Plat,
 		Answer: model.Answer{
