@@ -82,7 +82,7 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 		for _, v := range res.Result.Answers {
 			as = append(as, req.Options[(int)(v.(float64))])
 		}
-		return [][]string{as, as, as, as, as}, nil
+		return [][]string{as, as, as, as, as, as, as, as, as, as}, nil
 	}
 
 	for _, ans := range res.Result.Answers {
