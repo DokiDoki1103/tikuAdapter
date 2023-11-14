@@ -13,26 +13,26 @@ func formatAnswer(answers [][]string, questionType uint) {
 }
 
 // FormatOptions 格式化选项
-func FormatOptions(answer []string, questionType uint) []string {
-	if answer == nil || len(answer) == 0 {
+func FormatOptions(options []string, questionType uint) []string {
+	if options == nil || len(options) == 0 {
 		return []string{}
 	}
 
-	answer = formatOptions(answer)
-	if questionType == 3 && len(answer) > 0 { // 判断题
-		isTrue := regexp.MustCompile(`^(正确|是|对|√|T|ri|true|A)$`).MatchString(answer[0])
-		isFalse := regexp.MustCompile(`^(错误|否|错|×|F|fa|false|B)$`).MatchString(answer[0])
-		if isTrue {
-			return []string{"正确"}
-		} else if isFalse {
-			return []string{"错误"}
+	options = formatOptions(options)
+	if questionType == 3 && len(options) > 0 { // 判断题
+		for i := range options {
+			if regexp.MustCompile(`^(正确|是|对|√|T|ri|true|A)$`).MatchString(options[i]) {
+				options[i] = "正确"
+			} else if regexp.MustCompile(`^(错误|否|错|×|F|fa|false|B)$`).MatchString(options[i]) {
+				options[i] = "错误"
+			}
 		}
 	} else if questionType <= 1 { // 选择题的格式化暂时还没有实现
-		for i := range answer {
-			answer[i] = formatString(answer[i])
+		for i := range options {
+			options[i] = formatString(options[i])
 		}
 	}
-	return answer
+	return options
 }
 
 func formatOptions(options []string) []string {
