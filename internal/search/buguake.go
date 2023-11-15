@@ -34,7 +34,7 @@ func (in *BuguakeClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 		SetQueryParam("pn", "0").
 		Get("https://easylearn.baidu.com/edu-web-go/bgk/searchlist")
 	if err != nil {
-		return nil, errors.ErrTargetServerError
+		return answer, errors.ErrTargetServerError
 	}
 
 	list := gjson.Get(resp.String(), "data.list").Array()

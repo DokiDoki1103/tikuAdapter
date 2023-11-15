@@ -52,7 +52,7 @@ func Search(c *gin.Context) {
 				Disable: c.Query("buguakeDisable") == "1",
 			},
 			AiDian: &search.AidianClient{
-				Disable: c.Query("aidianDisable") == "1",
+				Disable: true,
 				YToken:  c.Query("aidianYToken"),
 			},
 		}
