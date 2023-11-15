@@ -55,7 +55,7 @@ func (in *AidianClient) SearchAnswer(req model.SearchRequest) (answer [][]string
 
 	err = json.Unmarshal(resp.Body(), &res)
 	if err != nil {
-		return nil, errors.ErrParserJSON
+		return answer, errors.ErrParserJSON
 	}
 	for _, q := range res.QList {
 		q.Options = util.FormatOptions(q.Options, req.Type)

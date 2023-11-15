@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var sep = "**=====^_^======^_^=====**" // 用于分割答案的分隔符
+var sep = "**=====^_^======^_^======**" // 用于分割答案的分隔符
 
 // FillAnswerResponse 根据搜题结果填充答案
 func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
