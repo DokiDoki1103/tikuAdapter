@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// XLSXOptions xlsx选项
 type XLSXOptions struct {
 	SheetName string   `json:"sheet"`
 	Question  string   `json:"q"`
@@ -15,6 +16,7 @@ type XLSXOptions struct {
 	Option    []string `json:"o"`
 }
 
+// ParseXls 解析xlsx文件
 func ParseXls(file *excelize.File, opt XLSXOptions) []model.Question {
 	rows, err := file.GetRows(opt.SheetName)
 	if err != nil {
