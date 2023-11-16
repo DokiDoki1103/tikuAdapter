@@ -29,3 +29,11 @@ type Answer struct {
 	BestAnswer []string   `json:"bestAnswer"` // 最有可能的答案
 	AllAnswer  [][]string `json:"allAnswer"`  // 所有接口聚合的答案
 }
+
+// Question 最简单的通用问题答案模型
+type Question struct {
+	Question string   `json:"question"`
+	Options  []string `json:"options"`
+	Type     uint     `json:"type"`
+	Answer   []string `json:"answer"`
+}

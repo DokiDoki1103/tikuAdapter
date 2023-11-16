@@ -6,6 +6,7 @@ import (
 	"github.com/itihey/tikuAdapter/pkg/errors"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
+	"time"
 )
 
 type question struct {
@@ -28,7 +29,7 @@ type AidianClient struct {
 }
 
 func (in *AidianClient) getHTTPClient() *resty.Client {
-	return resty.New()
+	return resty.New().SetTimeout(3 * time.Second)
 }
 
 // SearchAnswer 搜索答案

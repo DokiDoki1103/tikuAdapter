@@ -9,6 +9,7 @@ import (
 	"github.com/tidwall/gjson"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // BuguakeClient 不挂科网页版题库
@@ -17,7 +18,7 @@ type BuguakeClient struct {
 }
 
 func (in *BuguakeClient) getHTTPClient() *resty.Client {
-	return resty.New()
+	return resty.New().SetTimeout(3 * time.Second)
 }
 
 // SearchAnswer 搜索答案
