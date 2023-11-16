@@ -6,10 +6,14 @@ import (
 	"strings"
 )
 
-func formatAnswer(answers [][]string, questionType uint) {
-	for i := range answers {
-		answers[i] = FormatOptions(answers[i], questionType)
-	}
+// IsTrue 判断字符串是否是正确
+func IsTrue(s string) bool {
+	return regexp.MustCompile(`^(正确|是|对|√|T|ri|true|A)$`).MatchString(s)
+}
+
+// IsFalse 判断字符串是否是错误
+func IsFalse(s string) bool {
+	return regexp.MustCompile(`^(错误|否|错|×|F|fa|false|B)$`).MatchString(s)
 }
 
 // FormatOptions 格式化选项
@@ -21,9 +25,9 @@ func FormatOptions(options []string, questionType uint) []string {
 	options = formatOptions(options)
 	if questionType == 3 && len(options) > 0 { // 判断题
 		for i := range options {
-			if regexp.MustCompile(`^(正确|是|对|√|T|ri|true|A)$`).MatchString(options[i]) {
+			if IsTrue(options[i]) {
 				options[i] = "正确"
-			} else if regexp.MustCompile(`^(错误|否|错|×|F|fa|false|B)$`).MatchString(options[i]) {
+			} else if IsFalse(options[i]) {
 				options[i] = "错误"
 			}
 		}
@@ -81,4 +85,10 @@ func FullWidthStrToHalfWidthStr(str string) (result string) {
 	}
 
 	return result
+}
+
+func formatAnswer(answers [][]string, questionType uint) {
+	for i := range answers {
+		answers[i] = FormatOptions(answers[i], questionType)
+	}
 }

@@ -1,15 +1,14 @@
 package util
 
 import (
-	"unicode"
+	"regexp"
 )
 
-// IsAlpha 判断字符串是否全是字母
+// IsAlpha 判断字符串是否全是大写字母
 func IsAlpha(s string) bool {
-	for _, r := range s {
-		if !unicode.IsLetter(r) {
-			return false
-		}
+	m, err := regexp.MatchString(`^[A-Z]+$`, s)
+	if err != nil {
+		return false
 	}
-	return true
+	return m
 }
