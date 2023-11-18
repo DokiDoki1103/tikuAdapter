@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/itihey/tikuAdapter/internal/middleware"
+	"github.com/itihey/tikuAdapter/internal/registry/manager"
 	"github.com/itihey/tikuAdapter/internal/search"
 	"github.com/itihey/tikuAdapter/pkg/global"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
 	"net/http"
-	"reflect"
 	"sync"
 )
 
@@ -35,50 +35,44 @@ func Search(c *gin.Context) {
 
 	// 再查询第三方
 	if len(result) == 0 {
-		searchClient := search.Client{
-			Wanneng: &search.WannengClient{
-				Token:   c.Query("wannengToken"),
+		var clients = []search.Search{
+			&search.WannengClient{
 				Disable: c.Query("wannengDisable") == "1",
 			},
-			Icodef: &search.IcodefClient{
+			&search.IcodefClient{
 				Token:   c.Query("icodefToken"),
 				Disable: c.Query("icodefDisable") == "1",
 			},
-			Enncy: &search.EnncyClient{
+			&search.EnncyClient{
 				Token:   c.Query("enncyToken"),
 				Disable: c.Query("enncyDisable") == "1",
 			},
-			Buguake: &search.BuguakeClient{
+			&search.BuguakeClient{
 				Disable: c.Query("buguakeDisable") == "1",
 			},
-			AiDian: &search.AidianClient{
+			&search.AidianClient{
 				Disable: c.Query("aidianDisable") == "1",
 				YToken:  c.Query("aidianYToken"),
 			},
 		}
+		cfg := manager.GetManager().GetConfig()
+		for i := range cfg.API {
+			clients = append(clients, cfg.API[i])
+		}
+
 		var wg sync.WaitGroup
 		var mu sync.Mutex
-		val := reflect.ValueOf(&searchClient).Elem()
 
-		for i := 0; i < val.NumField(); i++ {
+		for i := range clients {
 			wg.Add(1)
 			go func(idx int) {
 				defer wg.Done()
-				clientField := val.Field(idx)
-				methodValue := clientField.MethodByName("SearchAnswer")
-				requestValue := reflect.ValueOf(req)
-				res := methodValue.Call([]reflect.Value{requestValue})
-
-				if len(res) > 1 && !res[1].IsNil() { // 出现错误
-					e := res[1].Interface().(error).Error()
-					logger.SysError(fmt.Sprintf("调用%s接口出错：%s", clientField.Type().String(), e))
-				} else {
+				res, err := clients[idx].SearchAnswer(req)
+				if err == nil && len(res) > 0 {
 					mu.Lock()
 					defer mu.Unlock()
-					ans := res[0].Interface().([][]string)
-					result = append(result, ans...)
+					result = append(result, res...)
 				}
-
 			}(i)
 		}
 		wg.Wait()
@@ -86,6 +80,7 @@ func Search(c *gin.Context) {
 
 	if len(result) > 0 {
 		resp := util.FillAnswerResponse(result, &req)
+
 		if len(answer) == 0 && c.Query("localDisable") != "1" {
 			middleware.CollectAnswer(resp)
 		}

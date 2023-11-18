@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"github.com/antlabs/strsim"
 	"github.com/gookit/goutil/arrutil"
 	"github.com/itihey/tikuAdapter/pkg/model"
@@ -12,9 +11,9 @@ var sep = "**=====^_^======^_^======**" // 用于分割答案的分隔符
 
 // FillAnswerResponse 根据搜题结果填充答案
 func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
-	fmt.Println(req.Options)
+
 	req.Options = FormatOptions(req.Options, req.Type)
-	fmt.Println(req.Options)
+
 	resp := model.SearchResponse{
 		Question: req.Question,
 		Options:  req.Options,
@@ -27,7 +26,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 	formatAnswer(answers, req.Type) // 先把答案统一格式化
 
 	if req.Options == nil || len(req.Options) == 0 { // 用户没有传选项，那么只能返回出现次数最多的答案。
-		resp.Answer.BestAnswer = SearchRightAnswer(answers, req)
+		resp.Answer.BestAnswer = SearchRightAnswer(answers)
 	} else {
 		var filterAnswer [][]string
 		for i := range answers {
@@ -36,7 +35,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 				filterAnswer = append(filterAnswer, ans)
 			}
 		}
-		resp.Answer.BestAnswer = SearchRightAnswer(filterAnswer, req)
+		resp.Answer.BestAnswer = SearchRightAnswer(filterAnswer)
 
 		if len(resp.Answer.BestAnswer) == 0 { // 开始模糊匹配
 			for i := range answers {
@@ -54,7 +53,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 						filterAnswer = append(filterAnswer, ans)
 					}
 				}
-				resp.Answer.BestAnswer = SearchRightAnswer(filterAnswer, req)
+				resp.Answer.BestAnswer = SearchRightAnswer(filterAnswer)
 			}
 		}
 	}
@@ -75,7 +74,7 @@ func fillAnswer(a *model.Answer, req *model.SearchRequest) {
 }
 
 // SearchRightAnswer 此方法还有巨大的优化空间
-func SearchRightAnswer(answers [][]string, s *model.SearchRequest) []string {
+func SearchRightAnswer(answers [][]string) []string {
 	answerMap := make(map[string]int)
 	for _, answer := range answers {
 		sortedAnswer := strings.Join(answer, sep)

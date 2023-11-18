@@ -20,17 +20,17 @@ func Config() configs.Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
+
 	// 读取配置文件
 	if err := viper.ReadInConfig(); err != nil {
 		logger.SysLog(fmt.Sprintf("无法读取配置文件: %v,将以默认配置启动", err))
 		_ = viper.ReadConfig(bytes.NewBuffer(defaultConfig))
 	}
 
-	return configs.Config{
-		Limit: configs.LimitConfig{
-			Enable:   viper.GetBool("limit.enable"),
-			Duration: viper.GetUint("limit.duration"),
-			Requests: viper.GetUint64("limit.requests"),
-		},
+	var config configs.Config
+	err := viper.Unmarshal(&config)
+	if err != nil {
+		logger.SysError(fmt.Sprintf("配置文件语法错误: %v", err))
 	}
+	return config
 }
