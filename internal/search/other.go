@@ -2,6 +2,8 @@ package search
 
 import (
 	"github.com/go-resty/resty/v2"
+	"github.com/gookit/goutil/jsonutil"
+	"github.com/gookit/goutil/strutil"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/tidwall/gjson"
 	"strconv"
@@ -64,7 +66,15 @@ func (in API) SearchAnswer(req model.SearchRequest) (answer [][]string, err erro
 }
 
 func replace(s string, req model.SearchRequest) string {
-	s = strings.Replace(s, "${question}", req.Question, -1)
 	s = strings.Replace(s, "${type}", strconv.Itoa(int(req.Type)), -1)
+
+	if strings.HasPrefix(s, "http") {
+		s = strings.Replace(s, "${question}", strutil.URLEncode(req.Question), -1)
+	} else if jsonutil.IsJSON(s) {
+		s = strings.Replace(s, "${question}", strutil.EscapeJS(req.Question), -1)
+	} else {
+		s = strings.Replace(s, "${question}", req.Question, -1)
+	}
+
 	return s
 }
