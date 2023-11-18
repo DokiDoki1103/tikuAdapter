@@ -19,7 +19,7 @@ type KV struct {
 type API struct {
 	Enable  bool   `yaml:"enable"`
 	Name    string `yaml:"name"`
-	Url     string `yaml:"url"`
+	URL     string `yaml:"url"`
 	Method  string `yaml:"method"`
 	Headers []KV   `yaml:"headers"`
 	Body    string `yaml:"body"`
@@ -45,9 +45,9 @@ func (in API) SearchAnswer(req model.SearchRequest) (answer [][]string, err erro
 	var resp *resty.Response
 	if in.Method == "POST" {
 		r.SetBody(replace(in.Body, req))
-		resp, err = r.Post(replace(in.Url, req))
+		resp, err = r.Post(replace(in.URL, req))
 	} else {
-		resp, err = r.Get(replace(in.Url, req))
+		resp, err = r.Get(replace(in.URL, req))
 	}
 	if err != nil {
 		return nil, err

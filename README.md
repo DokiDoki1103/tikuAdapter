@@ -17,6 +17,7 @@
 - [x] [万能题库](https://lyck6.cn/pay) [![付费](https://img.shields.io/badge/免费-付费-brightgreen?color=red&labelColor=4c1)](https://lyck6.cn/pay)
 - [x] [爱点题库](https://www.51aidian.com) [![付费](https://img.shields.io/badge/免费-付费-brightgreen?color=red&labelColor=4c1)](https://www.51aidian.com)
 - [x] [enncy 言溪题库](https://tk.enncy.cn/) [![付费](https://img.shields.io/badge/-付费-red)](https://tk.enncy.cn/)
+- [x] [自定义题库](https://github.com/DokiDoki1103/tikuAdapter/tree/main/configs#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%96%E9%83%A8%E9%A2%98%E5%BA%93%E9%85%8D%E7%BD%AE)
 
 访问第三方题库接口时，自动将答案持久化到本地，下次搜题优先搜索本地题库的答案。
 
