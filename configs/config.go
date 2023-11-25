@@ -1,11 +1,15 @@
 package configs
 
-import "github.com/itihey/tikuAdapter/internal/search"
+import (
+	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/itihey/tikuAdapter/internal/search"
+)
 
 // Config 所有的配置文件
 type Config struct {
-	Limit LimitConfig  `yaml:"limit"`
-	API   []search.API `yaml:"api"`
+	Limit         LimitConfig          `yaml:"limit"`
+	API           []search.API         `yaml:"api"`
+	Elasticsearch elasticsearch.Config `yaml:"elasticsearch"`
 }
 
 // LimitConfig 限流配置

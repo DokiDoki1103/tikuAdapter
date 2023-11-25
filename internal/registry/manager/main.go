@@ -3,6 +3,7 @@ package manager
 import (
 	"github.com/itihey/tikuAdapter/configs"
 	"github.com/itihey/tikuAdapter/internal/registry"
+	"github.com/itihey/tikuAdapter/internal/service"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/ratelimit"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ type Manager struct {
 	db        *gorm.DB
 	config    configs.Config
 	ipLimiter *ratelimit.IPRateLimiter
+	es        service.Elasticsearch
 }
 
 // RegistryManagerInterface manager interface
@@ -23,6 +25,7 @@ type RegistryManagerInterface interface {
 	GetDB() *gorm.DB
 	GetIPLimiter() *ratelimit.IPRateLimiter
 	GetConfig() configs.Config
+	GetEs() *service.Elasticsearch
 }
 
 // GetManager get manager
@@ -39,6 +42,7 @@ func CreateManager() Manager {
 		db:        db,
 		config:    config,
 		ipLimiter: registry.Limit(config),
+		es:        registry.RegisterEs(config),
 	}
 	return defaultManager
 }
@@ -61,4 +65,9 @@ func (m Manager) GetIPLimiter() *ratelimit.IPRateLimiter {
 // GetConfig get config
 func (m Manager) GetConfig() configs.Config {
 	return m.config
+}
+
+// GetEs get es
+func (m Manager) GetEs() service.Elasticsearch {
+	return m.es
 }

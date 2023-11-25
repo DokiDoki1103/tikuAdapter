@@ -17,7 +17,6 @@ func Parser(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, global.ErrorParam)
 		return
-
 	}
 	uploadedFile, err := file.Open()
 	if err != nil {

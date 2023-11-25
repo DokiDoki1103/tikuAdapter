@@ -14,8 +14,10 @@ type Tiku struct {
 	Options      string `gorm:"column:options" json:"options"`
 	Answer       string `gorm:"column:answer" json:"answer"`
 	Plat         int32  `gorm:"column:plat" json:"plat"`
-	QuestionHash string `gorm:"column:question_hash;index:question_hash_idx,priority:1" json:"question_hash"`
-	Hash         string `gorm:"column:hash;uniqueIndex:hash_index,priority:1" json:"hash"`
+	QuestionHash string `gorm:"column:question_hash;index:question_hash_idx,priority:1;comment:只有问题的短hash" json:"question_hash"` // 只有问题的短hash
+	Hash         string `gorm:"column:hash;uniqueIndex:hash_index,priority:1;comment:整个实体的hash,防止重复" json:"hash"`                // 整个实体的hash,防止重复
+	Source       int32  `gorm:"column:source;comment:0采集1自建2文件类" json:"source"`                                                  // 0采集1自建2文件类
+	Extra        string `gorm:"column:extra;comment:扩展字段,多用于tag" json:"extra"`                                                   // 扩展字段,多用于tag
 }
 
 // TableName Tiku's table name

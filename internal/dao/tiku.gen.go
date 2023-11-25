@@ -35,6 +35,8 @@ func newTiku(db *gorm.DB, opts ...gen.DOOption) tiku {
 	_tiku.Plat = field.NewInt32(tableName, "plat")
 	_tiku.QuestionHash = field.NewString(tableName, "question_hash")
 	_tiku.Hash = field.NewString(tableName, "hash")
+	_tiku.Source = field.NewInt32(tableName, "source")
+	_tiku.Extra = field.NewString(tableName, "extra")
 
 	_tiku.fillFieldMap()
 
@@ -51,8 +53,10 @@ type tiku struct {
 	Options      field.String
 	Answer       field.String
 	Plat         field.Int32
-	QuestionHash field.String
-	Hash         field.String
+	QuestionHash field.String // 只有问题的短hash
+	Hash         field.String // 整个实体的hash,防止重复
+	Source       field.Int32  // 0采集1自建2文件类
+	Extra        field.String // 扩展字段,多用于tag
 
 	fieldMap map[string]field.Expr
 }
@@ -77,6 +81,8 @@ func (t *tiku) updateTableName(table string) *tiku {
 	t.Plat = field.NewInt32(table, "plat")
 	t.QuestionHash = field.NewString(table, "question_hash")
 	t.Hash = field.NewString(table, "hash")
+	t.Source = field.NewInt32(table, "source")
+	t.Extra = field.NewString(table, "extra")
 
 	t.fillFieldMap()
 
@@ -93,7 +99,7 @@ func (t *tiku) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *tiku) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 8)
+	t.fieldMap = make(map[string]field.Expr, 10)
 	t.fieldMap["id"] = t.ID
 	t.fieldMap["question"] = t.Question
 	t.fieldMap["type"] = t.Type
@@ -102,6 +108,8 @@ func (t *tiku) fillFieldMap() {
 	t.fieldMap["plat"] = t.Plat
 	t.fieldMap["question_hash"] = t.QuestionHash
 	t.fieldMap["hash"] = t.Hash
+	t.fieldMap["source"] = t.Source
+	t.fieldMap["extra"] = t.Extra
 }
 
 func (t tiku) clone(db *gorm.DB) tiku {

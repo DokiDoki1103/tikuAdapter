@@ -81,3 +81,26 @@ func DeleteQuestion(c *gin.Context) {
 		"message": "删除成功",
 	})
 }
+
+// CreateQuestion 创建题目
+func CreateQuestion(c *gin.Context) {
+	var tiku *entity.Tiku
+	err := c.ShouldBindJSON(&tiku)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	tiku.Source = 1
+	err = dao.Tiku.Create(tiku)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "服务器错误",
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"message": "创建成功",
+	})
+}

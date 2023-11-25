@@ -22,3 +22,5 @@ api:
         value: application/x-www-form-urlencoded
     body: 'question=${question}'
     answer: 'data'
+elasticsearch:
+  url: http://127.0.0.1:9200
