@@ -1,3 +1,7 @@
 /web/dist/
 /tiku.db
 /.idea
+/web/node_modules
+/web/.idea
+/web/dist
+/web/.gitignore

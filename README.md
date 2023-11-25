@@ -65,7 +65,7 @@ POST `http://localhost:8060/adapter-service/search`
     "过错推定责任",
     "连带责任"
   ],
-  "type": 1
+  "type": 1 // 单选0多选1填空2判断3问答4
 }
 ```
 
