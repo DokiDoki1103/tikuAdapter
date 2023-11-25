@@ -35,7 +35,7 @@ func RegisterDB() *gorm.DB {
 		var err error
 		db, err = gorm.Open(sqlite.Open(dbName), &gorm.Config{
 			PrepareStmt: true,
-			Logger:      l.Default.LogMode(l.Warn),
+			Logger:      l.Default.LogMode(l.Info),
 		})
 		if err != nil {
 			logger.FatalLog(fmt.Errorf("open sqlite %q fail: %w", dbName, err))

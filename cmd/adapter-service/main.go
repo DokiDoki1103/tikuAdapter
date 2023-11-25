@@ -35,7 +35,7 @@ func main() {
 		server := gin.Default()
 		api.SetAPIRouter(server)
 		api.SetWebRouter(buildFS, indexPage, server)
-		err := server.Run(":8060")
+		err := server.Run("0.0.0.0:8060")
 		if err != nil {
 			logger.FatalLog(err)
 		}
