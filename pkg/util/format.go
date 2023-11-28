@@ -33,7 +33,7 @@ func FormatOptions(options []string, questionType uint) []string {
 		}
 	} else if questionType <= 1 { // 选择题的格式化暂时还没有实现
 		for i := range options {
-			options[i] = formatString(options[i])
+			options[i] = FormatString(options[i])
 		}
 	}
 	return options
@@ -49,7 +49,8 @@ func formatOptions(options []string) []string {
 	return formattedOptions
 }
 
-func formatString(src string) string {
+// FormatString 格式化字符串
+func FormatString(src string) string {
 	// 全角转半角
 	src = FullWidthStrToHalfWidthStr(src)
 	// 中文常见符号转英文

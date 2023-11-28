@@ -34,18 +34,23 @@ func ParseXls(file *excelize.File, opt XLSXOptions) []model.Question {
 		}
 
 		var as = make([]string, 0)
-		if util.IsAlpha(answer) {
+		if util.IsAlpha(answer) && len(options) > 0 {
 			for _, a := range answer {
 				if len(options) > int(a-65) {
 					as = append(as, options[int(a-65)])
 				}
 			}
 		} else {
-			as = strings.Split(answer, "#")
+			if util.IsAlpha(answer) {
+				as = strings.Split(answer, "")
+			} else {
+				as = strings.Split(answer, "#")
+			}
+
 		}
 
 		tiku := model.Question{
-			Question: question,
+			Question: util.FormatString(question),
 			Answer:   as,
 			Options:  options,
 		}
