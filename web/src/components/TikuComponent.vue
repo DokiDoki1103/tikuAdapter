@@ -1,27 +1,23 @@
 <template>
   <a-layout>
     <a-layout-content>
-
       <div style="padding:50px 50px">
-        <a-button type="primary" style="width: 500px;" ghost @click="showModal({},2)">添加</a-button>
-
-        <a-table :columns="columns" :data-source="data" :pagination="false" :scroll="{ y: 500 }">
-          <template #customTitle>
-      <span>
-        <smile-outlined/>
-        Name
-      </span>
-          </template>
+        <a-button type="primary" style="width: 500px;" ghost @click="showModal({
+          type: 0,
+          question: '',
+          options: '[]',
+          answer: ''
+        },2)">添加
+        </a-button>
+        <a-table :columns="columns" :data-source="data" :pagination="false">
           <template #type="{ record }">
-            <a-tag
-                :color="record.type === 0 ? 'green' : record.type === 1 ? 'cyan' : 'orange'"
-            >
+            <a-tag :color="record.type === 0 ? 'green' : record.type === 1 ? 'cyan' : 'orange'">
               {{ quesType[record.type] }}
             </a-tag>
           </template>
           <template #action="{ record }">
             <div style="display:flex;justify-content: space-between">
-              <a-button type="primary" ghost @click="showModal(record,1)">操作</a-button>
+              <a-button type="primary" ghost @click="showModal(record,1)">编辑</a-button>
               <a-button type="primary" ghost danger @click="deleteQuestion(record,0)">删除</a-button>
             </div>
           </template>
@@ -37,45 +33,54 @@
             style="margin-top: 20px; text-align: right;"
         />
       </div>
-
-      <a-modal :visible="visible" title="详情内容" @ok="check"
-               @cancel="visible=false">
+      <a-modal :visible="visible" title="详情内容" @ok="check" @cancel="visible=false">
         <a-form :model="formState" v-if="num">
           <a-form-item label="类型">
-            <a-input  v-model:value="formState.type"></a-input>
+            <a-select v-model:value="formState.type">
+              <a-select-option v-for="(value, key) in quesType" :key="key" :value="parseInt(key)">
+                {{ value }}
+              </a-select-option>
+            </a-select>
           </a-form-item>
           <a-form-item label="问题">
-            <a-textarea
-                v-model:value="formState.question"
-                :auto-size="{ minRows: 2, maxRows: 5 }"
-            />
+            <a-textarea v-model:value="formState.question"/>
           </a-form-item>
           <a-form-item label="选项">
-            <a-textarea
-                v-model:value="formState.options"
-               :auto-size="{ minRows: 2, maxRows: 5 }"
-            />
+            <div class="checkbox-flex-container">
+              <a-checkbox
+                  v-for="(value, key) in JSON.parse(formState.options)"
+                  :key="key"
+                  :value="parseInt(key)"
+                  class="checkbox-flex-item"
+              >
+                {{ value }}
+              </a-checkbox>
+            </div>
           </a-form-item>
           <a-form-item label="答案">
-            <a-textarea
-                v-model:value="formState.answer"
-                :auto-size="{ minRows: 2, maxRows: 5 }"
-            />
+            <a-textarea v-model:value="formState.answer" :auto-size="{ minRows: 2, maxRows: 5 }"/>
           </a-form-item>
         </a-form>
         <p v-else>删除将无法恢复，确定删除吗</p>
       </a-modal>
     </a-layout-content>
   </a-layout>
-
-
 </template>
-<script>
-import { SmileOutlined } from '@ant-design/icons-vue'
-import { defineComponent, ref } from 'vue'
-import { getQuestions, updateQuestions, delQuestions, addQuestions } from '@/api/api'
+<style>
+.checkbox-flex-container {
+  display: flex;
+  flex-direction: column; /* 将元素垂直排列 */
+}
 
-const data = ref([]) // 在 setup() 外部定义
+.checkbox-flex-item {
+  margin-bottom: 10px; /* 可以添加一些底部间距，让它们之间有一定的间隔 */
+}
+</style>
+<script>
+import {defineComponent, ref} from 'vue'
+import {getQuestions, updateQuestions, delQuestions, addQuestions} from '@/api/api'
+
+const data = ref([])
 const columns = [
   {
     title: 'ID',
@@ -120,9 +125,7 @@ const page = ref({
 })
 
 
-const formState = ref({
-
-})
+const formState = ref({})
 const visible = ref(false)
 const num = ref(null)
 
@@ -133,7 +136,7 @@ const quesType = ref({
   '4': '简答题',
 })
 export default defineComponent({
-  setup () {
+  setup() {
     return {
       page,
       data,
@@ -144,49 +147,44 @@ export default defineComponent({
       formState,
     }
   },
-  components: {
-    SmileOutlined
-  },
-  mounted () {
+  mounted() {
     this.fetchData()
   },
-
   methods: {
-    async fetchData () {
+    async fetchData() {
       const res = await getQuestions({
-        params: {
-          pageSize: page.value.pageSize,
-          pageNo: page.value.pageNo - 1
-        }
+        pageSize: page.value.pageSize,
+        pageNo: page.value.pageNo - 1
       })
       data.value = res.data.items
       this.page.total = res.data.total
     },
-
-    async delOk () {
-      await delQuestions(formState.value.id, formState.value)
-      visible.value = false
-      this.fetchData()
+    delOk() {
+      delQuestions(formState.value.id).then(res => {
+        console.log(res)
+        visible.value = false
+        this.fetchData()
+      })
     },
 
-    async deleteQuestion (record, n) {
+    async deleteQuestion(record, n) {
       num.value = n
       formState.value = record
       visible.value = true
     },
 
-    onChange (page) {
+    onChange(page) {
       this.page.pageNo = page
       this.fetchData()
     },
 
-    showModal (e, n) {
+    showModal(e, n) {
       num.value = n
       formState.value = e
       visible.value = true
     },
 
-    check () {
+    check() {
       formState.value.type = parseInt(formState.value.type)
       if (num.value === 1) {
         this.handleOk()
@@ -197,19 +195,22 @@ export default defineComponent({
       }
     },
 
-    async addQues () {
-      await addQuestions(formState.value)
-      visible.value = true
-      this.fetchData()
+    addQues() {
+      addQuestions(formState.value).then(res => {
+        console.log(res)
+        visible.value = true
+        this.fetchData()
+      })
     },
 
-    async handleOk () {
-      await updateQuestions(formState.value.id, formState.value)
-      console.log(formState.value.id, formState.value)
-      visible.value = false
+    handleOk() {
+      updateQuestions(formState.value.id, formState.value).then(res => {
+        console.log(res)
+        visible.value = false
+      })
     },
 
-    onShowSizeChange (current, pageSize) {
+    onShowSizeChange(current, pageSize) {
       this.page.pageSize = pageSize
       this.page.pageNo = 1
       this.fetchData()

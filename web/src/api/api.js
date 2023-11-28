@@ -6,9 +6,8 @@ const instance = axios.create({
 })
 
 
-export async function getQuestions(data){
-    return await instance.get('/questions',data)
-
+export async function getQuestions(params){
+    return await instance.get('/questions', {params})
 }
 
 export async function updateQuestions(id,data) {
@@ -19,8 +18,8 @@ export async function addQuestions(data) {
     return await instance.post(`/questions`,data)
 }
 
-export async function delQuestions(id,data) {
-    return await instance.delete(`/questions/${id}`,data)
+export async function delQuestions(id) {
+    return await instance.delete(`/questions/${id}`)
 }
 
 
