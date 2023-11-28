@@ -24,10 +24,12 @@ jobs:
           ENNCY_TOKEN: ${{ secrets.ENNCY_TOKEN }}
         run: go test -v ./...
 
-      - name: Lint
+      - name: Go Lint
         uses: Jerome1337/golint-action@v1.0.2
         with:
           golint-path: './...'
+
+      - name: JS Lint
         run: |
           cd web
           npm install
