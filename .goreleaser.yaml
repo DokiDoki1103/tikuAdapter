@@ -1,4 +1,11 @@
 project_name: tikuAdapter
+before:
+  hooks:
+    - go mod tidy
+    - rm -rf cmd/adapter-service/dist
+    - cd web
+    - npm install && npm run build
+    - mv -f dist ../cmd/adapter-service
 builds:
   - main: ./cmd/adapter-service
     # https://go.dev/doc/install/source#environment
@@ -26,4 +33,9 @@ builds:
       - GO111MODULE=on
 checksum:
   name_template: checksums.txt
-
+changelog:
+  sort: desc
+  filters:
+    exclude:
+      - '^ci:'
+      - '^CI:'

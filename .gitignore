@@ -5,3 +5,4 @@
 /web/.idea
 /web/dist
 /web/.gitignore
+/cmd/adapter-service/dist/
