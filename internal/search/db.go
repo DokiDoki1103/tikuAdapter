@@ -36,7 +36,10 @@ func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, er
 		if err != nil {
 			continue
 		}
-		answer = append(answer, answers)
+		if len(answers) > 0 {
+			answer = append(answer, answers)
+		}
+
 	}
 	return answer, nil
 }

@@ -6,7 +6,7 @@
           type: 0,
           question: '',
           options: '[]',
-          answer: ''
+          answer: '[]'
         },2)">添加
         </a-button>
         <a-table :columns="columns" :data-source="data" :pagination="false">
@@ -46,16 +46,17 @@
             <a-textarea v-model:value="formState.question"/>
           </a-form-item>
           <a-form-item label="选项">
-            <div class="checkbox-flex-container">
-              <a-checkbox
-                  v-for="(value, key) in JSON.parse(formState.options)"
-                  :key="key"
-                  :value="parseInt(key)"
-                  class="checkbox-flex-item"
-              >
-                {{ value }}
-              </a-checkbox>
-            </div>
+            <a-textarea v-model:value="formState.options"/>
+<!--            <div class="checkbox-flex-container">-->
+<!--              <a-checkbox-->
+<!--                  v-for="(value, key) in JSON.parse(formState.options)"-->
+<!--                  :key="key"-->
+<!--                  :value="parseInt(key)"-->
+<!--                  class="checkbox-flex-item"-->
+<!--              >-->
+<!--                {{ value }}-->
+<!--              </a-checkbox>-->
+<!--            </div>-->
           </a-form-item>
           <a-form-item label="答案">
             <a-textarea v-model:value="formState.answer" :auto-size="{ minRows: 2, maxRows: 5 }"/>

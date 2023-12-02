@@ -24,3 +24,4 @@ api:
     answer: 'data'
 elasticsearch:
   url: http://127.0.0.1:9200
+recordEmptyAnswer: false # 是否记录空答案（开启之后即便没有答案也会记录在数据库方便后期手动整理题库）

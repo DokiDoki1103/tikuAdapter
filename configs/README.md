@@ -44,3 +44,9 @@ api:
     body: 'question=${question}'
     answer: 'data'
 ```
+
+### 自动录入题库功能
+使用脚本答题或者请求API接口，将会自动记录您的问题和答案，可以通过 `recordEmptyAnswer` 来控制是否记录空答案。
+```yaml
+recordEmptyAnswer: true # 设置为 true 将会记录空答案否则只会记录已有答案
+```

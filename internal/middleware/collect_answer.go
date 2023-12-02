@@ -21,12 +21,31 @@ func CollectAnswer(resp model.SearchResponse) {
 			Answer:   string(ans),
 			Options:  string(opts),
 			Plat:     int32(resp.Plat),
+			Source:   0,
 		}
 		t.QuestionHash = strutil.ShortMd5(t.Question)
-		t.Hash = strutil.Md5(t.QuestionHash + t.Answer + t.Options + string(t.Type))
+		t.Hash = strutil.Md5(t.QuestionHash + t.Options + string(t.Type))
 		err := dao.Tiku.Create(&t)
 		if err != nil {
 			logger.SysError(fmt.Sprintf("收集答案失败 %v", err))
 		}
+	}
+}
+
+// CollectEmptyAnswer 收集没有搜索到的答案
+func CollectEmptyAnswer(resp model.SearchRequest) {
+	opts, _ := json.Marshal(resp.Options)
+	t := entity.Tiku{
+		Question: resp.Question,
+		Answer:   "[]",
+		Options:  string(opts),
+		Plat:     int32(resp.Plat),
+		Source:   -1,
+	}
+	t.QuestionHash = strutil.ShortMd5(t.Question)
+	t.Hash = strutil.Md5(t.QuestionHash + t.Options + string(t.Type))
+	err := dao.Tiku.Create(&t)
+	if err != nil {
+		logger.SysError(fmt.Sprintf("收集答案失败 %v", err))
 	}
 }
