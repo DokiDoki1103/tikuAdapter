@@ -1,11 +1,7 @@
 project_name: tikuAdapter
 before:
   hooks:
-    - go mod tidy
-    - rm -rf cmd/adapter-service/dist
-    - cd web
-    - npm install && npm run build
-    - mv -f dist ../cmd/adapter-service
+    - sh buildweb.sh
 builds:
   - main: ./cmd/adapter-service
     # https://go.dev/doc/install/source#environment

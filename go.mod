@@ -3,9 +3,9 @@ module github.com/itihey/tikuAdapter
 go 1.21
 
 require (
-	code.sajari.com/docconv/v2 v2.0.0-20231031004013-9cc631a87635
+	code.sajari.com/docconv/v2 v2.0.0-pre.3
 	github.com/antlabs/strsim v0.0.3
-	github.com/elastic/go-elasticsearch/v8 v8.11.0
+	github.com/elastic/go-elasticsearch/v8 v8.11.1
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/glebarez/sqlite v1.10.0
@@ -15,7 +15,7 @@ require (
 	github.com/spf13/viper v1.17.0
 	github.com/tidwall/gjson v1.17.0
 	github.com/xuri/excelize/v2 v2.8.0
-	golang.org/x/time v0.3.0
+	golang.org/x/time v0.5.0
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gen v0.3.23
 	gorm.io/gorm v1.25.5
