@@ -36,29 +36,29 @@ func Search(c *gin.Context) {
 	// 再查询第三方
 	if len(result) == 0 {
 		var clients = []search.Search{
-			// &search.WannengClient{
-			// 	Disable: c.Query("wannengDisable") == "1",
-			// },
-			// &search.IcodefClient{
-			// 	Token:   c.Query("icodefToken"),
-			// 	Disable: c.Query("icodefDisable") == "1",
-			// },
-			// &search.EnncyClient{
-			// 	Token:   c.Query("enncyToken"),
-			// 	Disable: c.Query("enncyDisable") == "1",
-			// },
-			// &search.BuguakeClient{
-			// 	Disable: c.Query("buguakeDisable") == "1",
-			// },
-			// &search.AidianClient{
-			// 	Disable: c.Query("aidianDisable") == "1",
-			// 	YToken:  c.Query("aidianYToken"),
-			// },
+			&search.WannengClient{
+				Disable: c.Query("wannengDisable") == "1",
+			},
+			&search.IcodefClient{
+				Token:   c.Query("icodefToken"),
+				Disable: c.Query("icodefDisable") == "1",
+			},
+			&search.EnncyClient{
+				Token:   c.Query("enncyToken"),
+				Disable: c.Query("enncyDisable") == "1",
+			},
+			&search.BuguakeClient{
+				Disable: c.Query("buguakeDisable") == "1",
+			},
+			&search.AidianClient{
+				Disable: c.Query("aidianDisable") == "1",
+				YToken:  c.Query("aidianYToken"),
+			},
 		}
-		// cfg := manager.GetManager().GetConfig()
-		// for i := range cfg.API {
-		// 	clients = append(clients, cfg.API[i])
-		// }
+		cfg := manager.GetManager().GetConfig()
+		for i := range cfg.API {
+			clients = append(clients, cfg.API[i])
+		}
 
 		var wg sync.WaitGroup
 		var mu sync.Mutex
