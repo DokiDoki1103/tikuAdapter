@@ -54,6 +54,10 @@ func Search(c *gin.Context) {
 				Disable: c.Query("aidianDisable") == "1",
 				YToken:  c.Query("aidianYToken"),
 			},
+			&search.LemonClient{
+				Disable: c.Query("lemonDisable") == "1",
+				Token:   c.Query("lemonToken"),
+			},
 		}
 		cfg := manager.GetManager().GetConfig()
 		for i := range cfg.API {
