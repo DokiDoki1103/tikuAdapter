@@ -7,10 +7,11 @@ import (
 	"testing"
 )
 
+// TestSearchLemonClient_SearchAnswer 测试柠檬题库接口
 func TestSearchLemonClient_SearchAnswer(t *testing.T) {
 	var client = LemonClient{
 		Disable: false,
-		Token:   "8a3debe92e2ba83d6786e186bef2a888",
+		Token:   "8a3debe92e2ba83d6786e186bef2a424",
 	}
 
 	testRequest := model.SearchRequest{

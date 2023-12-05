@@ -10,15 +10,18 @@ import (
 
 // 柠檬题库官网 https://www.lemtk.xyz
 
+// LemonClient 柠檬题库
 type LemonClient struct {
 	Disable bool
 	Token   string
 }
 
+// getHTTPClient 获取http客户端
 func (in *LemonClient) getHTTPClient() *resty.Client {
 	return resty.New().SetTimeout(5 * time.Second)
 }
 
+// SearchAnswer 搜索答案
 func (in *LemonClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
 	if in.Disable || in.Token == "" {
@@ -51,12 +54,14 @@ func (in *LemonClient) SearchAnswer(req model.SearchRequest) (answer [][]string,
 	return nil, errors.ErrTargetNoAnswer
 }
 
+// lemonResp 响应体
 type lemonResp struct {
 	Code int       `json:"code"`
 	Msg  string    `json:"msg"`
 	Data lemonData `json:"data"`
 }
 
+// lemonData 答案
 type lemonData struct {
 	Answer string `json:"answer"`
 }
