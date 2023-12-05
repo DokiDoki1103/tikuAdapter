@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/itihey/tikuAdapter/internal/dao"
+	"github.com/itihey/tikuAdapter/pkg/logger"
 	"strconv"
 )
 
@@ -144,7 +144,7 @@ func SyncElasticsearch() {
 	for _, v := range find {
 		err := defaultElasticSearch.Create("tiku", strconv.Itoa(int(v.ID)), v)
 		if err != nil {
-			fmt.Println("es create err: ", err)
+			logger.SysError(err.Error())
 			return
 		}
 	}
