@@ -44,7 +44,7 @@ func Parser(c *gin.Context) {
 			return
 		}
 		opt := service.XLSXOptions{
-			SheetName: c.PostForm("sheet"),
+			SheetName: c.PostForm("sheetName"),
 			Question:  c.PostForm("question"),
 			Answer:    c.PostForm("answer"),
 			Option:    options,

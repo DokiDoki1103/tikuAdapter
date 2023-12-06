@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/entity"
+	"github.com/itihey/tikuAdapter/internal/middleware"
 	"strconv"
 )
 
@@ -93,6 +94,7 @@ func CreateQuestion(c *gin.Context) {
 		return
 	}
 	tiku.Source = 1
+	middleware.FillHash(tiku)
 	err = dao.Tiku.Create(tiku)
 	if err != nil {
 		c.JSON(500, gin.H{

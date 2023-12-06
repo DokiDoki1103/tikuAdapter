@@ -18,7 +18,7 @@
           <template #action="{ record }">
             <div style="display:flex;justify-content: space-between">
               <a-button type="primary" ghost @click="showModal(record,1)">编辑</a-button>
-              <a-button type="primary" ghost danger @click="deleteQuestion(record,0)">删除</a-button>
+              <a-button type="primary" ghost danger @click="deleteQuestion(record.id)">删除</a-button>
             </div>
           </template>
         </a-table>
@@ -33,53 +33,43 @@
             style="margin-top: 20px; text-align: right;"
         />
       </div>
-      <a-modal :visible="visible" title="详情内容" @ok="check" @cancel="visible=false">
-        <a-form :model="formState" v-if="num">
+      <a-modal :visible="visible" title="详情内容" @ok="confirm" @cancel="visible=false">
+        <a-form :model="formData">
           <a-form-item label="类型">
-            <a-select v-model:value="formState.type">
+            <a-select v-model:value="formData.type">
               <a-select-option v-for="(value, key) in quesType" :key="key" :value="parseInt(key)">
                 {{ value }}
               </a-select-option>
             </a-select>
           </a-form-item>
           <a-form-item label="问题">
-            <a-textarea v-model:value="formState.question"/>
+            <a-textarea v-model:value="formData.question"/>
           </a-form-item>
           <a-form-item label="选项">
-            <a-textarea v-model:value="formState.options"/>
-<!--            <div class="checkbox-flex-container">-->
-<!--              <a-checkbox-->
-<!--                  v-for="(value, key) in JSON.parse(formState.options)"-->
-<!--                  :key="key"-->
-<!--                  :value="parseInt(key)"-->
-<!--                  class="checkbox-flex-item"-->
-<!--              >-->
-<!--                {{ value }}-->
-<!--              </a-checkbox>-->
-<!--            </div>-->
+            <a-textarea v-model:value="formData.options"/>
+            <!--            <div class="checkbox-flex-container">-->
+            <!--              <a-checkbox-->
+            <!--                  v-for="(value, key) in JSON.parse(formData.options)"-->
+            <!--                  :key="key"-->
+            <!--                  :value="parseInt(key)"-->
+            <!--                  class="checkbox-flex-item"-->
+            <!--              >-->
+            <!--                {{ value }}-->
+            <!--              </a-checkbox>-->
+            <!--            </div>-->
           </a-form-item>
           <a-form-item label="答案">
-            <a-textarea v-model:value="formState.answer" :auto-size="{ minRows: 2, maxRows: 5 }"/>
+            <a-textarea v-model:value="formData.answer"/>
           </a-form-item>
         </a-form>
-        <p v-else>删除将无法恢复，确定删除吗</p>
       </a-modal>
     </a-layout-content>
   </a-layout>
 </template>
-<style>
-.checkbox-flex-container {
-  display: flex;
-  flex-direction: column; /* 将元素垂直排列 */
-}
 
-.checkbox-flex-item {
-  margin-bottom: 10px; /* 可以添加一些底部间距，让它们之间有一定的间隔 */
-}
-</style>
 <script>
 import {defineComponent, ref} from 'vue'
-import {getQuestions, updateQuestions, delQuestions, addQuestions} from '@/api/api'
+import {getQuestions, updateQuestions, delQuestions, createQuestions} from '@/api/api'
 
 const data = ref([])
 const columns = [
@@ -126,9 +116,9 @@ const page = ref({
 })
 
 
-const formState = ref({})
+const formData = ref({})
 const visible = ref(false)
-const num = ref(null)
+const action = ref(2) // 1是编辑 2是添加
 
 const quesType = ref({
   '0': '单选题',
@@ -141,11 +131,10 @@ export default defineComponent({
     return {
       page,
       data,
-      num,
       columns,
       quesType,
       visible,
-      formState,
+      formData,
     }
   },
   mounted() {
@@ -157,21 +146,15 @@ export default defineComponent({
         pageSize: page.value.pageSize,
         pageNo: page.value.pageNo - 1
       })
-      data.value = res.data.items
-      this.page.total = res.data.total
-    },
-    delOk() {
-      delQuestions(formState.value.id).then(res => {
-        console.log(res)
-        visible.value = false
-        this.fetchData()
-      })
+      data.value = res.items
+      this.page.total = res.total
     },
 
-    async deleteQuestion(record, n) {
-      num.value = n
-      formState.value = record
-      visible.value = true
+
+    onShowSizeChange(current, pageSize) {
+      this.page.pageSize = pageSize
+      this.page.pageNo = 1
+      this.fetchData()
     },
 
     onChange(page) {
@@ -179,42 +162,27 @@ export default defineComponent({
       this.fetchData()
     },
 
-    showModal(e, n) {
-      num.value = n
-      formState.value = e
+    showModal(data, act) {
+      action.value = act
+      formData.value = data
       visible.value = true
     },
 
-    check() {
-      formState.value.type = parseInt(formState.value.type)
-      if (num.value === 1) {
-        this.handleOk()
-      } else if (num.value === 2) {
-        this.addQues()
-      } else {
-        this.delOk()
+    async deleteQuestion(id) {
+      await delQuestions(id)
+      visible.value = false
+      await this.fetchData()
+    },
+
+    async confirm() {
+      formData.value.type = parseInt(formData.value.type)
+      if (action.value === 1) {
+        await updateQuestions(formData.value)
+      } else if (action.value === 2) {
+        await createQuestions(formData.value)
       }
-    },
-
-    addQues() {
-      addQuestions(formState.value).then(res => {
-        console.log(res)
-        visible.value = true
-        this.fetchData()
-      })
-    },
-
-    handleOk() {
-      updateQuestions(formState.value.id, formState.value).then(res => {
-        console.log(res)
-        visible.value = false
-      })
-    },
-
-    onShowSizeChange(current, pageSize) {
-      this.page.pageSize = pageSize
-      this.page.pageNo = 1
-      this.fetchData()
+      visible.value = false
+      await this.fetchData()
     }
   }
 })

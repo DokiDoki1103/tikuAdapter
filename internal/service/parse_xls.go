@@ -46,7 +46,6 @@ func ParseXls(file *excelize.File, opt XLSXOptions) []model.Question {
 			} else {
 				as = strings.Split(answer, "#")
 			}
-
 		}
 
 		tiku := model.Question{
