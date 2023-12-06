@@ -19,8 +19,8 @@ type iapiResponse struct {
 
 // IcodefClient icodef题库
 type IcodefClient struct {
-	Disable bool
-	Token   string
+	Enable bool
+	Token  string
 }
 
 // getHTTPClient 获取HTTP客户端
@@ -42,7 +42,7 @@ func (in *IcodefClient) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *IcodefClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-	if in.Disable {
+	if !in.Enable {
 		return answer, nil
 	}
 

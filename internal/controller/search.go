@@ -11,6 +11,7 @@ import (
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
 	"net/http"
+	"strings"
 	"sync"
 )
 
@@ -23,40 +24,42 @@ func Search(c *gin.Context) {
 		return
 	}
 
-	var result [][]string               // 最后所有的答案的二维数组
-	var answer [][]string               // 本地答案
-	if c.Query("localDisable") != "1" { // 没有禁用本地搜索的话，先查询本地
-		answer, err = search.GetDBSearch().SearchAnswer(req)
+	var result [][]string                          // 最后所有的答案的二维数组
+	var localAnswer [][]string                     // 本地答案
+	if strings.Contains(c.Query("use"), "local") { // 使用本地题库的话
+		localAnswer, err = search.GetDBSearch().SearchAnswer(req)
 		if err != nil {
 			logger.SysError(fmt.Sprintf("查询本地答案出错：%s", err.Error()))
 		}
-		result = append(result, answer...)
+		result = append(result, localAnswer...)
 	}
 
 	// 再查询第三方
 	if len(result) == 0 {
 		var clients = []search.Search{
-			&search.WannengClient{
-				Disable: c.Query("wannengDisable") == "1",
+			&search.BuguakeClient{
+				Enable: strings.Contains(c.Query("use"), "buguake") || c.Query("use") == "",
 			},
 			&search.IcodefClient{
-				Token:   c.Query("icodefToken"),
-				Disable: c.Query("icodefDisable") == "1",
+				Token:  c.Query("icodefToken"),
+				Enable: strings.Contains(c.Query("use"), "icodef") || c.Query("use") == "",
+			},
+			&search.WannengClient{
+				Token:  c.Query("wannengToken"),
+				Enable: strings.Contains(c.Query("use"), "wanneng") || c.Query("use") == "",
 			},
 			&search.EnncyClient{
-				Token:   c.Query("enncyToken"),
-				Disable: c.Query("enncyDisable") == "1",
+				Token:  c.Query("enncyToken"),
+				Enable: strings.Contains(c.Query("use"), "enncy"),
 			},
-			&search.BuguakeClient{
-				Disable: c.Query("buguakeDisable") == "1",
-			},
+
 			&search.AidianClient{
-				Disable: c.Query("aidianDisable") == "1",
-				YToken:  c.Query("aidianYToken"),
+				Enable: strings.Contains(c.Query("use"), "aidian"),
+				YToken: c.Query("aidianYToken"),
 			},
 			&search.LemonClient{
-				Disable: c.Query("lemonDisable") == "1",
-				Token:   c.Query("lemonToken"),
+				Enable: strings.Contains(c.Query("use"), "lemon"),
+				Token:  c.Query("lemonToken"),
 			},
 		}
 		cfg := manager.GetManager().GetConfig()
@@ -84,7 +87,7 @@ func Search(c *gin.Context) {
 
 	if len(result) > 0 {
 		resp := util.FillAnswerResponse(result, &req)
-		if len(answer) == 0 && c.Query("localDisable") != "1" { // 本地答案的长度为0 并且 没有禁用本地搜索的话，收集答案
+		if len(localAnswer) == 0 && strings.Contains(c.Query("use"), "local") { // 本地答案的长度为0 并且 没有禁用本地搜索的话，收集答案
 			middleware.CollectAnswer(resp)
 		}
 		c.JSON(http.StatusOK, resp)

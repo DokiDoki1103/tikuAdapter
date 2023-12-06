@@ -24,8 +24,8 @@ type response struct {
 
 // AidianClient 爱点题库
 type AidianClient struct {
-	Disable bool
-	YToken  string
+	Enable bool
+	YToken string
 }
 
 func (in *AidianClient) getHTTPClient() *resty.Client {
@@ -35,7 +35,7 @@ func (in *AidianClient) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *AidianClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-	if in.Disable {
+	if in.Enable {
 		return answer, nil
 	}
 

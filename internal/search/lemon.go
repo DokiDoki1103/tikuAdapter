@@ -5,6 +5,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/itihey/tikuAdapter/pkg/errors"
 	"github.com/itihey/tikuAdapter/pkg/model"
+	"strings"
 	"time"
 )
 
@@ -12,8 +13,8 @@ import (
 
 // LemonClient 柠檬题库
 type LemonClient struct {
-	Disable bool
-	Token   string
+	Enable bool
+	Token  string
 }
 
 // getHTTPClient 获取http客户端
@@ -24,7 +25,7 @@ func (in *LemonClient) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *LemonClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-	if in.Disable || in.Token == "" {
+	if !in.Enable || in.Token == "" {
 		return answer, nil
 	}
 
@@ -46,22 +47,19 @@ func (in *LemonClient) SearchAnswer(req model.SearchRequest) (answer [][]string,
 	if err != nil {
 		return nil, errors.ErrTargetServerError
 	}
-
 	if response.Code == 1000 {
-		ans := []string{response.Data.Answer}
+		ans := strings.Split(response.Data.Answer, "#")
 		return [][]string{ans}, nil
 	}
 	return nil, errors.ErrTargetNoAnswer
 }
 
-// lemonResp 响应体
 type lemonResp struct {
 	Code int       `json:"code"`
 	Msg  string    `json:"msg"`
 	Data lemonData `json:"data"`
 }
 
-// lemonData 答案
 type lemonData struct {
 	Answer string `json:"answer"`
 }

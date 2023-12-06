@@ -11,8 +11,8 @@ import (
 
 // EnncyClient enncy题库
 type EnncyClient struct {
-	Disable bool   // 是否禁用
-	Token   string // token
+	Enable bool   // 是否禁用
+	Token  string // token
 }
 
 // getHTTPClient 获取HTTP客户端
@@ -23,7 +23,7 @@ func (in *EnncyClient) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *EnncyClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-	if in.Disable || in.Token == "" {
+	if !in.Enable || in.Token == "" {
 		return answer, nil
 	}
 	post, err := in.getHTTPClient().R().

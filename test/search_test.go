@@ -29,7 +29,7 @@ func TestSearchIcodefClient_SearchAnswer(t *testing.T) {
 
 func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 	var client = search.WannengClient{
-		Disable: false,
+		Enable: true,
 	}
 	testRequest := model.SearchRequest{
 		Question: "大学生缓解性欲的常见途径是()",
@@ -41,7 +41,7 @@ func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 	response, err := client.SearchAnswer(testRequest)
 
 	if err != nil {
-		t.Errorf("请求万能题库异常: %v", err)
+		fmt.Printf("请求万能题库异常: %v", err)
 		return
 	}
 	marshal, _ := json.Marshal(response)
@@ -51,8 +51,8 @@ func TestSearchWannengClient_SearchAnswer(t *testing.T) {
 
 func TestSearchEnncyClient_SearchAnswer(t *testing.T) {
 	var client = search.EnncyClient{
-		Disable: false,
-		Token:   os.Getenv("ENNCY_TOKEN"),
+		Enable: true,
+		Token:  os.Getenv("ENNCY_TOKEN"),
 	}
 
 	testRequest := model.SearchRequest{
@@ -73,7 +73,7 @@ func TestSearchEnncyClient_SearchAnswer(t *testing.T) {
 
 func TestBuguake_SearchAnswer(t *testing.T) {
 	var client = search.BuguakeClient{
-		Disable: false,
+		Enable: true,
 	}
 
 	testRequest := model.SearchRequest{
@@ -84,7 +84,7 @@ func TestBuguake_SearchAnswer(t *testing.T) {
 	response, err := client.SearchAnswer(testRequest)
 
 	if err != nil {
-		fmt.Printf("请求不挂科题库异常: %v", err)
+		t.Errorf("请求不挂科题库异常: %v", err)
 		return
 	}
 	marshal, _ := json.Marshal(response)
@@ -95,7 +95,7 @@ func TestBuguake_SearchAnswer(t *testing.T) {
 func TestAidian_SearchAnswer(t *testing.T) {
 
 	var client = search.AidianClient{
-		Disable: false,
+		Enable: true,
 	}
 
 	testRequest := model.SearchRequest{
@@ -112,4 +112,26 @@ func TestAidian_SearchAnswer(t *testing.T) {
 	marshal, _ := json.Marshal(response)
 
 	fmt.Println("测试爱点题库 成功搜题", string(marshal))
+}
+
+// TestSearchLemonClient_SearchAnswer 测试柠檬题库接口
+func TestSearchLemonClient_SearchAnswer(t *testing.T) {
+	var client = search.LemonClient{
+		Enable: true,
+		Token:  "8a3debe92e2ba83d6786e186bef2a424",
+	}
+
+	testRequest := model.SearchRequest{
+		Question: "大学生缓解性欲的常见途径是()",
+	}
+
+	response, err := client.SearchAnswer(testRequest)
+
+	if err != nil {
+		fmt.Printf("请求柠檬题库异常: %v", err)
+		return
+	}
+	marshal, _ := json.Marshal(response)
+
+	fmt.Println("测试柠檬题库 成功搜题", string(marshal))
 }

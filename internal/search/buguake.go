@@ -14,7 +14,7 @@ import (
 
 // BuguakeClient 不挂科网页版题库
 type BuguakeClient struct {
-	Disable bool
+	Enable bool
 }
 
 func (in *BuguakeClient) getHTTPClient() *resty.Client {
@@ -24,7 +24,7 @@ func (in *BuguakeClient) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *BuguakeClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-	if in.Disable {
+	if !in.Enable {
 		return answer, nil
 	}
 

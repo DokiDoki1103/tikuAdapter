@@ -27,8 +27,8 @@ type wapiResponse struct {
 
 // WannengClient icodef题库
 type WannengClient struct {
-	Disable bool
-	Token   string
+	Enable bool
+	Token  string
 }
 
 // getHTTPClient 获取HTTP客户端
@@ -50,7 +50,7 @@ func (in *WannengClient) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-	if in.Disable {
+	if !in.Enable {
 		return answer, nil
 	}
 
