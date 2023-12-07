@@ -12,3 +12,9 @@ func IsAlpha(s string) bool {
 	}
 	return m
 }
+
+// GetQuestionText 保留汉字、数字和字母，移除其他字符
+func GetQuestionText(q string) string {
+	reg := regexp.MustCompile("[^\\p{Han}0-9a-zA-Z]+")
+	return reg.ReplaceAllString(q, "")
+}

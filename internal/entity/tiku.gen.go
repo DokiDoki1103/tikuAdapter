@@ -10,6 +10,7 @@ const TableNameTiku = "tiku"
 type Tiku struct {
 	ID           int32  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	Question     string `gorm:"column:question" json:"question"`
+	QuestionText string `gorm:"column:question_text;comment:只保留汉子数字字母，方便模糊匹配" json:"question_text"` // 只保留汉子数字字母，方便模糊匹配
 	Type         int32  `gorm:"column:type" json:"type"`
 	Options      string `gorm:"column:options" json:"options"`
 	Answer       string `gorm:"column:answer" json:"answer"`

@@ -29,6 +29,7 @@ func newTiku(db *gorm.DB, opts ...gen.DOOption) tiku {
 	_tiku.ALL = field.NewAsterisk(tableName)
 	_tiku.ID = field.NewInt32(tableName, "id")
 	_tiku.Question = field.NewString(tableName, "question")
+	_tiku.QuestionText = field.NewString(tableName, "question_text")
 	_tiku.Type = field.NewInt32(tableName, "type")
 	_tiku.Options = field.NewString(tableName, "options")
 	_tiku.Answer = field.NewString(tableName, "answer")
@@ -49,6 +50,7 @@ type tiku struct {
 	ALL          field.Asterisk
 	ID           field.Int32
 	Question     field.String
+	QuestionText field.String // 只保留汉子数字字母，方便模糊匹配
 	Type         field.Int32
 	Options      field.String
 	Answer       field.String
@@ -75,6 +77,7 @@ func (t *tiku) updateTableName(table string) *tiku {
 	t.ALL = field.NewAsterisk(table)
 	t.ID = field.NewInt32(table, "id")
 	t.Question = field.NewString(table, "question")
+	t.QuestionText = field.NewString(table, "question_text")
 	t.Type = field.NewInt32(table, "type")
 	t.Options = field.NewString(table, "options")
 	t.Answer = field.NewString(table, "answer")
@@ -99,9 +102,10 @@ func (t *tiku) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *tiku) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 10)
+	t.fieldMap = make(map[string]field.Expr, 11)
 	t.fieldMap["id"] = t.ID
 	t.fieldMap["question"] = t.Question
+	t.fieldMap["question_text"] = t.QuestionText
 	t.fieldMap["type"] = t.Type
 	t.fieldMap["options"] = t.Options
 	t.fieldMap["answer"] = t.Answer
