@@ -5,6 +5,7 @@ import (
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/entity"
 	"github.com/itihey/tikuAdapter/internal/middleware"
+	"github.com/itihey/tikuAdapter/pkg/util"
 	"strconv"
 )
 
@@ -26,7 +27,11 @@ func GetQuestions(c *gin.Context) {
 		})
 		return
 	}
-	items, total, err := dao.Tiku.Order(dao.Tiku.ID.Desc()).FindByPage(page.PageNo*page.PageSize, page.PageSize)
+	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
+	if c.Query("question") != "" {
+		tx = tx.Where(dao.Tiku.Question.Like("%" + util.GetQuestionText(c.Query("question")) + "%"))
+	}
+	items, total, err := tx.FindByPage(page.PageNo*page.PageSize, page.PageSize)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "服务器错误",
