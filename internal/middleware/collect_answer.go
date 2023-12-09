@@ -26,6 +26,7 @@ func CollectAnswer(resp model.SearchResponse) {
 		ans, _ := json.Marshal(resp.Answer.BestAnswer)
 		opts, _ := json.Marshal(resp.Options)
 		t := entity.Tiku{
+			Type:     int32(resp.Type),
 			Question: resp.Question,
 			Answer:   string(ans),
 			Options:  string(opts),
@@ -44,6 +45,7 @@ func CollectAnswer(resp model.SearchResponse) {
 func CollectEmptyAnswer(resp model.SearchRequest) {
 	opts, _ := json.Marshal(resp.Options)
 	t := entity.Tiku{
+		Type:     int32(resp.Type),
 		Question: resp.Question,
 		Answer:   "[]",
 		Options:  string(opts),
