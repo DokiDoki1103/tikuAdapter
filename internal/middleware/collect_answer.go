@@ -8,16 +8,14 @@ import (
 	"github.com/itihey/tikuAdapter/internal/entity"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
-	"regexp"
+	"github.com/itihey/tikuAdapter/pkg/util"
 )
 
 // FillHash 填充题库的hash值
 func FillHash(t *entity.Tiku) {
-	reg := regexp.MustCompile("[^\\p{Han}0-9a-zA-Z]+")
-	// 保留汉字、数字和字母，移除其他字符
-	filteredStr := reg.ReplaceAllString(t.Question, "")
-
-	t.QuestionHash = strutil.ShortMd5(filteredStr)
+	questionText := util.GetQuestionText(t.Question)
+	t.QuestionText = questionText
+	t.QuestionHash = strutil.ShortMd5(questionText)
 	t.Hash = strutil.Md5(t.QuestionHash + t.Options + string(t.Type))
 }
 

@@ -48,7 +48,7 @@
 
 在线服务均不能保证稳定性，并可能会泄漏您的Token，强烈建议自行部署。
 
-- 【v0.1.0-alpha.6】xmig提供 `http://adapter.xmig6.cn/adapter-service/search`
+- 【v0.1.0-alpha.13】xmig提供 `http://adapter.xmig6.cn/adapter-service/search`
 
 ### 使用API接口
 
@@ -80,7 +80,7 @@ POST `http://localhost:8060/adapter-service/search`
 | aidianYToken   | 爱点题库(亿级题库API)Token值     | 否    | cvor7f3HxZ7nF2M3ljmA             | https://www.51aidian.com |
 | lemonToken     | 柠檬题库 Token值             | 否    | 8a3debe92e2ba83d6786e186bef2a424 | https://www.lemtk.xyz    |
 
-例如您想禁用万能题库并且想要使用icodef的token，您的url应为`http://localhost:8060/adapter-service/search?wannengDisable=1&icodefToken=UafYcHViJMGzSVNh`
+例如您想使用万能题库和icodef题库，您的url应为`http://localhost:8060/adapter-service/search?use=wanneng,icodef&icodefToken=UafYcHViJMGzSVNh`
 
 #### 响应示例
 

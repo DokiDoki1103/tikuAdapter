@@ -6,6 +6,7 @@ import (
 	"github.com/gookit/goutil/strutil"
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/pkg/model"
+	"github.com/itihey/tikuAdapter/pkg/util"
 )
 
 // DB mysql 或者sqlite3
@@ -24,11 +25,19 @@ func (in *dBSearch) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-	questionHash := strutil.ShortMd5(req.Question)
+	questionText := util.GetQuestionText(req.Question)
+	questionHash := strutil.ShortMd5(questionText)
 	tiku := dao.Tiku
 	find, err := tiku.Where(tiku.QuestionHash.Eq(questionHash)).Find()
 	if err != nil {
 		return nil, err
+	}
+	if len(find) == 0 {
+		find2, err := tiku.Where(tiku.QuestionText.Like("%" + questionText + "%")).Find()
+		if err != nil {
+			return nil, err
+		}
+		find = find2
 	}
 	for i := range find {
 		var answers []string // 最后所有的答案的二维数组
@@ -39,7 +48,6 @@ func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, er
 		if len(answers) > 0 {
 			answer = append(answer, answers)
 		}
-
 	}
 	return answer, nil
 }
