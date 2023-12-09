@@ -4,7 +4,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       "/adapter-service": {
-        target: 'http://127.0.0.1:8060',
+        target: 'http://adapter.xmig6.cn',
         changeOrigin: true
       }
     }

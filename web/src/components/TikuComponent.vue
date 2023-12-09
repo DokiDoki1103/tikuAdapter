@@ -4,8 +4,9 @@
       <div style="padding:50px 50px">
         <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
           <template #title>
-            <a-input-search v-model:value="searchValue" placeholder="搜索关键字" style="width: 300px" @keyup.enter="onSearch"
-              @search="onSearch" />
+            <a-input-search v-model:value="searchValue" placeholder="搜索关键字" style="width: 300px"
+                            @keyup.enter="onSearch"
+                            @search="onSearch"/>
           </template>
           <template #extra>
             <a-button type="primary" @click="showModal({
@@ -14,8 +15,8 @@
               options: '[]',
               answer: '[]'
             }, 2)">
-            <FormOutlined />
-            添加
+              <FormOutlined/>
+              添加
             </a-button>
           </template>
           <a-table :columns="columns" :data-source="data" :pagination="false" :row-key="record => record.id">
@@ -25,8 +26,8 @@
               </a-tag>
             </template>
             <template #answer="{ record }">
-              <div >
-                <a-tag v-for ="(value,index) in JSON.parse(record.answer)" color="blue" :key="index" >{{value}}</a-tag>
+              <div>
+                <a-tag v-for="(value,index) in JSON.parse(record.answer)" color="blue" :key="index">{{ value }}</a-tag>
               </div>
             </template>
             <template #action="{ record }">
@@ -37,8 +38,9 @@
             </template>
           </a-table>
           <a-pagination @change="onChange" :current="page.pageNo" :total="page.total" show-size-changer
-            :page-size-options="page.pageSizeOptions" :page-size="page.pageSize" @showSizeChange="onShowSizeChange"
-            style="margin-top: 20px; text-align: right;" />
+                        :page-size-options="page.pageSizeOptions" :page-size="page.pageSize"
+                        @showSizeChange="onShowSizeChange"
+                        style="margin-top: 20px; text-align: right;"/>
         </a-card>
 
       </div>
@@ -52,13 +54,13 @@
             </a-select>
           </a-form-item>
           <a-form-item label="问题">
-            <a-textarea v-model:value="formData.question" />
+            <a-textarea v-model:value="formData.question"/>
           </a-form-item>
-          <a-form-item label="选项" v-if="formData.type == 0 || formData.type == 1 || formData.type == 3">
-            <OptionBox :options="formData.options" :type="formData.type" :answer="formData.answer" ref="optionBox" />
+          <a-form-item label="选项" v-if="/[013]/.test(formData.type)">
+            <OptionBox :options="JSON.parse(formData.options)" :type="formData.type" :answer="JSON.parse(formData.answer)" ref="optionBox"/>
           </a-form-item>
           <a-form-item label="答案" v-else>
-            <AnswerBox :answer="formData.answer" ref="answerBox" />
+            <AnswerBox :answer="JSON.parse(formData.answer)" ref="answerBox"/>
           </a-form-item>
         </a-form>
       </a-modal>
@@ -67,7 +69,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import {defineComponent, ref} from 'vue'
 import {
   getQuestions,
   updateQuestions,
@@ -79,6 +81,7 @@ import {
 } from '@ant-design/icons-vue';
 import OptionBox from './OptionBox.vue'
 import AnswerBox from './AnswerBox.vue'
+
 const style = {
   padding: "0 0 24px"
 }
@@ -191,10 +194,6 @@ export default defineComponent({
       visible.value = true
     },
 
-    // showAnswer(item){
-    //   if(item.length)
-    // }
-
     async deleteQuestion(id) {
       await delQuestions(id)
       visible.value = false
@@ -202,13 +201,11 @@ export default defineComponent({
     },
 
     async confirm() {
-      if (formData.value.type == 0 || formData.value.type == 1 || formData.value.type == 3) {
+      if (/[0|1|3]/.test(formData.value.type)) {
         const childComponentData = this.$refs.optionBox.getData();
-        formData.value.options = childComponentData.options
-        formData.value.answer = childComponentData.answer
+        Object.assign(formData.value, childComponentData)
       } else {
         formData.value.answer = this.$refs.answerBox.getData();
-        formData.value.options = "[]"
       }
       formData.value.type = parseInt(formData.value.type)
       if (action.value === 1) {
