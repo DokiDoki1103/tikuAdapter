@@ -1,6 +1,6 @@
 package model
 
-// SearchRequest 搜题的请求题
+// SearchRequest 搜题的请求体
 type SearchRequest struct {
 	QID      string   `json:"qid"`
 	Plat     uint     `json:"plat"`

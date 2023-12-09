@@ -17,12 +17,17 @@ func FillHash(t *entity.Tiku) {
 	t.QuestionText = questionText
 	t.QuestionHash = strutil.ShortMd5(questionText)
 	t.Hash = strutil.Md5(t.QuestionHash + t.Options + string(t.Type))
+
+	if t.Answer == "" {
+		t.Answer = "[]"
+	} else if t.Options == "" {
+		t.Options = "[]"
+	}
 }
 
 // CollectAnswer 收集答案
 func CollectAnswer(resp model.SearchResponse) {
 	if len(resp.Answer.BestAnswer) > 0 {
-
 		ans, _ := json.Marshal(resp.Answer.BestAnswer)
 		opts, _ := json.Marshal(resp.Options)
 		t := entity.Tiku{

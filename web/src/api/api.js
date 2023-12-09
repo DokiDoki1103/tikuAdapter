@@ -19,8 +19,8 @@ instance.interceptors.response.use( (response)=> {
     return Promise.reject(error)
 })
 
-export async function getQuestions(params) {
-    return await instance.get('/questions', {params})
+export async function getQuestions(data) {
+    return await instance.post('/questions/search', data)
 }
 
 export async function updateQuestions( data) {

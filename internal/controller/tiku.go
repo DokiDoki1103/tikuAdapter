@@ -17,10 +17,19 @@ type Page struct {
 	Items    []*entity.Tiku `json:"items" form:"items"`
 }
 
+type SearchValue struct {
+	PageNo              int    `json:"pageNo" form:"pageNo"`
+	PageSize            int    `json:"pageSize" form:"pageSize"`
+	Source              int32  `json:"source" form:"source"`
+	Extra               string `json:"extra" form:"extra"`
+	OnlyShowEmptyAnswer bool   `json:"onlyShowEmptyAnswer" form:"onlyShowEmptyAnswer"`
+	Question            string `json:"question" form:"question"`
+}
+
 // GetQuestions 获取题库
 func GetQuestions(c *gin.Context) {
-	var page Page
-	err := c.ShouldBindQuery(&page)
+	var searchValue SearchValue
+	err := c.ShouldBindJSON(&searchValue)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "参数错误",
@@ -28,19 +37,33 @@ func GetQuestions(c *gin.Context) {
 		return
 	}
 	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
-	if c.Query("question") != "" {
-		tx = tx.Where(dao.Tiku.Question.Like("%" + util.GetQuestionText(c.Query("question")) + "%"))
+	if searchValue.Question != "" {
+		tx = tx.Where(dao.Tiku.Question.Like("%" + util.GetQuestionText(searchValue.Question) + "%"))
 	}
-	items, total, err := tx.FindByPage(page.PageNo*page.PageSize, page.PageSize)
+	if searchValue.Extra != "" {
+		tx = tx.Where(dao.Tiku.Extra.Like(searchValue.Extra))
+	}
+	if searchValue.Source != 0 {
+		tx = tx.Where(dao.Tiku.Source.Eq(searchValue.Source))
+	}
+
+	if searchValue.OnlyShowEmptyAnswer {
+		tx = tx.Where(dao.Tiku.Answer.Eq("[]"))
+	}
+	items, total, err := tx.FindByPage(searchValue.PageNo*searchValue.PageSize, searchValue.PageSize)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "服务器错误",
 		})
 		return
 	}
-	page.Total = total
-	page.Items = items
-	c.JSON(200, page)
+
+	c.JSON(200, Page{
+		PageNo:   searchValue.PageNo,
+		PageSize: searchValue.PageSize,
+		Total:    total,
+		Items:    items,
+	})
 }
 
 // UpdateQuestions 更新题库
@@ -98,12 +121,17 @@ func CreateQuestion(c *gin.Context) {
 		})
 		return
 	}
-	tiku.Source = 1
+	if tiku.Extra != "" {
+		tiku.Source = 2
+	} else {
+		tiku.Source = 1
+	}
+
 	middleware.FillHash(tiku)
 	err = dao.Tiku.Create(tiku)
 	if err != nil {
-		c.JSON(500, gin.H{
-			"message": "服务器错误",
+		c.JSON(200, gin.H{
+			"message": "数据已存在",
 		})
 		return
 	}
