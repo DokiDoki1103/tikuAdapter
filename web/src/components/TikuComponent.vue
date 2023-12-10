@@ -4,18 +4,58 @@
       <div style="padding:50px 50px">
         <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
           <template #title>
-            <a-input-search v-model:value="searchValue" placeholder="搜索关键字" style="width: 300px" @keyup.enter="onSearch"
-              @search="onSearch" />
+            <a-row>
+              <a-col :span="3">
+                <a-form-item label="来源">
+                  <a-select
+                      ref="select"
+                      placeholder="请选择"
+                      v-model:value="searchValue.source"
+                      style="width: 120px"
+                  >
+                    <a-select-option value="0">采集有答案</a-select-option>
+                    <a-select-option value="-1">采集无答案</a-select-option>
+                    <a-select-option value="1">自建</a-select-option>
+                    <a-select-option value="2">高级</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+
+              <a-col :span="6">
+                <a-form-item label="拓展属性">
+                  <a-input placeholder="别乱加" v-model:value="searchValue.extra" style="width: 250px"/>
+                </a-form-item>
+              </a-col>
+              <a-col :span="4">
+                <a-form-item label="仅显示无答案">
+
+                  <a-checkbox  v-model:checked="searchValue.onlyShowEmptyAnswer">
+
+                  </a-checkbox>
+                </a-form-item>
+              </a-col>
+
+              <a-col :span="8">
+                <a-form-item label="问题">
+                  <a-input-search v-model:value="searchValue.question" placeholder="搜索您的问题"
+                                  @keyup.enter="onSearch"
+                                  enter-button
+                                  @search="onSearch"/>
+
+
+                </a-form-item>
+              </a-col>
+            </a-row>
           </template>
           <template #extra>
             <a-button type="primary" @click="showModal({
               type: 0,
               question: '',
-              options: '[]',
+              options: '[1]',
               answer: '[]'
             }, 2)">
-            <FormOutlined />
-            添加
+              <FormOutlined/>
+              添加
             </a-button>
           </template>
           <a-table :columns="columns" :data-source="data" :pagination="false" :row-key="record => record.id">
@@ -25,8 +65,8 @@
               </a-tag>
             </template>
             <template #answer="{ record }">
-              <div >
-                <a-tag v-for ="(value,index) in JSON.parse(record.answer)" color="blue" :key="index" >{{value}}</a-tag>
+              <div>
+                <a-tag v-for="(value,index) in (record.answer?JSON.parse(record.answer) : [])" color="blue" :key="index">{{ record.source === 2 ? index : value }}</a-tag>
               </div>
             </template>
             <template #action="{ record }">
@@ -37,8 +77,9 @@
             </template>
           </a-table>
           <a-pagination @change="onChange" :current="page.pageNo" :total="page.total" show-size-changer
-            :page-size-options="page.pageSizeOptions" :page-size="page.pageSize" @showSizeChange="onShowSizeChange"
-            style="margin-top: 20px; text-align: right;" />
+                        :page-size-options="page.pageSizeOptions" :page-size="page.pageSize"
+                        @showSizeChange="onShowSizeChange"
+                        style="margin-top: 20px; text-align: right;"/>
         </a-card>
 
       </div>
@@ -54,11 +95,11 @@
           <a-form-item label="问题">
             <a-textarea v-model:value="formData.question" />
           </a-form-item>
-          <a-form-item label="选项" v-if="formData.type == 0 || formData.type == 1 || formData.type == 3">
-            <OptionBox :options="formData.options" :type="formData.type" :answer="formData.answer" ref="optionBox" />
+          <a-form-item label="选项" v-if="/[013]/.test(formData.type)">
+            <OptionBox :options="formData.options ? JSON.parse(formData.options) : [1]" :type="formData.type" :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox"/>
           </a-form-item>
           <a-form-item label="答案" v-else>
-            <AnswerBox :answer="formData.answer" ref="answerBox" />
+            <AnswerBox :answer="formData.answer ? JSON.parse(formData.answer) : [1]" ref="answerBox"/>
           </a-form-item>
         </a-form>
       </a-modal>
@@ -67,7 +108,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import {defineComponent, ref} from 'vue'
 import {
   getQuestions,
   updateQuestions,
@@ -132,7 +173,7 @@ const page = ref({
 const formData = ref({})
 const visible = ref(false)
 const action = ref(2) // 1是编辑 2是添加
-const searchValue = ref('')
+const searchValue = ref({})
 const quesType = ref({
   '0': '单选题',
   '1': '多选题',
@@ -166,7 +207,10 @@ export default defineComponent({
       const res = await getQuestions({
         pageSize: page.value.pageSize,
         pageNo: page.value.pageNo - 1,
-        question: question || ''
+        question: searchValue.value.question || '',
+        source: parseInt(searchValue.value.source) || 0,
+        extra: searchValue.value.extra || '',
+        onlyShowEmptyAnswer: searchValue.value.onlyShowEmptyAnswer || false
       })
       data.value = res.items
       this.page.total = res.total
@@ -186,8 +230,10 @@ export default defineComponent({
     },
 
     showModal(data, act) {
-      action.value = act
       formData.value = data
+      console.log(formData.value)
+      action.value = act
+
       visible.value = true
     },
 
@@ -202,13 +248,11 @@ export default defineComponent({
     },
 
     async confirm() {
-      if (formData.value.type == 0 || formData.value.type == 1 || formData.value.type == 3) {
+      if (/[0|1|3]/.test(formData.value.type)) {
         const childComponentData = this.$refs.optionBox.getData();
-        formData.value.options = childComponentData.options
-        formData.value.answer = childComponentData.answer
+        Object.assign(formData.value, childComponentData)
       } else {
         formData.value.answer = this.$refs.answerBox.getData();
-        formData.value.options = "[]"
       }
       formData.value.type = parseInt(formData.value.type)
       if (action.value === 1) {
