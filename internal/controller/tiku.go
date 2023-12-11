@@ -17,6 +17,7 @@ type Page struct {
 	Items    []*entity.Tiku `json:"items" form:"items"`
 }
 
+// SearchValue 搜索参数
 type SearchValue struct {
 	PageNo              int    `json:"pageNo" form:"pageNo"`
 	PageSize            int    `json:"pageSize" form:"pageSize"`

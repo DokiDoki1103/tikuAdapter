@@ -37,7 +37,7 @@ func GetManager() Manager {
 func CreateManager() Manager {
 	config := registry.Config()
 	logger.SetupGinLog()
-	db := registry.RegisterDB()
+	db := registry.RegisterDB(config)
 	defaultManager = Manager{
 		db:        db,
 		config:    config,

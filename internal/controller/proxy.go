@@ -8,6 +8,7 @@ import (
 	"net/url"
 )
 
+// Proxy -
 func Proxy(c *gin.Context) {
 	d, _ := base64.StdEncoding.DecodeString("aHR0cDovL21vb2MyLWFucy5jaGFveGluZy5jb20=")
 	target, _ := url.Parse(string(d))

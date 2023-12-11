@@ -50,3 +50,9 @@ api:
 ```yaml
 recordEmptyAnswer: true # 设置为 true 将会记录空答案否则只会记录已有答案
 ```
+
+### 持久化到数据库
+您可以将您的题库数据持久化到数据库，目前支持的数据库有`mysql`和`sqlite`，您可以通过`mysql`来设置。如果不配置，默认使用`sqlite`。
+```yaml
+mysql: username:password@tcp(localhost:3306)/databasename
+```
