@@ -6,7 +6,7 @@ RUN npm i   \
     npm run build
 
 FROM golang AS builder2
-
+ENV GOPROXY=https://goproxy.cn,direct
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux
