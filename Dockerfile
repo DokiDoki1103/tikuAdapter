@@ -2,11 +2,10 @@ FROM node:18 as builder1
 
 WORKDIR /build
 COPY ./web .
-RUN npm i   \
-    npm run build
+RUN npm install && npm run build
+
 
 FROM golang AS builder2
-ENV GOPROXY=https://goproxy.cn,direct
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux
