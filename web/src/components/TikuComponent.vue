@@ -236,6 +236,9 @@ export default defineComponent({
       if (record.options === '[]' || record.options === '') {
         record.options = '[1]'
       }
+      if (record.answer === '[]' || record.answer === '') {
+        record.answer = '[1]'
+      }
       formData.value = record
       action.value = act
       visible.value = true
