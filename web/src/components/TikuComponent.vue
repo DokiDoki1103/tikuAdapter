@@ -28,7 +28,7 @@
               <a-col :span="4">
                 <a-form-item label="仅显示无答案">
 
-                  <a-checkbox  v-model:checked="searchValue.onlyShowEmptyAnswer">
+                  <a-checkbox v-model:checked="searchValue.onlyShowEmptyAnswer">
 
                   </a-checkbox>
                 </a-form-item>
@@ -50,7 +50,7 @@
             <a-button type="primary" @click="showModal({
               type: 0,
               question: '',
-              options: '[1]',
+              options: '[]',
               answer: '[]'
             }, 2)">
               <FormOutlined/>
@@ -65,7 +65,9 @@
             </template>
             <template #answer="{ record }">
               <div>
-                <a-tag v-for="(value,index) in (record.answer?JSON.parse(record.answer) : [])" color="blue" :key="index">{{ record.source === 2 ? index : value }}</a-tag>
+                <a-tag v-for="(value,index) in (record.answer?JSON.parse(record.answer) : [])" color="blue"
+                       :key="index">{{ record.source === 2 ? index : value }}
+                </a-tag>
               </div>
             </template>
             <template #action="{ record }">
@@ -95,7 +97,8 @@
             <a-textarea v-model:value="formData.question"/>
           </a-form-item>
           <a-form-item label="选项" v-if="/[013]/.test(formData.type)">
-            <OptionBox :options="formData.options ? JSON.parse(formData.options) : [1]" :type="formData.type" :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox"/>
+            <OptionBox :options="formData.options ? JSON.parse(formData.options) : [1]" :type="formData.type"
+                       :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox"/>
           </a-form-item>
           <a-form-item label="答案" v-else>
             <AnswerBox :answer="formData.answer ? JSON.parse(formData.answer) : [1]" ref="answerBox"/>
@@ -229,11 +232,12 @@ export default defineComponent({
       this.fetchData()
     },
 
-    showModal(data, act) {
-      formData.value = data
-      console.log(formData.value)
+    showModal(record, act) {
+      if (record.options === '[]' || record.options === '') {
+        record.options = '[1]'
+      }
+      formData.value = record
       action.value = act
-
       visible.value = true
     },
 
