@@ -13,8 +13,7 @@
                       v-model:value="searchValue.source"
                       style="width: 120px"
                   >
-                    <a-select-option value="0">采集有答案</a-select-option>
-                    <a-select-option value="-1">采集无答案</a-select-option>
+                    <a-select-option value="-1">无答案</a-select-option>
                     <a-select-option value="1">自建</a-select-option>
                     <a-select-option value="2">高级</a-select-option>
                   </a-select>

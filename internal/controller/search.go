@@ -52,7 +52,6 @@ func Search(c *gin.Context) {
 				Token:  c.Query("enncyToken"),
 				Enable: strings.Contains(c.Query("use"), "enncy"),
 			},
-
 			&search.AidianClient{
 				Enable: strings.Contains(c.Query("use"), "aidian"),
 				YToken: c.Query("aidianYToken"),
@@ -87,9 +86,6 @@ func Search(c *gin.Context) {
 
 	if len(result) > 0 {
 		resp := util.FillAnswerResponse(result, &req)
-		if len(localAnswer) == 0 && strings.Contains(c.Query("use"), "local") { // 本地答案的长度为0 并且 没有禁用本地搜索的话，收集答案
-			middleware.CollectAnswer(resp)
-		}
 		c.JSON(http.StatusOK, resp)
 	} else {
 		if manager.GetManager().GetConfig().RecordEmptyAnswer {

@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-var dbName = "configs/tiku.db"
+var dbName = "tiku.db"
 var db *gorm.DB
 var once sync.Once
 

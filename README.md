@@ -19,8 +19,6 @@
 - [x] lemon：[柠檬题库](https://www.lemtk.xyz)[![付费](https://img.shields.io/badge/-付费-red)](https://www.lemtk.xyz) 
 - [x] [自定义题库](https://github.com/DokiDoki1103/tikuAdapter/tree/main/configs#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%96%E9%83%A8%E9%A2%98%E5%BA%93%E9%85%8D%E7%BD%AE)
 
-访问第三方题库接口时，自动将答案持久化到本地，下次搜题优先搜索本地题库的答案。
-
 ### 2.支持多种文件自动解析到题库
 
 + [ ] [Word题库](https://github.com/itihey/tikuAdapter/raw/main/test/test.docx)将您的word文档自动解析到本地数据库，方便您的搜索。
