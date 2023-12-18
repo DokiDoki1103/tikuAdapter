@@ -2,17 +2,17 @@
   <div>
     <a-row v-for="(item, index) in data" :key="index" class="rowStyle">
       <a-col :span="22">
-        <a-textarea v-model:value="item.value"/>
+        <a-textarea v-model:value="item.value" />
       </a-col>
       <a-col :span="1">
         <a-button v-if="index === 0" @click="addOption" type="link" primary>
           <template #icon>
-            <PlusCircleOutlined/>
+            <PlusCircleOutlined />
           </template>
         </a-button>
         <a-button v-if="index > 0" @click="data.splice(index, 1)" type="link" danger>
           <template #icon>
-            <MinusCircleOutlined/>
+            <MinusCircleOutlined />
           </template>
         </a-button>
       </a-col>
@@ -22,7 +22,7 @@
 
 <script>
 // 创建选项数组
-import {ref} from 'vue'
+import { ref } from 'vue'
 import {
   PlusCircleOutlined,
   MinusCircleOutlined
@@ -44,11 +44,16 @@ export default ({
   },
   setup(props) {
     return {
-      data:ref(props.answer.map(i=>{
-        return {
-          value: i
-        }
-      }))
+      data: ref(props.answer.length > 0
+        ? props.answer.map(i => {
+          return {
+            value: i
+          };
+        })
+        : [{
+            content: '',
+            index: 0
+          }])
     }
   },
 

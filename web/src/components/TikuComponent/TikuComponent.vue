@@ -1,60 +1,61 @@
 <template>
+  <header>
+    新建作业
+  </header>
+  <a-card style="margin: 24px 50px 0;">
+    <a-row>
+      <a-col :span="5">
+        <a-form-item label="来源" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-select ref="select" placeholder="请选择" v-model:value="searchValue.source">
+            <a-select-option value="0">采集有答案</a-select-option>
+            <a-select-option value="-1">采集无答案</a-select-option>
+            <a-select-option value="1">自建</a-select-option>
+            <a-select-option value="2">高级</a-select-option>
+          </a-select>
+        </a-form-item>
+      </a-col>
+      <a-col :span="5">
+        <a-form-item label="拓展属性" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-input placeholder="别乱加" v-model:value="searchValue.extra" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="5">
+        <a-form-item label="问题">
+          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 160px;" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="5">
+        <a-form-item label="仅显示无答案" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-checkbox v-model:checked="searchValue.onlyShowEmptyAnswer">
+          </a-checkbox>
+        </a-form-item>
+      </a-col>
+      <a-col :span="4" style="display: flex; justify-content: end;">
+        <a-form-item>
+          <a-button type="primary" @click="onSearch" @keyup.enter="onSearch">
+            <SearchOutlined />搜索
+          </a-button>
+        </a-form-item>
+      </a-col>
+    </a-row>
+  </a-card>
+
   <a-layout>
     <a-layout-content>
-      <div style="padding:50px 50px">
+      <div style="padding:24px 50px; text-align: center;">
         <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
-          <template #title>
-            <a-row>
-              <a-col :span="3">
-                <a-form-item label="来源">
-                  <a-select
-                      ref="select"
-                      placeholder="请选择"
-                      v-model:value="searchValue.source"
-                      style="width: 120px"
-                  >
-                    <a-select-option value="0">采集有答案</a-select-option>
-                    <a-select-option value="-1">采集无答案</a-select-option>
-                    <a-select-option value="1">自建</a-select-option>
-                    <a-select-option value="2">高级</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-
-              <a-col :span="6">
-                <a-form-item label="拓展属性">
-                  <a-input placeholder="别乱加" v-model:value="searchValue.extra" style="width: 250px"/>
-                </a-form-item>
-              </a-col>
-              <a-col :span="4">
-                <a-form-item label="仅显示无答案">
-
-                  <a-checkbox  v-model:checked="searchValue.onlyShowEmptyAnswer">
-
-                  </a-checkbox>
-                </a-form-item>
-              </a-col>
-
-              <a-col :span="8">
-                <a-form-item label="问题">
-                  <a-input-search v-model:value="searchValue.question" placeholder="搜索您的问题"
-                                  @keyup.enter="onSearch"
-                                  enter-button
-                                  @search="onSearch"/>
-
-
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </template>
           <template #extra>
+            <a-button type="primary" @click="navigateToImport" style="margin-right: 12px;">
+              <DownloadOutlined />
+              智能导入
+            </a-button>
             <a-button type="primary" @click="showModal({
               type: 0,
               question: '',
               options: '[1]',
               answer: '[]'
             }, 2)">
-              <FormOutlined/>
+              <FormOutlined />
               添加
             </a-button>
           </template>
@@ -66,7 +67,8 @@
             </template>
             <template #answer="{ record }">
               <div>
-                <a-tag v-for="(value,index) in (record.answer?JSON.parse(record.answer) : [])" color="blue" :key="index">{{ record.source === 2 ? index : value }}</a-tag>
+                <a-tag v-for="(value, index) in (record.answer ? JSON.parse(record.answer) : [])" color="blue"
+                  :key="index">{{ record.source === 2 ? index : value }}</a-tag>
               </div>
             </template>
             <template #action="{ record }">
@@ -77,9 +79,8 @@
             </template>
           </a-table>
           <a-pagination @change="onChange" :current="page.pageNo" :total="page.total" show-size-changer
-                        :page-size-options="page.pageSizeOptions" :page-size="page.pageSize"
-                        @showSizeChange="onShowSizeChange"
-                        style="margin-top: 20px; text-align: right;"/>
+            :page-size-options="page.pageSizeOptions" :page-size="page.pageSize" @showSizeChange="onShowSizeChange"
+            style="margin-top: 20px; text-align: right;" />
         </a-card>
 
       </div>
@@ -96,10 +97,11 @@
             <a-textarea v-model:value="formData.question" />
           </a-form-item>
           <a-form-item label="选项" v-if="/[013]/.test(formData.type)">
-            <OptionBox :options="formData.options ? JSON.parse(formData.options) : [1]" :type="formData.type" :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox"/>
+            <OptionBox :options="formData.options ? JSON.parse(formData.options) : [1]" :type="formData.type"
+              :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox" />
           </a-form-item>
           <a-form-item label="答案" v-else>
-            <AnswerBox :answer="formData.answer ? JSON.parse(formData.answer) : [1]" ref="answerBox"/>
+            <AnswerBox :answer="formData.answer ? JSON.parse(formData.answer) : [1]" ref="answerBox" />
           </a-form-item>
         </a-form>
       </a-modal>
@@ -108,7 +110,8 @@
 </template>
 
 <script>
-import {defineComponent, ref} from 'vue'
+import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   getQuestions,
   updateQuestions,
@@ -116,7 +119,9 @@ import {
   createQuestions
 } from '@/api/api'
 import {
-  FormOutlined
+  FormOutlined,
+  DownloadOutlined,
+  SearchOutlined
 } from '@ant-design/icons-vue';
 import OptionBox from './OptionBox.vue'
 import AnswerBox from './AnswerBox.vue'
@@ -183,6 +188,10 @@ const quesType = ref({
 })
 export default defineComponent({
   setup() {
+    const router = useRouter();
+    const navigateToImport = () => {
+      router.push('/import');
+    };
     return {
       page,
       data,
@@ -191,19 +200,24 @@ export default defineComponent({
       visible,
       formData,
       style,
-      searchValue
+      searchValue,
+      labelCol: { span: 8 },
+      wrapperCol: { span: 14 },
+      navigateToImport
     }
   },
   components: {
     OptionBox,
     AnswerBox,
-    FormOutlined
+    FormOutlined,
+    SearchOutlined,
+    DownloadOutlined
   },
   mounted() {
     this.fetchData()
   },
   methods: {
-    async fetchData(question) {
+    async fetchData() {
       const res = await getQuestions({
         pageSize: page.value.pageSize,
         pageNo: page.value.pageNo - 1,
@@ -215,8 +229,8 @@ export default defineComponent({
       data.value = res.items
       this.page.total = res.total
     },
-    onSearch(value) {
-      this.fetchData(value)
+    onSearch() {
+      this.fetchData()
     },
     onShowSizeChange(current, pageSize) {
       this.page.pageSize = pageSize
@@ -262,7 +276,30 @@ export default defineComponent({
       }
       visible.value = false
       await this.fetchData()
-    }
+    },
+    // navigateToImport() {
+    //   const router = useRouter();
+    //   // router.push('/import');
+    //   // Alternatively, you can use an object to specify the route
+    //   router.push({ name: 'import' });
+    // }
   }
 })
 </script>
+<style scoped>
+header {
+  width: 100%;
+  height: 60px;
+  background-color: #195ca3;
+  border-bottom: 1px solid #e8e8e8;
+  line-height: 60px;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+}
+
+.ant-form-item {
+  margin-bottom: 0;
+}
+</style>

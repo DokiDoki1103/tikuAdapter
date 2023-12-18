@@ -136,3 +136,11 @@ POST `http://localhost:8060/adapter-service/search`
 
 - 您可以参考 ```internal/search/wanneng.go``` 来实现 ```internal/search/search.go```接口
 - 编写 ```internal/search/search_test.go``` 来测试您的接口
+
+## 贡献者
+
+谢谢以下开源贡献者～
+
+<a href="https://github.com/dokidoki1103/tikuadapter/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=dokidoki1103/tikuAdapter" />
+</a>
