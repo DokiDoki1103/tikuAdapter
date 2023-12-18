@@ -84,13 +84,12 @@ func Search(c *gin.Context) {
 		wg.Wait()
 	}
 
-	if len(result) > 0 {
-		resp := util.FillAnswerResponse(result, &req)
-		c.JSON(http.StatusOK, resp)
-	} else {
+	resp := util.FillAnswerResponse(result, &req)
+
+	if len(result) == 0 {
 		if manager.GetManager().GetConfig().RecordEmptyAnswer {
 			middleware.CollectEmptyAnswer(req)
 		}
-		c.JSON(http.StatusNotFound, global.ErrorQuestionNotFound)
 	}
+	c.JSON(http.StatusOK, resp)
 }
