@@ -5,8 +5,12 @@ module.exports = defineConfig({
     proxy: {
       "/adapter-service": {
         target: 'http://127.0.0.1:8060',
-        changeOrigin: true
-      }
-    }
-  }
+        changeOrigin: true,
+      },
+      "/sqp/api": {
+        target: 'http://adapter.xmig6.cn',
+        changeOrigin: true,
+      },
+    },
+  },
 })

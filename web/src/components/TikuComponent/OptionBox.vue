@@ -101,7 +101,6 @@ export default ({
 .rowStyle {
   margin-bottom: 10px;
 }
-
 .CheckStyle {
   width: 30px;
   height: 30px;
