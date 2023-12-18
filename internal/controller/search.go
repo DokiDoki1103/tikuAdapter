@@ -62,8 +62,10 @@ func Search(c *gin.Context) {
 			},
 		}
 		cfg := manager.GetManager().GetConfig()
-		for i := range cfg.API {
-			clients = append(clients, cfg.API[i])
+		for _, api := range cfg.API {
+			if strings.Contains(c.Query("use"), api.Name) {
+				clients = append(clients, api)
+			}
 		}
 
 		var wg sync.WaitGroup

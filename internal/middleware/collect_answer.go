@@ -25,27 +25,6 @@ func FillHash(t *entity.Tiku) {
 	}
 }
 
-// CollectAnswer 收集答案
-func CollectAnswer(resp model.SearchResponse) {
-	if len(resp.Answer.BestAnswer) > 0 {
-		ans, _ := json.Marshal(resp.Answer.BestAnswer)
-		opts, _ := json.Marshal(resp.Options)
-		t := entity.Tiku{
-			Type:     int32(resp.Type),
-			Question: resp.Question,
-			Answer:   string(ans),
-			Options:  string(opts),
-			Plat:     int32(resp.Plat),
-			Source:   0,
-		}
-		FillHash(&t)
-		err := dao.Tiku.Create(&t)
-		if err != nil {
-			logger.SysError(fmt.Sprintf("收集答案失败 %v", err))
-		}
-	}
-}
-
 // CollectEmptyAnswer 收集没有搜索到的答案
 func CollectEmptyAnswer(resp model.SearchRequest) {
 	opts, _ := json.Marshal(resp.Options)

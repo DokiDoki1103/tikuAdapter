@@ -114,29 +114,28 @@ func DeleteQuestion(c *gin.Context) {
 
 // CreateQuestion 创建题目
 func CreateQuestion(c *gin.Context) {
-	var tiku *entity.Tiku
-	err := c.ShouldBindJSON(&tiku)
+	var tikus []*entity.Tiku
+	err := c.ShouldBindJSON(&tikus)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "参数错误",
 		})
 		return
 	}
-	if tiku.Extra != "" {
-		tiku.Source = 2
-	} else {
-		tiku.Source = 1
-	}
-
-	middleware.FillHash(tiku)
-	err = dao.Tiku.Create(tiku)
-	if err != nil {
-		c.JSON(200, gin.H{
-			"message": "数据已存在",
-		})
-		return
+	var count = 0
+	for _, tiku := range tikus {
+		if tiku.Extra != "" {
+			tiku.Source = 2
+		} else {
+			tiku.Source = 1
+		}
+		middleware.FillHash(tiku)
+		err := dao.Tiku.Create(tiku)
+		if err == nil {
+			count++
+		}
 	}
 	c.JSON(200, gin.H{
-		"message": "创建成功",
+		"message": "成功创建" + strconv.Itoa(count) + "条数据",
 	})
 }

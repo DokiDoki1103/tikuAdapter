@@ -1,13 +1,12 @@
 <template>
   <header>
-    新建作业
+    题库管理平台
   </header>
   <a-card style="margin: 24px 50px 0;">
     <a-row>
       <a-col :span="5">
         <a-form-item label="来源" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-select ref="select" placeholder="请选择" v-model:value="searchValue.source">
-            <a-select-option value="0">采集有答案</a-select-option>
             <a-select-option value="-1">采集无答案</a-select-option>
             <a-select-option value="1">自建</a-select-option>
             <a-select-option value="2">高级</a-select-option>
@@ -16,12 +15,12 @@
       </a-col>
       <a-col :span="5">
         <a-form-item label="拓展属性" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-input placeholder="别乱加" v-model:value="searchValue.extra" />
+          <a-input placeholder="别乱加" v-model:value="searchValue.extra"/>
         </a-form-item>
       </a-col>
       <a-col :span="5">
         <a-form-item label="问题">
-          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 160px;" />
+          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 160px;"/>
         </a-form-item>
       </a-col>
       <a-col :span="5">
@@ -33,7 +32,8 @@
       <a-col :span="4" style="display: flex; justify-content: end;">
         <a-form-item>
           <a-button type="primary" @click="onSearch" @keyup.enter="onSearch">
-            <SearchOutlined />搜索
+            <SearchOutlined/>
+            搜索
           </a-button>
         </a-form-item>
       </a-col>
@@ -46,7 +46,7 @@
         <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
           <template #extra>
             <a-button type="primary" @click="navigateToImport" style="margin-right: 12px;">
-              <DownloadOutlined />
+              <DownloadOutlined/>
               智能导入
             </a-button>
             <a-button type="primary" @click="showModal({
@@ -55,7 +55,7 @@
               options: '[]',
               answer: '[]'
             }, 2)">
-              <FormOutlined />
+              <FormOutlined/>
               添加
             </a-button>
           </template>
@@ -68,7 +68,8 @@
             <template #answer="{ record }">
               <div>
                 <a-tag v-for="(value, index) in (record.answer ? JSON.parse(record.answer) : [])" color="blue"
-                  :key="index">{{ record.source === 2 ? index : value }}</a-tag>
+                       :key="index">{{ record.source === 2 ? index : value }}
+                </a-tag>
               </div>
             </template>
             <template #action="{ record }">
@@ -79,8 +80,9 @@
             </template>
           </a-table>
           <a-pagination @change="onChange" :current="page.pageNo" :total="page.total" show-size-changer
-            :page-size-options="page.pageSizeOptions" :page-size="page.pageSize" @showSizeChange="onShowSizeChange"
-            style="margin-top: 20px; text-align: right;" />
+                        :page-size-options="page.pageSizeOptions" :page-size="page.pageSize"
+                        @showSizeChange="onShowSizeChange"
+                        style="margin-top: 20px; text-align: right;"/>
         </a-card>
 
       </div>
@@ -94,14 +96,14 @@
             </a-select>
           </a-form-item>
           <a-form-item label="问题">
-            <a-textarea v-model:value="formData.question" />
+            <a-textarea v-model:value="formData.question"/>
           </a-form-item>
           <a-form-item label="选项" v-if="/[013]/.test(formData.type)">
             <OptionBox :options="formData.options ? JSON.parse(formData.options) : [1]" :type="formData.type"
-              :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox" />
+                       :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox"/>
           </a-form-item>
           <a-form-item label="答案" v-else>
-            <AnswerBox :answer="formData.answer ? JSON.parse(formData.answer) : [1]" ref="answerBox" />
+            <AnswerBox :answer="formData.answer ? JSON.parse(formData.answer) : [1]" ref="answerBox"/>
           </a-form-item>
         </a-form>
       </a-modal>
@@ -110,8 +112,8 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import {defineComponent, ref} from 'vue';
+import {useRouter} from 'vue-router';
 import {
   getQuestions,
   updateQuestions,
@@ -125,6 +127,8 @@ import {
 } from '@ant-design/icons-vue';
 import OptionBox from './OptionBox.vue'
 import AnswerBox from './AnswerBox.vue'
+import {getQuestionType} from "@/utils/uitls";
+
 const style = {
   padding: "0 0 24px"
 }
@@ -179,13 +183,7 @@ const formData = ref({})
 const visible = ref(false)
 const action = ref(2) // 1是编辑 2是添加
 const searchValue = ref({})
-const quesType = ref({
-  '0': '单选题',
-  '1': '多选题',
-  '2': '填空题',
-  '3': '判断题',
-  '4': '简答题',
-})
+const quesType = ref(getQuestionType())
 export default defineComponent({
   setup() {
     const router = useRouter();
@@ -201,8 +199,8 @@ export default defineComponent({
       formData,
       style,
       searchValue,
-      labelCol: { span: 8 },
-      wrapperCol: { span: 14 },
+      labelCol: {span: 8},
+      wrapperCol: {span: 14},
       navigateToImport
     }
   },
@@ -276,7 +274,7 @@ export default defineComponent({
       if (action.value === 1) {
         await updateQuestions(formData.value)
       } else if (action.value === 2) {
-        await createQuestions(formData.value)
+        await createQuestions([formData.value])
       }
       visible.value = false
       await this.fetchData()
