@@ -14,6 +14,7 @@ func main() {
 		WithUnitTest:      false,
 		Mode:              gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface,
 		FieldWithIndexTag: true,
+		FieldWithTypeTag:  true,
 	})
 	db, _ := gorm.Open(mysql.Open(os.Getenv("DB_DSN")))
 	g.UseDB(db)

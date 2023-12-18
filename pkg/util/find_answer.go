@@ -62,6 +62,14 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 }
 
 func fillAnswer(a *model.Answer, req *model.SearchRequest) {
+	if len(a.BestAnswer) == 0 {
+		a.BestAnswer = make([]string, 0)
+	}
+
+	if len(a.AllAnswer) == 0 {
+		a.AllAnswer = make([][]string, 0)
+	}
+
 	a.AnswerIndex = findIndices(a.BestAnswer, req.Options)
 	a.AnswerText = strings.Join(a.BestAnswer, "#")
 

@@ -11,6 +11,7 @@ type Config struct {
 	API               []search.API         `yaml:"api"`
 	Elasticsearch     elasticsearch.Config `yaml:"elasticsearch"`
 	RecordEmptyAnswer bool                 `yaml:"recordEmptyAnswer"`
+	Mysql             string               `yaml:"mysql"`
 }
 
 // LimitConfig 限流配置

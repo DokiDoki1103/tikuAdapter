@@ -52,7 +52,7 @@
             <a-button type="primary" @click="showModal({
               type: 0,
               question: '',
-              options: '[1]',
+              options: '[]',
               answer: '[]'
             }, 2)">
               <FormOutlined />
@@ -243,11 +243,15 @@ export default defineComponent({
       this.fetchData()
     },
 
-    showModal(data, act) {
-      formData.value = data
-      console.log(formData.value)
+    showModal(record, act) {
+      if (record.options === '[]' || record.options === '') {
+        record.options = '[1]'
+      }
+      if (record.answer === '[]' || record.answer === '') {
+        record.answer = '[1]'
+      }
+      formData.value = record
       action.value = act
-
       visible.value = true
     },
 

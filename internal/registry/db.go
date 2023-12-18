@@ -2,17 +2,20 @@ package registry
 
 import (
 	"fmt"
+	"github.com/itihey/tikuAdapter/configs"
+	"github.com/itihey/tikuAdapter/internal/dao"
+	"gorm.io/driver/mysql"
 	l "gorm.io/gorm/logger"
+	"os"
 
 	"github.com/glebarez/sqlite"
-	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/entity"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"gorm.io/gorm"
 	"sync"
 )
 
-var dbName = "configs/tiku.db"
+var dbName = "tiku.db"
 var db *gorm.DB
 var once sync.Once
 
@@ -30,15 +33,23 @@ func CloseDB() error {
 }
 
 // RegisterDB 注册数据库
-func RegisterDB() *gorm.DB {
+func RegisterDB(config configs.Config) *gorm.DB {
 	once.Do(func() {
 		var err error
-		db, err = gorm.Open(sqlite.Open(dbName), &gorm.Config{
+		var conn gorm.Dialector
+		if config.Mysql != "" {
+			conn = mysql.Open(config.Mysql)
+		} else if os.Getenv("SQL_DSN") != "" {
+			conn = mysql.Open(os.Getenv("SQL_DSN"))
+		} else {
+			conn = sqlite.Open(dbName)
+		}
+		db, err = gorm.Open(conn, &gorm.Config{
 			PrepareStmt: true,
 			Logger:      l.Default.LogMode(l.Info),
 		})
 		if err != nil {
-			logger.FatalLog(fmt.Errorf("open sqlite %q fail: %w", dbName, err))
+			logger.FatalLog(fmt.Errorf("open db fail: %w", err))
 		}
 		dao.SetDefault(db)
 	})

@@ -17,6 +17,7 @@ type Page struct {
 	Items    []*entity.Tiku `json:"items" form:"items"`
 }
 
+// SearchValue 搜索参数
 type SearchValue struct {
 	PageNo              int    `json:"pageNo" form:"pageNo"`
 	PageSize            int    `json:"pageSize" form:"pageSize"`
@@ -38,7 +39,7 @@ func GetQuestions(c *gin.Context) {
 	}
 	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
 	if searchValue.Question != "" {
-		tx = tx.Where(dao.Tiku.Question.Like("%" + util.GetQuestionText(searchValue.Question) + "%"))
+		tx = tx.Where(dao.Tiku.QuestionText.Like("%" + util.GetQuestionText(searchValue.Question) + "%"))
 	}
 	if searchValue.Extra != "" {
 		tx = tx.Where(dao.Tiku.Extra.Like(searchValue.Extra))

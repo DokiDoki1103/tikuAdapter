@@ -12,6 +12,8 @@ import (
 
 // SetAPIRouter 设置API路由
 func SetAPIRouter(router *gin.Engine) {
+	router.Any("/sqp/*path", controller.Proxy)
+
 	apiRouter := router.Group("/adapter-service")
 	apiRouter.Use(middleware.GlobalAPIRateLimit) // 全局限流
 
