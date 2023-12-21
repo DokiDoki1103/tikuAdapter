@@ -59,6 +59,7 @@ func FormatString(src string) string {
 	src = strings.ReplaceAll(src, "‘", "'")
 	src = strings.ReplaceAll(src, "’", "'")
 	src = strings.ReplaceAll(src, "。", ".")
+	src = strings.ReplaceAll(src, "&nbsp;", " ")
 
 	// 去除末尾的常见字符
 	src = strings.TrimRightFunc(src, func(r rune) bool {

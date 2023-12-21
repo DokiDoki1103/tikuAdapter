@@ -13,6 +13,8 @@ import (
 
 // FillHash 填充题库的hash值
 func FillHash(t *entity.Tiku) {
+	t.Question = util.FormatString(t.Question)
+
 	questionText := util.GetQuestionText(t.Question)
 	t.QuestionText = questionText
 	t.QuestionHash = strutil.ShortMd5(questionText)
