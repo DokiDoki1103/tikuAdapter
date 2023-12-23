@@ -120,7 +120,7 @@ import {
   parseFile,
   reParseFile
 } from '@/api/api'
-import {getQuestionType} from "@/utils/uitls";
+import {getQuestionTypeByName} from "@/utils/uitls";
 
 const UploadId = ref('');
 const problemArr = ref([]);
@@ -226,7 +226,7 @@ export default defineComponent({
       const result = data.value.map(item => {
         const data = {
           question: item.content,
-          type: getQuestionType()[item.typeAlias],
+          type: getQuestionTypeByName(item.typeAlias),
         }
 
         if (item.options) {

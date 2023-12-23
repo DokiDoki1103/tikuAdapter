@@ -27,13 +27,18 @@ func FillHash(t *entity.Tiku) {
 	}
 }
 
-// CollectEmptyAnswer 收集没有搜索到的答案
-func CollectEmptyAnswer(resp model.SearchRequest) {
+// CollectAnswer 收集没有搜索到的答案
+func CollectAnswer(resp model.SearchResponse) {
 	opts, _ := json.Marshal(resp.Options)
+	ans := "[]"
+	if len(resp.Answer.AnswerKey) > 0 {
+		marshal, _ := json.Marshal(resp.Answer.BestAnswer)
+		ans = string(marshal)
+	}
 	t := entity.Tiku{
 		Type:     int32(resp.Type),
 		Question: resp.Question,
-		Answer:   "[]",
+		Answer:   ans,
 		Options:  string(opts),
 		Plat:     int32(resp.Plat),
 		Source:   -1,

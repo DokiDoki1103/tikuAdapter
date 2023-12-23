@@ -37,6 +37,7 @@ func GetQuestions(c *gin.Context) {
 		})
 		return
 	}
+	searchValue.Question = util.FormatString(searchValue.Question)
 	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
 	if searchValue.Question != "" {
 		tx = tx.Where(dao.Tiku.QuestionText.Like("%" + util.GetQuestionText(searchValue.Question) + "%"))

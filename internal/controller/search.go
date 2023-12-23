@@ -88,10 +88,8 @@ func Search(c *gin.Context) {
 
 	resp := util.FillAnswerResponse(result, &req)
 
-	if len(result) == 0 {
-		if manager.GetManager().GetConfig().RecordEmptyAnswer {
-			middleware.CollectEmptyAnswer(req)
-		}
+	if c.Query("collect") != "" {
+		middleware.CollectAnswer(resp)
 	}
 	c.JSON(http.StatusOK, resp)
 }

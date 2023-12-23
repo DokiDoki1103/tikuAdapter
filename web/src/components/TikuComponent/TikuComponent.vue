@@ -127,7 +127,7 @@ import {
 } from '@ant-design/icons-vue';
 import OptionBox from './OptionBox.vue'
 import AnswerBox from './AnswerBox.vue'
-import {getQuestionType} from "@/utils/uitls";
+import {questionType} from "@/utils/uitls";
 
 const style = {
   padding: "0 0 24px"
@@ -183,7 +183,7 @@ const formData = ref({})
 const visible = ref(false)
 const action = ref(2) // 1是编辑 2是添加
 const searchValue = ref({})
-const quesType = ref(getQuestionType())
+const quesType = ref(questionType)
 export default defineComponent({
   setup() {
     const router = useRouter();
