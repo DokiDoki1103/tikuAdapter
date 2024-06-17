@@ -6,6 +6,7 @@ import (
 	"github.com/gookit/goutil/strutil"
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/entity"
+	"github.com/itihey/tikuAdapter/internal/registry/manager"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
@@ -35,17 +36,20 @@ func CollectAnswer(resp model.SearchResponse) {
 		marshal, _ := json.Marshal(resp.Answer.BestAnswer)
 		ans = string(marshal)
 	}
-	t := entity.Tiku{
-		Type:     int32(resp.Type),
-		Question: resp.Question,
-		Answer:   ans,
-		Options:  string(opts),
-		Plat:     int32(resp.Plat),
-		Source:   -1,
-	}
-	FillHash(&t)
-	err := dao.Tiku.Create(&t)
-	if err != nil {
-		logger.SysError(fmt.Sprintf("收集答案失败 %v", err))
+	//记录空答案或者有答案才会被记录
+	if manager.GetManager().GetConfig().RecordEmptyAnswer || ans != "[]" {
+		t := entity.Tiku{
+			Type:     int32(resp.Type),
+			Question: resp.Question,
+			Answer:   ans,
+			Options:  string(opts),
+			Plat:     int32(resp.Plat),
+			Source:   -1,
+		}
+		FillHash(&t)
+		err := dao.Tiku.Create(&t)
+		if err != nil {
+			logger.SysError(fmt.Sprintf("收集答案失败 %v", err))
+		}
 	}
 }

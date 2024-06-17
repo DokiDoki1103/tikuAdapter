@@ -88,7 +88,7 @@ func Search(c *gin.Context) {
 
 	resp := util.FillAnswerResponse(result, &req)
 
-	if c.Query("collect") != "" {
+	if len(localAnswer) == 0 { //只有本地题库没有答案才会记录
 		middleware.CollectAnswer(resp)
 	}
 	c.JSON(http.StatusOK, resp)
