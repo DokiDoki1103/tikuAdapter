@@ -10,6 +10,7 @@ import (
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
+	"os"
 )
 
 // FillHash 填充题库的hash值
@@ -29,16 +30,17 @@ func FillHash(t *entity.Tiku) {
 }
 
 // CollectAnswer 收集没有搜索到的答案
-func CollectAnswer(resp model.SearchResponse) {
+func CollectAnswer(resp model.SearchResponse, extra string) {
 	opts, _ := json.Marshal(resp.Options)
 	ans := "[]"
 	if len(resp.Answer.AnswerKey) > 0 {
 		marshal, _ := json.Marshal(resp.Answer.BestAnswer)
 		ans = string(marshal)
 	}
-	//记录空答案或者有答案才会被记录
-	if manager.GetManager().GetConfig().RecordEmptyAnswer || ans != "[]" {
+	// 记录空答案或者有答案才会被记录
+	if manager.GetManager().GetConfig().RecordEmptyAnswer || ans != "[]" || os.Getenv("SQL_DSN") != "" {
 		t := entity.Tiku{
+			Extra:    extra,
 			Type:     int32(resp.Type),
 			Question: resp.Question,
 			Answer:   ans,
