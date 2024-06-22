@@ -20,7 +20,7 @@ func FillHash(t *entity.Tiku) {
 	questionText := util.GetQuestionText(t.Question)
 	t.QuestionText = questionText
 	t.QuestionHash = strutil.ShortMd5(questionText)
-	t.Hash = strutil.Md5(t.QuestionHash + t.Options + string(t.Type) + t.Extra)
+	t.Hash = strutil.Md5(t.QuestionHash + t.Options + string(t.Type))
 
 	if t.Answer == "" {
 		t.Answer = "[]"
