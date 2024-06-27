@@ -23,6 +23,7 @@ func Search(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, global.ErrorParam)
 		return
 	}
+	req.Extra = c.Query("extra")
 
 	var result [][]string                          // 最后所有的答案的二维数组
 	var localAnswer [][]string                     // 本地答案

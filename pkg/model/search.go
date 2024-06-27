@@ -7,6 +7,8 @@ type SearchRequest struct {
 	Question string   `json:"question"`
 	Options  []string `json:"options"`
 	Type     uint     `json:"type"`
+
+	Extra string `json:"extra"`
 }
 
 // SearchResponse 搜题响应体

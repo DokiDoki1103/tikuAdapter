@@ -7,6 +7,7 @@ import (
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
+	"log"
 )
 
 // DB mysql 或者sqlite3
@@ -38,6 +39,13 @@ func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, er
 			return nil, err
 		}
 		find = find2
+	}
+	//如果数据库中没有extra那么自动补全他
+	if len(find) == 1 && find[0].Extra == "" {
+		_, err1 := tiku.Where(tiku.ID.Eq(find[0].ID)).Update(tiku.Extra, req.Extra)
+		if err1 != nil {
+			log.Println("更新extra失败", err1)
+		}
 	}
 	for i := range find {
 		var answers []string // 最后所有的答案的二维数组
