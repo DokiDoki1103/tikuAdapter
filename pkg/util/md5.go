@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 )
 
+// FileMd5 -
 func FileMd5(f *multipart.FileHeader) (string, error) {
 	src, err := f.Open()
 	if err != nil {

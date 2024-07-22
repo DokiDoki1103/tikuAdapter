@@ -18,6 +18,7 @@ func SetAPIRouter(router *gin.Engine) {
 	apiRouter.Use(middleware.GlobalAPIRateLimit) // 全局限流
 
 	apiRouter.POST("/upload", controller.UploadFile)
+	apiRouter.GET("/plat", controller.Plat)
 
 	apiRouter.POST("/search", controller.Search)
 	apiRouter.POST("/parser", controller.Parser)

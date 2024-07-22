@@ -13,6 +13,7 @@ type Config struct {
 	RecordEmptyAnswer bool                 `yaml:"recordEmptyAnswer"`
 	Mysql             string               `yaml:"mysql"`
 	OSS               OSSConfig            `yaml:"oss"`
+	Plat              []PlatConfig         `yaml:"plat"`
 }
 
 // LimitConfig 限流配置
@@ -22,9 +23,16 @@ type LimitConfig struct {
 	Requests uint64 `yaml:"requests"`
 }
 
+// OSSConfig 阿里云oss配置
 type OSSConfig struct {
 	EndPoint        string `yaml:"endpoint"`
 	AccessKeyID     string `yaml:"accessKeyID"`
 	AccessKeySecret string `yaml:"accessKeySecret"`
 	BucketName      string `yaml:"bucketName"`
+}
+
+// PlatConfig 自定义的平台类型
+type PlatConfig struct {
+	Label string `yaml:"label"`
+	Value string `yaml:"value"`
 }

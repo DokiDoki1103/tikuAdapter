@@ -11,6 +11,12 @@ import (
 	"net/http"
 )
 
+// Plat -
+func Plat(c *gin.Context) {
+	c.JSON(http.StatusOK, manager.GetManager().GetConfig().Plat)
+}
+
+// UploadFile -
 func UploadFile(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
