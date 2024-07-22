@@ -12,6 +12,7 @@ type Config struct {
 	Elasticsearch     elasticsearch.Config `yaml:"elasticsearch"`
 	RecordEmptyAnswer bool                 `yaml:"recordEmptyAnswer"`
 	Mysql             string               `yaml:"mysql"`
+	OSS               OSSConfig            `yaml:"oss"`
 }
 
 // LimitConfig 限流配置
@@ -19,4 +20,11 @@ type LimitConfig struct {
 	Enable   bool   `yaml:"enable"`
 	Duration uint   `yaml:"duration"`
 	Requests uint64 `yaml:"requests"`
+}
+
+type OSSConfig struct {
+	EndPoint        string `yaml:"endpoint"`
+	AccessKeyID     string `yaml:"accessKeyID"`
+	AccessKeySecret string `yaml:"accessKeySecret"`
+	BucketName      string `yaml:"bucketName"`
 }
