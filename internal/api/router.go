@@ -23,6 +23,7 @@ func SetAPIRouter(router *gin.Engine) {
 	apiRouter.POST("/search", controller.Search)
 	apiRouter.POST("/parser", controller.Parser)
 
+	apiRouter.GET("/courses", controller.Courses)
 	apiRouter.POST("/questions/search", controller.GetQuestions)
 	apiRouter.POST("/questions", controller.CreateQuestion)
 	apiRouter.PUT("/questions/:id", controller.UpdateQuestions)

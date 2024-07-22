@@ -133,3 +133,29 @@ func CreateQuestion(c *gin.Context) {
 		"message": "成功创建" + strconv.Itoa(count) + "条数据",
 	})
 }
+
+// Courses 获取这个平台的所有课程名称
+func Courses(c *gin.Context) {
+
+	tx := dao.Tiku.Select(dao.Tiku.CourseName)
+
+	if c.Query("plat") != "" {
+		i, err := strconv.Atoi(c.Query("plat"))
+		if err != nil {
+			c.String(400, "平台类型有错误")
+			return
+		}
+		tx.Where(dao.Tiku.Plat.Eq(int32(i)))
+	}
+	find, err := tx.Group(dao.Tiku.CourseName).Find()
+	if err != nil {
+		return
+	}
+	courses := make([]string, 0)
+	for i := range find {
+		if find[i].CourseName != "" {
+			courses = append(courses, find[i].CourseName)
+		}
+	}
+	c.JSON(200, courses)
+}
