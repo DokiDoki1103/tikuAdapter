@@ -40,13 +40,10 @@ func GetQuestions(c *gin.Context) {
 	searchValue.Question = util.FormatString(searchValue.Question)
 	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
 	if searchValue.Question != "" {
-		tx = tx.Where(dao.Tiku.QuestionText.Like("%" + util.GetQuestionText(searchValue.Question) + "%"))
+		tx = tx.Where(dao.Tiku.Question.Like("%" + searchValue.Question + "%"))
 	}
 	if searchValue.Extra != "" {
 		tx = tx.Where(dao.Tiku.Extra.Like(searchValue.Extra))
-	}
-	if searchValue.Source != 0 {
-		tx = tx.Where(dao.Tiku.Source.Eq(searchValue.Source))
 	}
 
 	if searchValue.OnlyShowEmptyAnswer {
@@ -125,13 +122,9 @@ func CreateQuestion(c *gin.Context) {
 	}
 	var count = 0
 	for _, tiku := range tikus {
-		if tiku.Extra != "" {
-			tiku.Source = 2
-		} else {
-			tiku.Source = 1
-		}
-		middleware.FillHash(tiku)
-		err := dao.Tiku.Create(tiku)
+		t := tiku
+		middleware.FillHash(t)
+		err := dao.Tiku.Create(t)
 		if err == nil {
 			count++
 		}

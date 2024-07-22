@@ -16,7 +16,7 @@ func main() {
 		FieldWithIndexTag: true,
 		FieldWithTypeTag:  true,
 	})
-	db, _ := gorm.Open(mysql.Open(os.Getenv("DB_DSN")))
+	db, _ := gorm.Open(mysql.Open(os.Getenv("SQL_DSN")))
 	g.UseDB(db)
 
 	g.ApplyBasic(

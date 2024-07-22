@@ -3,20 +3,20 @@ package model
 // SearchRequest 搜题的请求体
 type SearchRequest struct {
 	QID      string   `json:"qid"`
-	Plat     uint     `json:"plat"`
+	Plat     int      `json:"plat"`
 	Question string   `json:"question"`
 	Options  []string `json:"options"`
-	Type     uint     `json:"type"`
+	Type     int      `json:"type"`
 
 	Extra string `json:"extra"`
 }
 
 // SearchResponse 搜题响应体
 type SearchResponse struct {
-	Plat     uint     `json:"plat"`
+	Plat     int      `json:"plat"`
 	Question string   `json:"question"`
 	Options  []string `json:"options"`
-	Type     uint     `json:"type"`
+	Type     int      `json:"type"`
 	Answer   Answer   `json:"answer"` // 最相似，最可能的答案->即moreAnswer中出现最多的答案
 }
 

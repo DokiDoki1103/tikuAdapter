@@ -17,7 +17,7 @@ func IsFalse(s string) bool {
 }
 
 // FormatOptions 格式化选项
-func FormatOptions(options []string, questionType uint) []string {
+func FormatOptions(options []string, questionType int) []string {
 	if options == nil || len(options) == 0 {
 		return []string{}
 	}
@@ -89,7 +89,7 @@ func FullWidthStrToHalfWidthStr(str string) (result string) {
 	return result
 }
 
-func formatAnswer(answers [][]string, questionType uint) {
+func formatAnswer(answers [][]string, questionType int) {
 	for i := range answers {
 		answers[i] = FormatOptions(answers[i], questionType)
 	}

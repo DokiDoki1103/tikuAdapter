@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	code.sajari.com/docconv/v2 v2.0.0-pre.3
+	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/antlabs/strsim v0.0.3
 	github.com/elastic/go-elasticsearch/v8 v8.11.1
 	github.com/gin-contrib/static v0.0.1

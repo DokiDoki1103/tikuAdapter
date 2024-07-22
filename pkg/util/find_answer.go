@@ -49,7 +49,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 						}
 						return -1
 					})
-					if uint(len(ans)) > resp.Type {
+					if len(ans) > resp.Type {
 						filterAnswer = append(filterAnswer, ans)
 					}
 				}

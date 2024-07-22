@@ -18,17 +18,20 @@ import (
 var (
 	Q    = new(Query)
 	Tiku *tiku
+	User *user
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	Tiku = &Q.Tiku
+	User = &Q.User
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:   db,
 		Tiku: newTiku(db, opts...),
+		User: newUser(db, opts...),
 	}
 }
 
@@ -36,6 +39,7 @@ type Query struct {
 	db *gorm.DB
 
 	Tiku tiku
+	User user
 }
 
 func (q *Query) Available() bool { return q.db != nil }
@@ -44,6 +48,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:   db,
 		Tiku: q.Tiku.clone(db),
+		User: q.User.clone(db),
 	}
 }
 
@@ -59,16 +64,19 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:   db,
 		Tiku: q.Tiku.replaceDB(db),
+		User: q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
 	Tiku ITikuDo
+	User IUserDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
 		Tiku: q.Tiku.WithContext(ctx),
+		User: q.User.WithContext(ctx),
 	}
 }
 

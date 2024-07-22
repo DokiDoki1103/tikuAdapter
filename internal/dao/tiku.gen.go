@@ -29,14 +29,12 @@ func newTiku(db *gorm.DB, opts ...gen.DOOption) tiku {
 	_tiku.ALL = field.NewAsterisk(tableName)
 	_tiku.ID = field.NewInt32(tableName, "id")
 	_tiku.Question = field.NewString(tableName, "question")
-	_tiku.QuestionText = field.NewString(tableName, "question_text")
 	_tiku.Type = field.NewInt32(tableName, "type")
 	_tiku.Options = field.NewString(tableName, "options")
 	_tiku.Answer = field.NewString(tableName, "answer")
 	_tiku.Plat = field.NewInt32(tableName, "plat")
-	_tiku.QuestionHash = field.NewString(tableName, "question_hash")
 	_tiku.Hash = field.NewString(tableName, "hash")
-	_tiku.Source = field.NewInt32(tableName, "source")
+	_tiku.CourseName = field.NewString(tableName, "course_name")
 	_tiku.Extra = field.NewString(tableName, "extra")
 
 	_tiku.fillFieldMap()
@@ -47,18 +45,16 @@ func newTiku(db *gorm.DB, opts ...gen.DOOption) tiku {
 type tiku struct {
 	tikuDo
 
-	ALL          field.Asterisk
-	ID           field.Int32
-	Question     field.String
-	QuestionText field.String // 只保留汉子数字字母，方便模糊匹配
-	Type         field.Int32
-	Options      field.String
-	Answer       field.String
-	Plat         field.Int32
-	QuestionHash field.String // 只有问题的短hash
-	Hash         field.String // 整个实体的hash,防止重复
-	Source       field.Int32  // 0采集1自建2文件类
-	Extra        field.String // 扩展字段,多用于tag
+	ALL        field.Asterisk
+	ID         field.Int32
+	Question   field.String // 问题内容
+	Type       field.Int32  // 问题类型
+	Options    field.String // 选项内容
+	Answer     field.String // 正确答案
+	Plat       field.Int32  // 有可能区分不同的平台不同的题库
+	Hash       field.String // 整个实体的hash,防止重复
+	CourseName field.String // 课程名称
+	Extra      field.String // 扩展字段,多用于tag
 
 	fieldMap map[string]field.Expr
 }
@@ -77,14 +73,12 @@ func (t *tiku) updateTableName(table string) *tiku {
 	t.ALL = field.NewAsterisk(table)
 	t.ID = field.NewInt32(table, "id")
 	t.Question = field.NewString(table, "question")
-	t.QuestionText = field.NewString(table, "question_text")
 	t.Type = field.NewInt32(table, "type")
 	t.Options = field.NewString(table, "options")
 	t.Answer = field.NewString(table, "answer")
 	t.Plat = field.NewInt32(table, "plat")
-	t.QuestionHash = field.NewString(table, "question_hash")
 	t.Hash = field.NewString(table, "hash")
-	t.Source = field.NewInt32(table, "source")
+	t.CourseName = field.NewString(table, "course_name")
 	t.Extra = field.NewString(table, "extra")
 
 	t.fillFieldMap()
@@ -102,17 +96,15 @@ func (t *tiku) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *tiku) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 11)
+	t.fieldMap = make(map[string]field.Expr, 9)
 	t.fieldMap["id"] = t.ID
 	t.fieldMap["question"] = t.Question
-	t.fieldMap["question_text"] = t.QuestionText
 	t.fieldMap["type"] = t.Type
 	t.fieldMap["options"] = t.Options
 	t.fieldMap["answer"] = t.Answer
 	t.fieldMap["plat"] = t.Plat
-	t.fieldMap["question_hash"] = t.QuestionHash
 	t.fieldMap["hash"] = t.Hash
-	t.fieldMap["source"] = t.Source
+	t.fieldMap["course_name"] = t.CourseName
 	t.fieldMap["extra"] = t.Extra
 }
 

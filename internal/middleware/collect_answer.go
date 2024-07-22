@@ -9,18 +9,14 @@ import (
 	"github.com/itihey/tikuAdapter/internal/registry/manager"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
-	"github.com/itihey/tikuAdapter/pkg/util"
 	"os"
+	"sort"
+	"strconv"
 )
 
 // FillHash 填充题库的hash值
 func FillHash(t *entity.Tiku) {
-	t.Question = util.FormatString(t.Question)
-
-	questionText := util.GetQuestionText(t.Question)
-	t.QuestionText = questionText
-	t.QuestionHash = strutil.ShortMd5(questionText)
-	t.Hash = strutil.Md5(t.QuestionHash + t.Options + string(t.Type))
+	t.Hash = strutil.Md5(t.Question + t.Options + strconv.Itoa(int(t.Type)) + strconv.Itoa(int(t.Plat)))
 
 	if t.Answer == "" {
 		t.Answer = "[]"
@@ -31,9 +27,16 @@ func FillHash(t *entity.Tiku) {
 
 // CollectAnswer 收集没有搜索到的答案
 func CollectAnswer(resp model.SearchResponse, extra string) {
-	opts, _ := json.Marshal(resp.Options)
+	sort.Strings(resp.Options) //将选项排序
+	opts, err := json.Marshal(resp.Options)
+	if err != nil {
+		opts = []byte("[]")
+	}
 	ans := "[]"
-	if len(resp.Answer.AnswerKey) > 0 {
+	if len(resp.Answer.AnswerKey) > 0 && len(resp.Answer.BestAnswer) > 0 { //客观题能直接找到answerKey
+		marshal, _ := json.Marshal(resp.Answer.BestAnswer)
+		ans = string(marshal)
+	} else if len(resp.Answer.BestAnswer) > 0 && resp.Type != 3 && resp.Type != 0 && resp.Type != 1 { // 排除客观题之后依然有答案
 		marshal, _ := json.Marshal(resp.Answer.BestAnswer)
 		ans = string(marshal)
 	}
@@ -46,7 +49,6 @@ func CollectAnswer(resp model.SearchResponse, extra string) {
 			Answer:   ans,
 			Options:  string(opts),
 			Plat:     int32(resp.Plat),
-			Source:   -1,
 		}
 		FillHash(&t)
 		err := dao.Tiku.Create(&t)
