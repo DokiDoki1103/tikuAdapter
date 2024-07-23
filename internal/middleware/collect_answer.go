@@ -29,9 +29,12 @@ func FillHash(t *entity.Tiku) {
 	}
 	sort.Strings(options) // 将选项排序
 
-	optionsStr, _ := json.Marshal(options)
+	sortOptionsStr, err := json.Marshal(options)
+	if err != nil {
+		sortOptionsStr = []byte("[]")
+	}
 
-	t.Hash = strutil.Md5(t.Question + string(optionsStr) + strconv.Itoa(int(t.Type)) + strconv.Itoa(int(t.Plat)))
+	t.Hash = strutil.Md5(t.Question + string(sortOptionsStr) + strconv.Itoa(int(t.Type)) + strconv.Itoa(int(t.Plat)))
 }
 
 // CollectAnswer 收集没有搜索到的答案
