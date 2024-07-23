@@ -4,7 +4,8 @@ export const questionType = {
     '2': '填空题',
     '3': '判断题',
     '4': '简答题',
-    '-4': '大作业'
+    '-4': '大作业',
+    '15':'阅读理解'
 }
 
 export function getQuestionTypeByName(name) {
