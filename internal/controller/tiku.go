@@ -25,6 +25,9 @@ type SearchValue struct {
 	Extra               string `json:"extra" form:"extra"`
 	OnlyShowEmptyAnswer bool   `json:"onlyShowEmptyAnswer" form:"onlyShowEmptyAnswer"`
 	Question            string `json:"question" form:"question"`
+	CourseName          string `json:"courseName" form:"courseName"`
+
+	Plat int32 `json:"plat" form:"plat"`
 }
 
 // GetQuestions 获取题库
@@ -44,6 +47,14 @@ func GetQuestions(c *gin.Context) {
 	}
 	if searchValue.Extra != "" {
 		tx = tx.Where(dao.Tiku.Extra.Like(searchValue.Extra))
+	}
+
+	if searchValue.CourseName != "" {
+		tx = tx.Where(dao.Tiku.CourseName.Eq(searchValue.CourseName))
+	}
+
+	if searchValue.Plat != 0 {
+		tx = tx.Where(dao.Tiku.Plat.Eq(searchValue.Plat))
 	}
 
 	if searchValue.OnlyShowEmptyAnswer {

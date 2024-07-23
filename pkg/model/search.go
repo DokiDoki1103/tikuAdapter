@@ -8,6 +8,8 @@ type SearchRequest struct {
 	Options  []string `json:"options"`
 	Type     int      `json:"type"`
 
+	CourseName string `json:"courseName"`
+
 	Extra string `json:"extra"`
 }
 
