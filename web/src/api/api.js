@@ -30,10 +30,18 @@ adapterInstance.interceptors.response.use(responseInterceptor, errorInterceptor)
 xmig6Instance.interceptors.response.use(responseInterceptor, errorInterceptor);
 
 
-
-export async function getPlat(){
+export async function getPlat() {
     return await adapterInstance.get('/plat')
 }
+
+export async function getCourses(plat) {
+    return await adapterInstance.get('/courses', {
+        params: {
+            plat: plat
+        }
+    })
+}
+
 export async function getQuestions(data) {
     return await adapterInstance.post('/questions/search', data)
 }
@@ -55,7 +63,7 @@ export async function parseFile(data) {
 }
 
 export async function reParseFile(data) {
-    return await xmig6Instance.post(`/parse`, qs.stringify({html:data.html}))
+    return await xmig6Instance.post(`/parse`, qs.stringify({html: data.html}))
 }
 
 

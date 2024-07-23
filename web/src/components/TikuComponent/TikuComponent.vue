@@ -7,7 +7,7 @@
       <a-col :span="5">
         <a-form-item label="来源" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-select
-              v-model:value="value"
+              v-model:value="platValue"
               show-search
               placeholder="请选择"
               :options="platType"
@@ -16,23 +16,37 @@
           </a-select>
         </a-form-item>
       </a-col>
-      <a-col :span="5">
-        <a-form-item label="拓展属性" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-input placeholder="别乱加" v-model:value="searchValue.extra"/>
+      <a-col :span="4">
+        <a-form-item label=" 课程" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-select
+              v-model:value="courseValue"
+              show-search
+              placeholder="请选择"
+              :options="courses"
+          >
+          </a-select>
         </a-form-item>
       </a-col>
-      <a-col :span="5">
+      <a-col :span="4">
+        <a-form-item label="类型" :label-col="labelCol" :wrapper-col="wrapperCol" style="width: 100%;">
+          <a-select
+              v-model:value="typeValue"
+              show-search
+              placeholder="请选择"
+              :options="typeList"
+          >
+          </a-select>
+        </a-form-item>
+      </a-col>
+      <a-col :span="6">
         <a-form-item label="问题">
-          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 160px;"/>
+          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 280px;"/>
         </a-form-item>
       </a-col>
-      <a-col :span="5">
-        <a-form-item label="仅显示无答案" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-checkbox v-model:checked="searchValue.onlyShowEmptyAnswer">
-          </a-checkbox>
-        </a-form-item>
-      </a-col>
-      <a-col :span="4" style="display: flex; justify-content: end;">
+      <div>
+        <a-checkbox v-model:checked="searchValue.onlyShowEmptyAnswer">无答案</a-checkbox>
+      </div>
+      <a-col :span="2" style="display: flex; justify-content: end;">
         <a-form-item>
           <a-button type="primary" @click="onSearch" @keyup.enter="onSearch">
             <SearchOutlined/>
@@ -146,10 +160,11 @@ import {defineComponent, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {
   getPlat,
+  getCourses,
   getQuestions,
   updateQuestions,
   delQuestions,
-  createQuestions
+  createQuestions,
 } from '@/api/api'
 import {
   FormOutlined,
@@ -212,7 +227,12 @@ const page = ref({
   total: 0
 })
 
+const typeValue = ref(null)
+const typeList = ref([])
 const platType = ref([])
+const courses = ref([])
+const courseValue = ref(null)
+const platValue = ref(null)
 const formData = ref({})
 const answer = ref([])
 const visible = ref(false)
@@ -226,7 +246,12 @@ export default defineComponent({
       router.push('/import');
     };
     return {
+      typeList,
+      typeValue,
+      courses,
       platType,
+      courseValue,
+      platValue,
       answer,
       page,
       data,
@@ -251,31 +276,68 @@ export default defineComponent({
     DownloadOutlined
   },
   mounted() {
+    this.getType()
+    this.getCourses()
     this.getPlat()
     this.fetchData()
   },
   methods: {
-    selectChange(info) {
-      console.log(info)
+    async selectChange(info) {
+      const list = await getCourses(info)
+      if (list && list.length){
+        await this.getCourses(list)
+      }else {
+        courses.value = []
+      }
     },
     handleChange(info) {
       const status = info.file.status;
       if (status === 'done') {
         message.success(`${info.file.name} 上传成功`);
         fileList.value.push(info.file.response)
-
         this.$refs.answerBox.pushAnswer(info.file.response)
       } else if (status === 'error') {
         // 处理上传失败
         message.error(`${info.file.name} 上传失败`);
       }
     },
+    typeObjects(types) {
+      return Object.entries(types).map(([key, value]) => ({
+        value: parseInt(key),
+        label: value
+      }));
+    },
+    getType() {
+     const arr = this.typeObjects(questionType)
+     typeList.value = arr
+    },
+    async getCourses(data) {
+      if (data) {
+        courses.value = data.map(i => {
+          return {
+            value: i,
+            label: i,
+          }
+        })
+      } else {
+        const list = await getCourses()
+        if (list && list.length) {
+          courses.value = list.map(i => {
+            return {
+              value: i,
+              label: i,
+            }
+          })
+        }
+      }
+
+    },
     async getPlat() {
       const list = await getPlat()
       if (list && list.length) {
         platType.value = list.map(i => {
           return {
-            value: i.Value,
+            value: parseInt(i.Value),
             label: i.Label,
           }
         })
@@ -285,6 +347,9 @@ export default defineComponent({
     async fetchData() {
       fileList.value = []
       const res = await getQuestions({
+        courseName: courseValue.value ? courseValue.value : "",
+        plat: !isNaN(parseInt(platValue.value)) ? parseInt(platValue.value) : -1,
+        type: !isNaN(parseInt(typeValue.value)) ? parseInt(typeValue.value) : -1,
         pageSize: page.value.pageSize,
         pageNo: page.value.pageNo - 1,
         question: searchValue.value.question || '',
