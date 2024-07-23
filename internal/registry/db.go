@@ -57,5 +57,24 @@ func RegisterDB(config configs.Config) *gorm.DB {
 	if err != nil {
 		logger.FatalLog(fmt.Errorf("auto migrate fail: %w", err))
 	}
+
+	err = db.AutoMigrate(&entity.User{})
+	if err != nil {
+		logger.FatalLog(fmt.Errorf("auto migrate fail: %w", err))
+	}
+
+	err = db.AutoMigrate(&entity.Log{})
+	if err != nil {
+		logger.FatalLog(fmt.Errorf("auto migrate fail: %w", err))
+	}
+
+	// 首先需要注册一个默认用户
+	user := entity.User{
+		ID:       1,
+		Username: "admin",
+		Password: "123456",
+		Nickname: "管理员",
+	}
+	_ = dao.User.Create(&user)
 	return db
 }

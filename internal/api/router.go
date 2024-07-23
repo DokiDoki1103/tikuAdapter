@@ -12,9 +12,11 @@ import (
 
 // SetAPIRouter 设置API路由
 func SetAPIRouter(router *gin.Engine) {
+
 	router.Any("/sqp/*path", controller.Proxy)
 
 	apiRouter := router.Group("/adapter-service")
+
 	apiRouter.Use(middleware.GlobalAPIRateLimit) // 全局限流
 
 	apiRouter.POST("/upload", controller.UploadFile)
@@ -28,6 +30,11 @@ func SetAPIRouter(router *gin.Engine) {
 	apiRouter.POST("/questions", controller.CreateQuestion)
 	apiRouter.PUT("/questions/:id", controller.UpdateQuestions)
 	apiRouter.DELETE("/questions/:id", controller.DeleteQuestion)
+
+	apiRouter.GET("/user/login", controller.UserLogin)                    // 登录接口
+	apiRouter.POST("/user", controller.Auth, controller.CreateUser)       // 创建用户
+	apiRouter.DELETE("/user/:id", controller.Auth, controller.DeleteUser) // 删除用户
+
 }
 
 type embedFileSystem struct {

@@ -16,24 +16,33 @@ import (
 
 // FillHash 填充题库的hash值
 func FillHash(t *entity.Tiku) {
-	t.Hash = strutil.Md5(t.Question + t.Options + strconv.Itoa(int(t.Type)) + strconv.Itoa(int(t.Plat)))
-
 	if t.Answer == "" {
 		t.Answer = "[]"
 	} else if t.Options == "" {
 		t.Options = "[]"
 	}
+
+	options := make([]string, 0)
+	err := json.Unmarshal([]byte(t.Options), &options)
+	if err != nil {
+		t.Options = "[]" // 如果解析失败，就设置为空数组
+	}
+	sort.Strings(options) // 将选项排序
+
+	optionsStr, _ := json.Marshal(options)
+
+	t.Hash = strutil.Md5(t.Question + string(optionsStr) + strconv.Itoa(int(t.Type)) + strconv.Itoa(int(t.Plat)))
 }
 
 // CollectAnswer 收集没有搜索到的答案
 func CollectAnswer(resp model.SearchResponse, extra string) {
-	sort.Strings(resp.Options) //将选项排序
+	sort.Strings(resp.Options) // 将选项排序
 	opts, err := json.Marshal(resp.Options)
 	if err != nil {
 		opts = []byte("[]")
 	}
 	ans := "[]"
-	if len(resp.Answer.AnswerKey) > 0 && len(resp.Answer.BestAnswer) > 0 { //客观题能直接找到answerKey
+	if len(resp.Answer.AnswerKey) > 0 && len(resp.Answer.BestAnswer) > 0 { // 客观题能直接找到answerKey
 		marshal, _ := json.Marshal(resp.Answer.BestAnswer)
 		ans = string(marshal)
 	} else if len(resp.Answer.BestAnswer) > 0 && resp.Type != 3 && resp.Type != 0 && resp.Type != 1 { // 排除客观题之后依然有答案

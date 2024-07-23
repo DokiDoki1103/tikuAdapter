@@ -61,7 +61,7 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 	}
 	resp, err := in.getHTTPClient().R().
 		SetBody(req).
-		SetHeader("plat", strconv.Itoa(int(req.Plat))).
+		SetHeader("plat", strconv.Itoa(req.Plat)).
 		Post(url)
 	if err != nil || resp.StatusCode() != 200 {
 		return nil, errors.ErrTargetServerError

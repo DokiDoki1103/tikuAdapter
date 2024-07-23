@@ -2,7 +2,6 @@ package search
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/gookit/goutil/strutil"
 	"github.com/itihey/tikuAdapter/internal/dao"
@@ -28,7 +27,6 @@ func (in *dBSearch) getHTTPClient() *resty.Client {
 // SearchAnswer 搜索答案
 func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, err error) {
 	answer = make([][]string, 0)
-
 	// 将用户传递来的选项进行排序
 	sortOptions := make([]string, len(req.Options))
 	copy(sortOptions, req.Options)
@@ -37,7 +35,6 @@ func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, er
 	if err1 != nil {
 		sortOptionsStr = []byte("[]")
 	}
-	fmt.Println(req.Question + string(sortOptionsStr) + strconv.Itoa(req.Type) + strconv.Itoa(req.Plat))
 	// 生成hash值
 	Hash := strutil.Md5(req.Question + string(sortOptionsStr) + strconv.Itoa(req.Type) + strconv.Itoa(req.Plat))
 	tiku := dao.Tiku
@@ -45,7 +42,7 @@ func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, er
 	if err != nil {
 		return nil, err
 	}
-	//如果数据库中没有extra那么自动补全他
+	// 如果数据库中没有extra那么自动补全他
 	if len(find) == 1 && find[0].Extra == "" {
 		_, err1 := tiku.Where(tiku.ID.Eq(find[0].ID)).Update(tiku.Extra, req.Extra)
 		if err1 != nil {

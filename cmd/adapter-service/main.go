@@ -26,6 +26,7 @@ func main() {
 			logger.FatalLog(err)
 		}
 	}(mg)
+
 	server := gin.Default()
 	api.SetAPIRouter(server)
 	api.SetWebRouter(buildFS, indexPage, server)
