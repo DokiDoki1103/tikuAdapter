@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="data.length">
     <a-row v-for="(item, index) in data" :key="index" class="rowStyle">
       <a-col :span="2">
         <div :class="item.check ? 'CheckStyle Check' : 'CheckStyle CheckNo'"
@@ -12,16 +12,16 @@
           </a-tooltip>
         </div>
       </a-col>
-      <a-col :span="21">
+      <a-col :span="17">
         <a-input v-model:value="item.value"/>
       </a-col>
-      <a-col :span="1">
-        <a-button v-if="index === 0" @click="addOption" type="link" primary>
+      <a-col :span="4">
+        <a-button v-if="index >= 0" @click="addOption" type="link" primary>
           <template #icon>
             <PlusCircleOutlined/>
           </template>
         </a-button>
-        <a-button v-if="index > 0" @click="data.splice(index, 1)" type="link" danger>
+        <a-button v-if="index >= 0" @click="data.splice(index, 1)" type="link" danger>
           <template #icon>
             <MinusCircleOutlined/>
           </template>
@@ -29,6 +29,12 @@
       </a-col>
     </a-row>
   </div>
+  <div v-else>
+    <Button class="addBut" @click="addOption" style="width: 100%">
+    添加
+    </Button>
+  </div>
+
 </template>
 
 <script>
@@ -101,6 +107,7 @@ export default ({
 .rowStyle {
   margin-bottom: 10px;
 }
+
 .CheckStyle {
   width: 30px;
   height: 30px;
@@ -126,4 +133,28 @@ export default ({
   border: 1px solid #1890ff;
   box-sizing: border-box;
 }
+
+.addBut {
+  color: rgba(0,0,0,.65);
+  background-color: #fff;
+  border-color: #d9d9d9;
+  border-style: dashed;
+  padding: 0 15px;
+  font-size: 14px;
+  border-radius: 4px;
+  height: 32px;
+}
+
+.addBut:focus{
+  color: #108ee9;
+  background-color: #fff;
+  border-color: #108ee9;
+}
+
+.addBut:hover{
+  color: #108ee9;
+  background-color: #fff;
+  border-color: #108ee9;
+}
+
 </style>

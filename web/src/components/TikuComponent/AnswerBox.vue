@@ -1,22 +1,27 @@
 <template>
-  <div>
+  <div v-if="data.length">
     <a-row v-for="(item, index) in data" :key="index" class="rowStyle">
-      <a-col :span="22">
+      <a-col :span="20">
         <a-textarea v-model:value="item.value" />
       </a-col>
-      <a-col :span="1">
-        <a-button v-if="index === 0" @click="addOption" type="link" primary>
+      <a-col :span="4">
+        <a-button v-if="index >= 0" @click="addOption" type="link" primary>
           <template #icon>
             <PlusCircleOutlined />
           </template>
         </a-button>
-        <a-button v-if="index > 0" @click="data.splice(index, 1)" type="link" danger>
+        <a-button v-if="index >= 0" @click="data.splice(index, 1)" type="link" danger>
           <template #icon>
             <MinusCircleOutlined />
           </template>
         </a-button>
       </a-col>
     </a-row>
+  </div>
+  <div v-else>
+    <Button class="addBut" @click="addOption" style="width: 100%">
+      添加
+    </Button>
   </div>
 </template>
 
@@ -50,10 +55,7 @@ export default ({
             value: i
           };
         })
-        : [{
-            content: '',
-            index: 0
-          }])
+        : [])
     }
   },
 
@@ -63,10 +65,17 @@ export default ({
         value: '',
       })
     },
+    pushAnswer(str){
+      this.data.push({
+        value: str,
+      })
+    },
     getData() {
       return JSON.stringify(this.data.map((item) => {
-        return item.value
-      }))
+        if (item.value !== null && item.value!== undefined) {
+          return item.value
+        }
+      }).filter(i=>i))
     }
   }
 })
@@ -101,5 +110,28 @@ export default ({
   color: #1890ff;
   border: 1px solid #1890ff;
   box-sizing: border-box;
+}
+
+.addBut {
+  color: rgba(0,0,0,.65);
+  background-color: #fff;
+  border-color: #d9d9d9;
+  border-style: dashed;
+  padding: 0 15px;
+  font-size: 14px;
+  border-radius: 4px;
+  height: 32px;
+}
+
+.addBut:focus{
+  color: #108ee9;
+  background-color: #fff;
+  border-color: #108ee9;
+}
+
+.addBut:hover{
+  color: #108ee9;
+  background-color: #fff;
+  border-color: #108ee9;
 }
 </style>

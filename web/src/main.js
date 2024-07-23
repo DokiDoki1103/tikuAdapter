@@ -1,11 +1,13 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import {Alert, Button, Pagination, Table, Tag, Modal, Form, Input, Select, Checkbox, Layout, Row, Col, Tooltip, Card, Space, Upload, Spin} from 'ant-design-vue'
+import {Tabs,TabPane,Alert, Button, Pagination, Table, Tag, Modal, Form, Input, Select, Checkbox, Layout, Row, Col, Tooltip, Card, Space, Upload, Spin} from 'ant-design-vue'
 import router from './router/router'
 import 'ant-design-vue/dist/antd.css'
 
 
 const app = createApp(App)
+app.use(Tabs)
+app.use(TabPane)
 app.use(Button)
 app.use(Alert)
 app.use(Modal)

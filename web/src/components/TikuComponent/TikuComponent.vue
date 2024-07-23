@@ -6,10 +6,13 @@
     <a-row>
       <a-col :span="5">
         <a-form-item label="来源" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-select ref="select" placeholder="请选择" v-model:value="searchValue.source">
-            <a-select-option value="-1">采集无答案</a-select-option>
-            <a-select-option value="1">自建</a-select-option>
-            <a-select-option value="2">高级</a-select-option>
+          <a-select
+              v-model:value="value"
+              show-search
+              placeholder="请选择"
+              :options="platType"
+              @change="selectChange"
+          >
           </a-select>
         </a-form-item>
       </a-col>
@@ -95,16 +98,43 @@
               </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="问题">
+          <a-form-item label="问题" class="margin_top">
             <a-textarea v-model:value="formData.question"/>
           </a-form-item>
-          <a-form-item label="选项" v-if="/[013]/.test(formData.type)">
-            <OptionBox :options="formData.options ? JSON.parse(formData.options) : [1]" :type="formData.type"
-                       :answer="formData.answer ? JSON.parse(formData.answer) : []" ref="optionBox"/>
-          </a-form-item>
-          <a-form-item label="答案" v-else>
-            <AnswerBox :answer="formData.answer ? JSON.parse(formData.answer) : [1]" ref="answerBox"/>
-          </a-form-item>
+          <div v-if="/[013]/.test(formData.type)" class="margin_top">
+            <a-form-item label="选项">
+              <OptionBox :options="formData.options ? JSON.parse(formData.options) : []" :type="formData.type"
+                         :answer="answer" ref="optionBox"/>
+            </a-form-item>
+          </div>
+          <div v-else>
+            <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
+              <a-tabs default-active-key="1">
+                <a-tab-pane tab="默认选项" key="1">
+                  <AnswerBox :answer="answer" ref="answerBox"/>
+                </a-tab-pane>
+                <a-tab-pane tab="提交附件" key="2">
+                  <div>
+                    <a-upload-dragger
+                        name="file"
+                        multiple="true"
+                        show-upload-list="true"
+                        action='/adapter-service/upload?parentDir=test'
+                        @change="handleChange">
+                      <p class="ant-upload-drag-icon">
+                        <upload-outlined></upload-outlined>
+                      </p>
+                      <p class="ant-upload-text">点击或者拖动文件到该区域来上传</p>
+                      <p class="ant-upload-hint">请不要上传敏感数据，银行卡号和密码，信用卡号有效期和安全码</p>
+                    </a-upload-dragger>
+                  </div>
+
+                </a-tab-pane>
+              </a-tabs>
+
+
+            </a-card>
+          </div>
         </a-form>
       </a-modal>
     </a-layout-content>
@@ -115,6 +145,7 @@
 import {defineComponent, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {
+  getPlat,
   getQuestions,
   updateQuestions,
   delQuestions,
@@ -123,15 +154,17 @@ import {
 import {
   FormOutlined,
   DownloadOutlined,
-  SearchOutlined
+  SearchOutlined, UploadOutlined
 } from '@ant-design/icons-vue';
 import OptionBox from './OptionBox.vue'
 import AnswerBox from './AnswerBox.vue'
 import {questionType} from "@/utils/uitls";
+import {message} from "ant-design-vue";
 
 const style = {
   padding: "0 0 24px"
 }
+const fileList = ref([])
 const data = ref([])
 const columns = [
   {
@@ -179,7 +212,9 @@ const page = ref({
   total: 0
 })
 
+const platType = ref([])
 const formData = ref({})
+const answer = ref([])
 const visible = ref(false)
 const action = ref(2) // 1是编辑 2是添加
 const searchValue = ref({})
@@ -191,6 +226,8 @@ export default defineComponent({
       router.push('/import');
     };
     return {
+      platType,
+      answer,
       page,
       data,
       columns,
@@ -201,10 +238,12 @@ export default defineComponent({
       searchValue,
       labelCol: {span: 8},
       wrapperCol: {span: 14},
-      navigateToImport
+      navigateToImport,
+      fileList
     }
   },
   components: {
+    UploadOutlined,
     OptionBox,
     AnswerBox,
     FormOutlined,
@@ -212,10 +251,39 @@ export default defineComponent({
     DownloadOutlined
   },
   mounted() {
+    this.getPlat()
     this.fetchData()
   },
   methods: {
+    selectChange(info) {
+      console.log(info)
+    },
+    handleChange(info) {
+      const status = info.file.status;
+      if (status === 'done') {
+        message.success(`${info.file.name} 上传成功`);
+        fileList.value.push(info.file.response)
+
+        this.$refs.answerBox.pushAnswer(info.file.response)
+      } else if (status === 'error') {
+        // 处理上传失败
+        message.error(`${info.file.name} 上传失败`);
+      }
+    },
+    async getPlat() {
+      const list = await getPlat()
+      if (list && list.length) {
+        platType.value = list.map(i => {
+          return {
+            value: i.Value,
+            label: i.Label,
+          }
+        })
+      }
+      console.log('platType===>', platType.value)
+    },
     async fetchData() {
+      fileList.value = []
       const res = await getQuestions({
         pageSize: page.value.pageSize,
         pageNo: page.value.pageNo - 1,
@@ -243,13 +311,16 @@ export default defineComponent({
 
     showModal(record, act) {
       if (record.options === '[]' || record.options === '') {
-        record.options = '[1]'
+        record.options = '[]'
       }
       if (record.answer === '[]' || record.answer === '') {
-        record.answer = '[1]'
+        record.answer = '[]'
       }
+
       formData.value = record
+      answer.value = formData.value.answer ? JSON.parse(formData.value.answer) : []
       action.value = act
+      fileList.value = []
       visible.value = true
     },
 
@@ -258,24 +329,30 @@ export default defineComponent({
     // }
 
     async deleteQuestion(id) {
+      fileList.value = []
       await delQuestions(id)
       visible.value = false
       await this.fetchData()
     },
 
+
     async confirm() {
+      formData.value.type = parseInt(formData.value.type)
+
       if (/[0|1|3]/.test(formData.value.type)) {
-        const childComponentData = this.$refs.optionBox.getData();
+        const childComponentData = this.$refs.optionBox.getData()
         Object.assign(formData.value, childComponentData)
       } else {
-        formData.value.answer = this.$refs.answerBox.getData();
+        const textAns = this.$refs.answerBox.getData()
+        console.log('textAns==>', textAns)
+        formData.value.answer = textAns
       }
-      formData.value.type = parseInt(formData.value.type)
       if (action.value === 1) {
         await updateQuestions(formData.value)
       } else if (action.value === 2) {
         await createQuestions([formData.value])
       }
+      fileList.value = []
       visible.value = false
       await this.fetchData()
     },
@@ -304,4 +381,9 @@ header {
 .ant-form-item {
   margin-bottom: 0;
 }
+
+.margin_top {
+  margin-top: 5%
+}
+
 </style>
