@@ -6,6 +6,7 @@ import (
 	"github.com/itihey/tikuAdapter/internal/entity"
 	"github.com/itihey/tikuAdapter/internal/middleware"
 	"github.com/itihey/tikuAdapter/pkg/util"
+	"net/http"
 	"strconv"
 )
 
@@ -27,6 +28,7 @@ type SearchValue struct {
 	Question            string `json:"question" form:"question"`
 	CourseName          string `json:"courseName" form:"courseName"`
 
+	Type int32 `json:"type" form:"type"`
 	Plat int32 `json:"plat" form:"plat"`
 }
 
@@ -43,32 +45,36 @@ func GetQuestions(c *gin.Context) {
 	searchValue.Question = util.FormatString(searchValue.Question)
 	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
 	if searchValue.Question != "" {
-		tx = tx.Where(dao.Tiku.Question.Like("%" + searchValue.Question + "%"))
+		tx.Where(dao.Tiku.Question.Like("%" + searchValue.Question + "%"))
 	}
 	if searchValue.Extra != "" {
-		tx = tx.Where(dao.Tiku.Extra.Like(searchValue.Extra))
+		tx.Where(dao.Tiku.Extra.Like(searchValue.Extra))
 	}
 
 	if searchValue.CourseName != "" {
-		tx = tx.Where(dao.Tiku.CourseName.Eq(searchValue.CourseName))
+		tx.Where(dao.Tiku.CourseName.Eq(searchValue.CourseName))
 	}
 
-	if searchValue.Plat != 0 {
-		tx = tx.Where(dao.Tiku.Plat.Eq(searchValue.Plat))
+	if searchValue.Plat != -1 {
+		tx.Where(dao.Tiku.Plat.Eq(searchValue.Plat))
+	}
+
+	if searchValue.Type != -1 {
+		tx.Where(dao.Tiku.Type.Eq(searchValue.Type))
 	}
 
 	if searchValue.OnlyShowEmptyAnswer {
-		tx = tx.Where(dao.Tiku.Answer.Eq("[]"))
+		tx.Where(dao.Tiku.Answer.Eq("[]"))
 	}
 	items, total, err := tx.FindByPage(searchValue.PageNo*searchValue.PageSize, searchValue.PageSize)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "服务器错误",
 		})
 		return
 	}
 
-	c.JSON(200, Page{
+	c.JSON(http.StatusOK, Page{
 		PageNo:   searchValue.PageNo,
 		PageSize: searchValue.PageSize,
 		Total:    total,

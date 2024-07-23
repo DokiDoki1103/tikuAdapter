@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+// Auth 鉴权
 func Auth(c *gin.Context) {
 	claims, err := util.ParseJwtWithClaims(c.Request.Header.Get("Authorization"))
 
@@ -36,9 +37,9 @@ func Auth(c *gin.Context) {
 		})
 		return
 	}
-	userId, _ := strconv.Atoi(subject)
+	userID, _ := strconv.Atoi(subject)
 
-	user, err := dao.User.Where(dao.User.ID.Eq(int32(userId))).First()
+	user, err := dao.User.Where(dao.User.ID.Eq(int32(userID))).First()
 	if err != nil {
 		logger.SysLog(err.Error())
 		c.AbortWithStatusJSON(401, gin.H{
@@ -71,7 +72,6 @@ func UserLogin(c *gin.Context) {
 		c.JSON(400, gin.H{
 			"message": "jwt生成失败",
 		})
-		return
 	} else {
 		c.JSON(200, gin.H{
 			"message": "user login",
@@ -106,9 +106,10 @@ func CreateUser(c *gin.Context) {
 	c.JSON(200, user)
 }
 
+// DeleteUser 删除用户
 func DeleteUser(c *gin.Context) {
 	parent, _ := c.Get(`user`)
-	userId, err := strconv.Atoi(c.Param("id"))
+	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "参数错误",
@@ -116,7 +117,7 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	user, err := dao.User.Where(dao.User.ID.Eq(int32(userId))).First()
+	user, err := dao.User.Where(dao.User.ID.Eq(int32(userID))).First()
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "用户不存在",
