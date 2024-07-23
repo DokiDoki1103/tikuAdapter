@@ -9,7 +9,6 @@ import (
 	"github.com/itihey/tikuAdapter/internal/registry/manager"
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
-	"os"
 	"sort"
 	"strconv"
 )
@@ -38,7 +37,7 @@ func FillHash(t *entity.Tiku) {
 }
 
 // CollectAnswer 收集没有搜索到的答案
-func CollectAnswer(resp model.SearchResponse, extra string) {
+func CollectAnswer(resp model.SearchResponse, courseName, extra string) {
 	sort.Strings(resp.Options) // 将选项排序
 	opts, err := json.Marshal(resp.Options)
 	if err != nil {
@@ -53,14 +52,15 @@ func CollectAnswer(resp model.SearchResponse, extra string) {
 		ans = string(marshal)
 	}
 	// 记录空答案或者有答案才会被记录
-	if manager.GetManager().GetConfig().RecordEmptyAnswer || ans != "[]" || os.Getenv("SQL_DSN") != "" {
+	if manager.GetManager().GetConfig().RecordEmptyAnswer || ans != "[]" {
 		t := entity.Tiku{
-			Extra:    extra,
-			Type:     int32(resp.Type),
-			Question: resp.Question,
-			Answer:   ans,
-			Options:  string(opts),
-			Plat:     int32(resp.Plat),
+			CourseName: courseName,
+			Extra:      extra,
+			Type:       int32(resp.Type),
+			Question:   resp.Question,
+			Answer:     ans,
+			Options:    string(opts),
+			Plat:       int32(resp.Plat),
 		}
 		FillHash(&t)
 		err := dao.Tiku.Create(&t)

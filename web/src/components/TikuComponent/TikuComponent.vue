@@ -5,7 +5,7 @@
   <a-card style="margin: 24px 50px 0;">
     <a-row>
       <a-col :span="5">
-        <a-form-item label="来源" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-item label="平台" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-select
               v-model:value="platValue"
               show-search
@@ -17,7 +17,7 @@
         </a-form-item>
       </a-col>
       <a-col :span="4">
-        <a-form-item label=" 课程" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-item label="课程" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-select
               v-model:value="courseValue"
               show-search
