@@ -5,6 +5,7 @@ import (
 	"github.com/itihey/tikuAdapter/internal/dao"
 )
 
+// LogList - 日志列表
 func LogList(c *gin.Context) {
 	find, err := dao.Log.Where(dao.Log.UserID.Eq(0)).Find()
 	if err != nil {
@@ -14,5 +15,4 @@ func LogList(c *gin.Context) {
 		return
 	}
 	c.JSON(200, find)
-
 }
