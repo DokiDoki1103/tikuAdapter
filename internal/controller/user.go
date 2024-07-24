@@ -80,6 +80,19 @@ func UserLogin(c *gin.Context) {
 	}
 }
 
+// UserList 自己开通的用户的列表
+func UserList(c *gin.Context) {
+	parent, _ := c.Get(`user`)
+	users, err := dao.User.Where(dao.User.ParentID.Eq(parent.(*entity.User).ID)).Find()
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": "获取用户列表失败",
+		})
+		return
+	}
+	c.JSON(200, users)
+}
+
 // CreateUser 创建用户
 func CreateUser(c *gin.Context) {
 	parent, _ := c.Get(`user`)
@@ -90,6 +103,15 @@ func CreateUser(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "参数错误",
+		})
+		return
+	}
+
+	// 检测用户名是否被使用
+	_, err = dao.User.Where(dao.User.Username.Eq(user.Username)).First()
+	if err == nil {
+		c.JSON(400, gin.H{
+			"message": "用户名已经被使用",
 		})
 		return
 	}
