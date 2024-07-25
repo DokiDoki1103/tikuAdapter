@@ -12,6 +12,7 @@
     "ant-design-vue": "^2.2.8",
     "axios": "^1.6.2",
     "core-js": "^3.8.3",
+    "js-cookie": "^3.0.5",
     "vue": "^3.2.13",
     "vue-router": "^4.2.5"
   },

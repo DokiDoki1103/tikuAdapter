@@ -1,7 +1,4 @@
 <template>
-  <header>
-    智能导入
-  </header>
   <main>
     <div class="compileBox">
       <div class="title">
@@ -116,10 +113,10 @@ import {useRouter} from 'vue-router';
 import {UploadOutlined} from '@ant-design/icons-vue';
 import {defineComponent, ref} from 'vue';
 import {
-  createQuestions,
   parseFile,
   reParseFile
 } from '@/api/api'
+import {createQuestions} from '@/api/TikuComponentApi'
 import {getQuestionTypeByName} from "@/utils/uitls";
 
 const UploadId = ref('');
@@ -130,13 +127,14 @@ const data = ref([])
 const type = ref('全部')
 
 export default defineComponent({
+  name: 'IntelligentImport',
   components: {
     UploadOutlined,
   },
   setup() {
     const router = useRouter();
     const navigateToHome = () => {
-      router.push('/');
+      router.push('/adapter/component');
     };
     return {
       UploadId,
@@ -256,22 +254,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-header {
-  width: 100%;
-  height: 60px;
-  background-color: #195ca3;
-  border-bottom: 1px solid #e8e8e8;
-  line-height: 60px;
-  font-size: 20px;
-  font-weight: 600;
-  text-align: center;
-  color: #fff;
-}
-
 main {
   width: 100%;
-  padding: 20px 50px;
-  height: calc(100vh - 120px);
+  height: 100%;
   background-color: #fff;
   display: flex;
 }
@@ -279,7 +264,7 @@ main {
 footer {
   position: fixed;
   bottom: 0;
-  width: 100%;
+  width: calc(90% - 48px);
   height: 60px;
   background-color: #fff;
   line-height: 60px;
@@ -288,7 +273,7 @@ footer {
   padding: 0 20px;
   box-sizing: border-box;
   text-align: right;
-  box-shadow: 0px -1px 12px 0px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px -1px 12px 0px rgba(0, 0, 0, 0.1); */
 }
 
 .compileBox {
@@ -296,7 +281,7 @@ footer {
   width: calc(50% - 60px);
   min-height: 400px;
   background-color: #fff;
-  box-shadow: 0 1px 12px 0 #EDEEF0;
+  /* box-shadow: 0 1px 12px 0 #EDEEF0; */
   border-radius: 10px;
   padding: 20px 20px 30px;
 }
@@ -316,7 +301,7 @@ footer {
   width: calc(50% - 60px);
   min-height: 400px;
   background-color: #fff;
-  box-shadow: 0 1px 12px 0 #EDEEF0;
+  /* box-shadow: 0 1px 12px 0 #EDEEF0; */
   border-radius: 10px;
   padding: 20px 20px 30px;
 }
