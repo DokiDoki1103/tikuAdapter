@@ -34,7 +34,7 @@ import {
 } from '@ant-design/icons-vue';
 
 export default ({
-  name: 'OptionBox',
+  name: 'AnswerBox',
   components: {
     PlusCircleOutlined,
     MinusCircleOutlined

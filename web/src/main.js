@@ -1,6 +1,30 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import {Tabs,TabPane,Alert, Button, Pagination, Table, Tag, Modal, Form, Input, Select, Checkbox, Layout, Row, Col, Tooltip, Card, Space, Upload, Spin} from 'ant-design-vue'
+import {
+  Tabs,
+  TabPane,
+  Alert, 
+  Button, 
+  Pagination, 
+  Table, 
+  Tag, 
+  Modal, 
+  Form, 
+  Input, 
+  Select, 
+  Checkbox, 
+  Layout, 
+  Row, 
+  Col, 
+  Tooltip, 
+  Card, 
+  Space, 
+  Upload, 
+  Spin, 
+  Menu, 
+  message, 
+  Popconfirm
+} from 'ant-design-vue'
 import router from './router/router'
 import 'ant-design-vue/dist/antd.css'
 
@@ -26,5 +50,8 @@ app.use(Card)
 app.use(Space)
 app.use(Upload)
 app.use(Spin)
+app.use(Menu)
+app.use(Popconfirm)
+app.use(message)
 app.use(router);
 app.mount('#app')

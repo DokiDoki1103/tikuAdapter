@@ -1,13 +1,6 @@
 import axios from 'axios'
 import qs from 'qs';
 
-const adapterInstance = axios.create({
-    baseURL: '/adapter-service',
-    timeout: 5 * 1000,
-    validateStatus: function (status) {
-        return status >= 200 && status <= 500
-    }
-})
 const xmig6Instance = axios.create({
     baseURL: '/sqp/api',
     timeout: 5 * 1000,
@@ -26,37 +19,7 @@ const errorInterceptor = (error) => {
     // 给出网络错误提示或者各种请求失败的
     return Promise.reject(error);
 };
-adapterInstance.interceptors.response.use(responseInterceptor, errorInterceptor);
 xmig6Instance.interceptors.response.use(responseInterceptor, errorInterceptor);
-
-
-export async function getPlat() {
-    return await adapterInstance.get('/plat')
-}
-
-export async function getCourses(plat) {
-    return await adapterInstance.get('/courses', {
-        params: {
-            plat: plat
-        }
-    })
-}
-
-export async function getQuestions(data) {
-    return await adapterInstance.post('/questions/search', data)
-}
-
-export async function updateQuestions(data) {
-    return await adapterInstance.put(`/questions/${data.id}`, data)
-}
-
-export async function createQuestions(data) {
-    return await adapterInstance.post(`/questions`, data)
-}
-
-export async function delQuestions(id) {
-    return await adapterInstance.delete(`/questions/${id}`)
-}
 
 export async function parseFile(data) {
     return await xmig6Instance.get(`/parse`, {params: data})

@@ -1,46 +1,27 @@
 <template>
-  <header>
-    题库管理平台
-  </header>
-  <a-card style="margin: 24px 50px 0;">
+  <a-card>
     <a-row>
       <a-col :span="5">
         <a-form-item label="平台" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-select
-              v-model:value="platValue"
-              show-search
-              placeholder="请选择"
-              :options="platType"
-              @change="selectChange"
-          >
+          <a-select v-model:value="platValue" show-search placeholder="请选择" :options="platType" @change="selectChange">
           </a-select>
         </a-form-item>
       </a-col>
       <a-col :span="4">
         <a-form-item label="课程" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-select
-              v-model:value="courseValue"
-              show-search
-              placeholder="请选择"
-              :options="courses"
-          >
+          <a-select v-model:value="courseValue" show-search placeholder="请选择" :options="courses">
           </a-select>
         </a-form-item>
       </a-col>
       <a-col :span="4">
         <a-form-item label="类型" :label-col="labelCol" :wrapper-col="wrapperCol" style="width: 100%;">
-          <a-select
-              v-model:value="typeValue"
-              show-search
-              placeholder="请选择"
-              :options="typeList"
-          >
+          <a-select v-model:value="typeValue" show-search placeholder="请选择" :options="typeList">
           </a-select>
         </a-form-item>
       </a-col>
       <a-col :span="6">
         <a-form-item label="问题">
-          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 280px;"/>
+          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 200px;" />
         </a-form-item>
       </a-col>
       <div>
@@ -49,7 +30,7 @@
       <a-col :span="2" style="display: flex; justify-content: end;">
         <a-form-item>
           <a-button type="primary" @click="onSearch" @keyup.enter="onSearch">
-            <SearchOutlined/>
+            <SearchOutlined />
             搜索
           </a-button>
         </a-form-item>
@@ -59,11 +40,11 @@
 
   <a-layout>
     <a-layout-content>
-      <div style="padding:24px 50px; text-align: center;">
+      <div style="padding-top: 24px; text-align: center;">
         <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
           <template #extra>
             <a-button type="primary" @click="navigateToImport" style="margin-right: 12px;">
-              <DownloadOutlined/>
+              <DownloadOutlined />
               智能导入
             </a-button>
             <a-button type="primary" @click="showModal({
@@ -72,11 +53,12 @@
               options: '[]',
               answer: '[]'
             }, 2)">
-              <FormOutlined/>
+              <FormOutlined />
               添加
             </a-button>
           </template>
-          <a-table :columns="columns" :data-source="data" :pagination="false" :row-key="record => record.id">
+          <a-table :columns="columns" :data-source="data" :pagination="false" :row-key="record => record.id"
+            :loading="tabLoading">
             <template #type="{ record }">
               <a-tag :color="record.type === 0 ? 'green' : record.type === 1 ? 'cyan' : 'orange'">
                 {{ quesType[record.type] }}
@@ -85,7 +67,7 @@
             <template #answer="{ record }">
               <div>
                 <a-tag v-for="(value, index) in (record.answer ? JSON.parse(record.answer) : [])" color="blue"
-                       :key="index">{{ record.source === 2 ? index : value }}
+                  :key="index">{{ record.source === 2 ? index : value }}
                 </a-tag>
               </div>
             </template>
@@ -97,9 +79,8 @@
             </template>
           </a-table>
           <a-pagination @change="onChange" :current="page.pageNo" :total="page.total" show-size-changer
-                        :page-size-options="page.pageSizeOptions" :page-size="page.pageSize"
-                        @showSizeChange="onShowSizeChange"
-                        style="margin-top: 20px; text-align: right;"/>
+            :page-size-options="page.pageSizeOptions" :page-size="page.pageSize" @showSizeChange="onShowSizeChange"
+            style="margin-top: 20px; text-align: right;" />
         </a-card>
 
       </div>
@@ -113,28 +94,24 @@
             </a-select>
           </a-form-item>
           <a-form-item label="问题" class="margin_top">
-            <a-textarea v-model:value="formData.question"/>
+            <a-textarea v-model:value="formData.question" />
           </a-form-item>
           <div v-if="/[013]/.test(formData.type)" class="margin_top">
             <a-form-item label="选项">
               <OptionBox :options="formData.options ? JSON.parse(formData.options) : []" :type="formData.type"
-                         :answer="answer" ref="optionBox"/>
+                :answer="answer" ref="optionBox" />
             </a-form-item>
           </div>
           <div v-else>
             <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
               <a-tabs default-active-key="1">
                 <a-tab-pane tab="默认选项" key="1">
-                  <AnswerBox :answer="answer" ref="answerBox"/>
+                  <AnswerBox :answer="answer" ref="answerBox" />
                 </a-tab-pane>
                 <a-tab-pane tab="提交附件" key="2">
                   <div>
-                    <a-upload-dragger
-                        name="file"
-                        multiple="true"
-                        show-upload-list="true"
-                        action='/adapter-service/upload?parentDir=test'
-                        @change="handleChange">
+                    <a-upload-dragger name="file" multiple="true" show-upload-list="true"
+                      action='/adapter-service/upload?parentDir=test' @change="handleChange">
                       <p class="ant-upload-drag-icon">
                         <upload-outlined></upload-outlined>
                       </p>
@@ -156,8 +133,8 @@
 </template>
 
 <script>
-import {defineComponent, ref} from 'vue';
-import {useRouter} from 'vue-router';
+import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   getPlat,
   getCourses,
@@ -165,21 +142,23 @@ import {
   updateQuestions,
   delQuestions,
   createQuestions,
-} from '@/api/api'
+} from '@/api/TikuComponentApi'
 import {
   FormOutlined,
   DownloadOutlined,
-  SearchOutlined, UploadOutlined
+  SearchOutlined,
+  UploadOutlined
 } from '@ant-design/icons-vue';
-import OptionBox from './OptionBox.vue'
-import AnswerBox from './AnswerBox.vue'
-import {questionType} from "@/utils/uitls";
-import {message} from "ant-design-vue";
+import OptionBox from '../../components/OptionBox/index.vue'
+import AnswerBox from '../../components/AnswerBox/index.vue'
+import { questionType } from "@/utils/uitls";
+import { message } from "ant-design-vue";
 
 const style = {
   padding: "0 0 24px"
 }
 const fileList = ref([])
+const tabLoading = ref(true)
 const data = ref([])
 const columns = [
   {
@@ -240,12 +219,14 @@ const action = ref(2) // 1是编辑 2是添加
 const searchValue = ref({})
 const quesType = ref(questionType)
 export default defineComponent({
+  name: 'TikuComponent',
   setup() {
     const router = useRouter();
     const navigateToImport = () => {
-      router.push('/import');
+      router.push('/adapter/import');
     };
     return {
+      tabLoading,
       typeList,
       typeValue,
       courses,
@@ -261,8 +242,8 @@ export default defineComponent({
       formData,
       style,
       searchValue,
-      labelCol: {span: 8},
-      wrapperCol: {span: 14},
+      labelCol: { span: 8 },
+      wrapperCol: { span: 14 },
       navigateToImport,
       fileList
     }
@@ -283,10 +264,10 @@ export default defineComponent({
   },
   methods: {
     async selectChange(info) {
-      const list = await getCourses(info)
-      if (list && list.length){
-        await this.getCourses(list)
-      }else {
+      const list = await getCourses({ plat: info })
+      if (list?.data && list?.data.length) {
+        await this.getCourses(list?.data)
+      } else {
         courses.value = []
       }
     },
@@ -308,8 +289,8 @@ export default defineComponent({
       }));
     },
     getType() {
-     const arr = this.typeObjects(questionType)
-     typeList.value = arr
+      const arr = this.typeObjects(questionType)
+      typeList.value = arr
     },
     async getCourses(data) {
       if (data) {
@@ -321,8 +302,9 @@ export default defineComponent({
         })
       } else {
         const list = await getCourses()
-        if (list && list.length) {
-          courses.value = list.map(i => {
+
+        if (list?.data && list?.data.length) {
+          courses.value = list?.data.map(i => {
             return {
               value: i,
               label: i,
@@ -334,8 +316,8 @@ export default defineComponent({
     },
     async getPlat() {
       const list = await getPlat()
-      if (list && list.length) {
-        platType.value = list.map(i => {
+      if (list?.data && list?.data.length) {
+        platType.value = list?.data.map(i => {
           return {
             value: parseInt(i.Value),
             label: i.Label,
@@ -346,7 +328,8 @@ export default defineComponent({
     },
     async fetchData() {
       fileList.value = []
-      const res = await getQuestions({
+      tabLoading.value = true
+      getQuestions({
         courseName: courseValue.value ? courseValue.value : "",
         plat: !isNaN(parseInt(platValue.value)) ? parseInt(platValue.value) : -1,
         type: !isNaN(parseInt(typeValue.value)) ? parseInt(typeValue.value) : -1,
@@ -356,9 +339,12 @@ export default defineComponent({
         source: parseInt(searchValue.value.source) || 0,
         extra: searchValue.value.extra || '',
         onlyShowEmptyAnswer: searchValue.value.onlyShowEmptyAnswer || false
+      }).then(res => {
+        data.value = res?.data?.items
+        tabLoading.value = false
+        this.page.total = res?.data?.total
       })
-      data.value = res.items
-      this.page.total = res.total
+
     },
     onSearch() {
       this.fetchData()
@@ -389,13 +375,11 @@ export default defineComponent({
       visible.value = true
     },
 
-    // showAnswer(item){
-    //   if(item.length)
-    // }
-
     async deleteQuestion(id) {
       fileList.value = []
-      await delQuestions(id)
+      await delQuestions({ id: id }).then(res => {
+        res.status == 200 ? message.success(`删除成功`) : message.error(`删除失败`)
+      })
       visible.value = false
       await this.fetchData()
     },
@@ -412,21 +396,23 @@ export default defineComponent({
         console.log('textAns==>', textAns)
         formData.value.answer = textAns
       }
+      let response;
+      const successMessage = action.value === 1 ? '修改成功' : '创建成功';
+      const errorMessage = action.value === 1 ? '修改失败' : '创建失败';
       if (action.value === 1) {
-        await updateQuestions(formData.value)
+        response = await updateQuestions(formData.value)
       } else if (action.value === 2) {
-        await createQuestions([formData.value])
+        response = await createQuestions([formData.value])
+      }
+      if (response.status === 200) {
+        message.success(successMessage);
+      } else {
+        message.error(errorMessage);
       }
       fileList.value = []
       visible.value = false
       await this.fetchData()
     },
-    // navigateToImport() {
-    //   const router = useRouter();
-    //   // router.push('/import');
-    //   // Alternatively, you can use an object to specify the route
-    //   router.push({ name: 'import' });
-    // }
   }
 })
 </script>
@@ -450,5 +436,4 @@ header {
 .margin_top {
   margin-top: 5%
 }
-
 </style>
