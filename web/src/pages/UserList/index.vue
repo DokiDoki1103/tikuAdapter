@@ -102,6 +102,7 @@ export default defineComponent({
       delUser({ id: val }).then(res => {
         if (res?.status == 200) {
           message.success('删除成功')
+          this.handleUserList()
         } else {
           message.error('删除失败')
         }
