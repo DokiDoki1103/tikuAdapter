@@ -1,13 +1,16 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/entity"
 	"github.com/itihey/tikuAdapter/internal/middleware"
+	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/util"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // Page 分页
@@ -100,12 +103,26 @@ func UpdateQuestions(c *gin.Context) {
 		})
 		return
 	}
+	// 找到旧答案
+	oldTiku, err := dao.Tiku.Where(dao.Tiku.ID.Eq(int32(id))).First()
+
 	updates, err := dao.Tiku.Where(dao.Tiku.ID.Eq(int32(id))).Updates(tiku)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "服务器错误",
 		})
 		return
+	}
+	if updates.RowsAffected == 1 {
+		l := entity.Log{
+			Qid:        oldTiku.ID,
+			Action:     1,
+			UserID:     0,
+			CreateTime: time.Now(),
+			OldAnswer:  oldTiku.Answer,
+			NewAnswer:  tiku.Answer,
+		}
+		dao.Log.Create(&l)
 	}
 	c.JSON(200, gin.H{
 		"data": updates,
@@ -121,6 +138,19 @@ func DeleteQuestion(c *gin.Context) {
 		})
 		return
 	}
+
+	// 记录删除日志
+	oldTiku, err := dao.Tiku.Where(dao.Tiku.ID.Eq(int32(id))).First()
+	marshal, _ := json.Marshal(oldTiku)
+	l := entity.Log{
+		Qid:        oldTiku.ID,
+		Action:     2,
+		UserID:     0,
+		CreateTime: time.Now(),
+		OldAnswer:  string(marshal),
+	}
+	dao.Log.Create(&l)
+
 	dao.Tiku.Where(dao.Tiku.ID.Eq(int32(id))).Delete()
 	c.JSON(200, gin.H{
 		"message": "删除成功",
@@ -143,6 +173,18 @@ func CreateQuestion(c *gin.Context) {
 		middleware.FillHash(t)
 		err := dao.Tiku.Create(t)
 		if err == nil {
+			marshal, _ := json.Marshal(t)
+			l := entity.Log{
+				Qid:        t.ID,
+				Action:     0,
+				UserID:     0,
+				CreateTime: time.Now(),
+				OldAnswer:  string(marshal),
+			}
+			err := dao.Log.Create(&l)
+			if err != nil {
+				logger.SysError(err.Error())
+			}
 			count++
 		}
 	}
@@ -153,7 +195,6 @@ func CreateQuestion(c *gin.Context) {
 
 // Courses 获取这个平台的所有课程名称
 func Courses(c *gin.Context) {
-
 	tx := dao.Tiku.Select(dao.Tiku.CourseName)
 
 	if c.Query("plat") != "" {

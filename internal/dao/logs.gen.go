@@ -33,6 +33,7 @@ func newLog(db *gorm.DB, opts ...gen.DOOption) log {
 	_log.NewAnswer = field.NewString(tableName, "new_answer")
 	_log.UserID = field.NewInt32(tableName, "user_id")
 	_log.CreateTime = field.NewTime(tableName, "create_time")
+	_log.Action = field.NewInt32(tableName, "action")
 
 	_log.fillFieldMap()
 
@@ -49,6 +50,7 @@ type log struct {
 	NewAnswer  field.String // 修改之后的答案
 	UserID     field.Int32  // 谁修改的答案
 	CreateTime field.Time   // 修改日期
+	Action     field.Int32  // 新增0更新1删除2
 
 	fieldMap map[string]field.Expr
 }
@@ -71,6 +73,7 @@ func (l *log) updateTableName(table string) *log {
 	l.NewAnswer = field.NewString(table, "new_answer")
 	l.UserID = field.NewInt32(table, "user_id")
 	l.CreateTime = field.NewTime(table, "create_time")
+	l.Action = field.NewInt32(table, "action")
 
 	l.fillFieldMap()
 
@@ -87,13 +90,14 @@ func (l *log) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (l *log) fillFieldMap() {
-	l.fieldMap = make(map[string]field.Expr, 6)
+	l.fieldMap = make(map[string]field.Expr, 7)
 	l.fieldMap["id"] = l.ID
 	l.fieldMap["qid"] = l.Qid
 	l.fieldMap["old_answer"] = l.OldAnswer
 	l.fieldMap["new_answer"] = l.NewAnswer
 	l.fieldMap["user_id"] = l.UserID
 	l.fieldMap["create_time"] = l.CreateTime
+	l.fieldMap["action"] = l.Action
 }
 
 func (l log) clone(db *gorm.DB) log {
