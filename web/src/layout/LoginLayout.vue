@@ -9,8 +9,17 @@
 <script>
 import Header from '../components/PageHeader'
 import Footer from '../components/PageFoot'
+import { useRouter } from 'vue-router';
+import { getCookies } from '../utils/cookies'
 export default {
   name: 'LoginLayout',
+  setup(){
+    const router = useRouter()
+    const token = getCookies('token')
+    if(token){
+      router.push('/adapter/component')
+    }
+  },
   components:{
     Header,
     Footer
