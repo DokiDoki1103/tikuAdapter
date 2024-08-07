@@ -111,7 +111,7 @@
                 <a-tab-pane tab="提交附件" key="2">
                   <div>
                     <a-upload-dragger name="file" multiple="true" show-upload-list="true"
-                      action='/adapter-service/upload?parentDir=test' @change="handleChange">
+                      action='/adapter-service/upload?parentDir=myword' @change="handleChange">
                       <p class="ant-upload-drag-icon">
                         <upload-outlined></upload-outlined>
                       </p>
