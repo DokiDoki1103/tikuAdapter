@@ -41,22 +41,26 @@ func CreateManager() (*Manager, error) {
 	logger.SetupGinLog()
 	db := registry.RegisterDB(config)
 
-	// 注册oss
-	client, err := oss.New(config.OSS.EndPoint, config.OSS.AccessKeyID, config.OSS.AccessKeySecret)
-	if err != nil {
-		return nil, err
-	}
-	bucket, err := client.Bucket(config.OSS.BucketName)
-	if err != nil {
-		return nil, err
-	}
 	defaultManager = &Manager{
 		db:        db,
 		config:    config,
 		ipLimiter: registry.Limit(config),
 		es:        registry.RegisterEs(config),
-		bucket:    bucket,
 	}
+
+	// 可选 注册oss
+	if config.OSS.EndPoint != "" && config.OSS.AccessKeyID != "" && config.OSS.AccessKeySecret != "" && config.OSS.BucketName != "" {
+		client, err := oss.New(config.OSS.EndPoint, config.OSS.AccessKeyID, config.OSS.AccessKeySecret)
+		if err != nil {
+			return nil, err
+		}
+		bucket, err := client.Bucket(config.OSS.BucketName)
+		if err != nil {
+			return nil, err
+		}
+		defaultManager.bucket = bucket
+	}
+
 	return defaultManager, nil
 }
 
