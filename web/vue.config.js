@@ -4,11 +4,11 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       "/adapter-service": {
-        target: 'http://192.168.10.159:8060',
+        target: 'http://127.0.0.1:8060',
         changeOrigin: true,
       },
       "/sqp/api": {
-        target: 'http://adapter.xmig6.cn',
+        target: 'http:/127.0.0.1:8060',
         changeOrigin: true,
       },
     },

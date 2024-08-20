@@ -13,7 +13,11 @@ import (
 
 // Plat -
 func Plat(c *gin.Context) {
-	c.JSON(http.StatusOK, manager.GetManager().GetConfig().Plat)
+	if manager.GetManager().GetConfig().Plat == nil {
+		c.JSON(http.StatusOK, []string{})
+	} else {
+		c.JSON(http.StatusOK, manager.GetManager().GetConfig().Plat)
+	}
 }
 
 // UploadFile -

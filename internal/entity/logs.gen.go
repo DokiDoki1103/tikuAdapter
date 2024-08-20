@@ -12,7 +12,7 @@ const TableNameLog = "logs"
 
 // Log mapped from table <logs>
 type Log struct {
-	ID         int32     `gorm:"column:id;type:int(11);primaryKey;autoIncrement:true" json:"id"`
+	ID         int32     `gorm:"type:integer primary key autoincrement" json:"id"`
 	Qid        int32     `gorm:"column:qid;type:int(11);not null;comment:被修改的qid" json:"qid"`                // 被修改的qid
 	OldAnswer  string    `gorm:"column:old_answer;type:longtext;not null;comment:修改之前的答案" json:"old_answer"` // 修改之前的答案
 	NewAnswer  string    `gorm:"column:new_answer;type:longtext;not null;comment:修改之后的答案" json:"new_answer"` // 修改之后的答案
