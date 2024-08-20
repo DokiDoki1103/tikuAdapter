@@ -42,12 +42,10 @@
 
 从 [GitHub Releases](https://github.com/itihey/tikuAdapter/releases) 下载对应的版本，解压后运行即可
 
-### 使用在线服务
+### 使用网页版
+直接访问 `http://localhost:8060` 可以看到网页版，可以实现题库的增删改查，日志记录等功能。
 
-在线服务均不能保证稳定性，并可能会泄漏您的Token，强烈建议自行部署。
-
-- 【v0.1.0-alpha.13】xmig提供 `http://adapter.xmig6.cn/adapter-service/search`
-
+默认账号为 `admin` 密码`123456`
 ### 使用API接口
 
 POST `http://localhost:8060/adapter-service/search`
