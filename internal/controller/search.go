@@ -23,7 +23,6 @@ func Search(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, global.ErrorParam)
 		return
 	}
-	req.Extra = c.Query("extra")
 
 	var result [][]string                          // 最后所有的答案的二维数组
 	var localAnswer [][]string                     // 本地答案
@@ -90,7 +89,7 @@ func Search(c *gin.Context) {
 	resp := util.FillAnswerResponse(result, &req)
 
 	if len(localAnswer) == 0 && c.Query("noRecord") == "" { // 只有本地题库没有答案或者明确标志不要记录
-		middleware.CollectAnswer(resp, c.Query("courseName"), c.Query("extra"))
+		middleware.CollectAnswer(resp, req.CourseName, req.Extra)
 	}
 	c.JSON(http.StatusOK, resp)
 }
