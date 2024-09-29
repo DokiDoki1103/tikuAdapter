@@ -23,7 +23,6 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 			AllAnswer: answers,
 		},
 	}
-	formatAnswer(answers, req.Type) // 先把答案统一格式化
 
 	if req.Options == nil || len(req.Options) == 0 { // 用户没有传选项，那么只能返回出现次数最多的答案。
 		resp.Answer.BestAnswer = SearchRightAnswer(answers)

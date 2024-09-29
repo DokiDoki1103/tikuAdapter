@@ -88,9 +88,3 @@ func FullWidthStrToHalfWidthStr(str string) (result string) {
 
 	return result
 }
-
-func formatAnswer(answers [][]string, questionType int) {
-	for i := range answers {
-		answers[i] = FormatOptions(answers[i], questionType)
-	}
-}
