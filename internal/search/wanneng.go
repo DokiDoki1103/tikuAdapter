@@ -43,7 +43,7 @@ func (in *WannengClient) getHTTPClient() *resty.Client {
 		}).
 		SetRetryMaxWaitTime(10*time.Second).
 		AddRetryHook(func(r *resty.Response, err error) {
-			logger.SysError(fmt.Sprintf("万能免费题库触发流控限制，正在重试...%s", r.String()))
+			logger.SysError(fmt.Sprintf("万能题库触发流控限制:%d,正在重试...%s", r.StatusCode(), r.String()))
 		}).
 		SetHeader("Content-Type", "application/json")
 }
