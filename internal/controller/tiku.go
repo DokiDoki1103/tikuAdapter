@@ -106,6 +106,7 @@ func UpdateQuestions(c *gin.Context) {
 	// 找到旧答案
 	oldTiku, err := dao.Tiku.Where(dao.Tiku.ID.Eq(int32(id))).First()
 
+	middleware.FillHash(tiku) // 更新题库的时候重新计算hash值
 	updates, err := dao.Tiku.Where(dao.Tiku.ID.Eq(int32(id))).Updates(tiku)
 	if err != nil {
 		c.JSON(500, gin.H{
