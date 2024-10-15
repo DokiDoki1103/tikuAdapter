@@ -2,12 +2,10 @@ package middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gookit/goutil/strutil"
 	"github.com/itihey/tikuAdapter/internal/dao"
 	"github.com/itihey/tikuAdapter/internal/entity"
 	"github.com/itihey/tikuAdapter/internal/registry/manager"
-	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"sort"
 	"strconv"
@@ -65,7 +63,11 @@ func CollectAnswer(resp model.SearchResponse, courseName, extra string) {
 		FillHash(&t)
 		err := dao.Tiku.Create(&t)
 		if err != nil {
-			logger.SysError(fmt.Sprintf("收集答案失败 %v", err))
+			// 已经收录过，但是可能答案为空的情况，那么就需要去更新答案
+			tk, errNotFind := dao.Tiku.Where(dao.Tiku.Hash.Eq(t.Hash)).First()
+			if errNotFind != nil && tk.Answer == "[]" {
+				dao.Tiku.Where(dao.Tiku.ID.Eq(tk.ID)).Update(dao.Tiku.Answer, ans)
+			}
 		}
 	}
 }
