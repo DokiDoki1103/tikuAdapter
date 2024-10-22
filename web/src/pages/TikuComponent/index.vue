@@ -3,34 +3,40 @@
     <a-row>
       <a-col :span="5">
         <a-form-item label="平台" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-select v-model:value="platValue" show-search placeholder="请选择" :options="platType" @change="selectChange">
+          <a-select v-model:value="platValue" show-search placeholder="请选择" :options="platType"
+                    @change="selectChange">
           </a-select>
         </a-form-item>
       </a-col>
-      <a-col :span="4">
+      <a-col :span="5">
         <a-form-item label="课程" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-select v-model:value="courseValue" show-search placeholder="请选择" :options="courses">
           </a-select>
         </a-form-item>
       </a-col>
-      <a-col :span="4">
-        <a-form-item label="类型" :label-col="labelCol" :wrapper-col="wrapperCol" style="width: 100%;">
+      <a-col :span="3">
+        <a-form-item label="类型" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-select v-model:value="typeValue" show-search placeholder="请选择" :options="typeList">
           </a-select>
         </a-form-item>
       </a-col>
-      <a-col :span="6">
-        <a-form-item label="问题">
-          <a-input v-model:value="searchValue.question" placeholder="搜索问题" style="width: 200px;" />
+      <a-col :span="5">
+        <a-form-item label="问题" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-input v-model:value="searchValue.question" placeholder="搜索问题"/>
         </a-form-item>
       </a-col>
-      <div>
-        <a-checkbox v-model:checked="searchValue.onlyShowEmptyAnswer">无答案</a-checkbox>
-      </div>
-      <a-col :span="2" style="display: flex; justify-content: end;">
-        <a-form-item>
+
+      <a-col :span="3">
+        <a-form-item label="无答案" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-checkbox v-model:checked="searchValue.onlyShowEmptyAnswer"></a-checkbox>
+        </a-form-item>
+
+      </a-col>
+
+      <a-col :span="2">
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-button type="primary" @click="onSearch" @keyup.enter="onSearch">
-            <SearchOutlined />
+            <SearchOutlined/>
             搜索
           </a-button>
         </a-form-item>
@@ -44,7 +50,7 @@
         <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
           <template #extra>
             <a-button type="primary" @click="navigateToImport" style="margin-right: 12px;">
-              <DownloadOutlined />
+              <DownloadOutlined/>
               智能导入
             </a-button>
             <a-button type="primary" @click="showModal({
@@ -53,12 +59,12 @@
               options: '[]',
               answer: '[]'
             }, 2)">
-              <FormOutlined />
+              <FormOutlined/>
               添加
             </a-button>
           </template>
           <a-table :columns="columns" :data-source="data" :pagination="false" :row-key="record => record.id"
-            :loading="tabLoading">
+                   :loading="tabLoading">
             <template #type="{ record }">
               <a-tag :color="record.type === 0 ? 'green' : record.type === 1 ? 'cyan' : 'orange'">
                 {{ quesType[record.type] }}
@@ -67,7 +73,7 @@
             <template #answer="{ record }">
               <div>
                 <a-tag v-for="(value, index) in (record.answer ? JSON.parse(record.answer) : [])" color="blue"
-                  :key="index">{{ record.source === 2 ? index : value }}
+                       :key="index">{{ record.source === 2 ? index : value }}
                 </a-tag>
               </div>
             </template>
@@ -79,8 +85,9 @@
             </template>
           </a-table>
           <a-pagination @change="onChange" :current="page.pageNo" :total="page.total" show-size-changer
-            :page-size-options="page.pageSizeOptions" :page-size="page.pageSize" @showSizeChange="onShowSizeChange"
-            style="margin-top: 20px; text-align: right;" />
+                        :page-size-options="page.pageSizeOptions" :page-size="page.pageSize"
+                        @showSizeChange="onShowSizeChange"
+                        style="margin-top: 20px; text-align: right;"/>
         </a-card>
 
       </div>
@@ -94,24 +101,24 @@
             </a-select>
           </a-form-item>
           <a-form-item label="问题" class="margin_top">
-            <a-textarea v-model:value="formData.question" />
+            <a-textarea v-model:value="formData.question"/>
           </a-form-item>
           <div v-if="/[013]/.test(formData.type)" class="margin_top">
             <a-form-item label="选项">
               <OptionBox :options="formData.options ? JSON.parse(formData.options) : []" :type="formData.type"
-                :answer="answer" ref="optionBox" />
+                         :answer="answer" ref="optionBox"/>
             </a-form-item>
           </div>
           <div v-else>
             <a-card :bordered="false" style="width: 100%; text-align: start;" :bodyStyle="style">
               <a-tabs default-active-key="1">
                 <a-tab-pane tab="默认选项" key="1">
-                  <AnswerBox :answer="answer" ref="answerBox" />
+                  <AnswerBox :answer="answer" ref="answerBox"/>
                 </a-tab-pane>
                 <a-tab-pane tab="提交附件" key="2">
                   <div>
                     <a-upload-dragger name="file" multiple="true" show-upload-list="true"
-                      action='/adapter-service/upload?parentDir=myword' @change="handleChange">
+                                      action='/adapter-service/upload?parentDir=myword' @change="handleChange">
                       <p class="ant-upload-drag-icon">
                         <upload-outlined></upload-outlined>
                       </p>
@@ -133,8 +140,8 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import {defineComponent, ref} from 'vue';
+import {useRouter} from 'vue-router';
 import {
   getPlat,
   getCourses,
@@ -151,8 +158,8 @@ import {
 } from '@ant-design/icons-vue';
 import OptionBox from '../../components/OptionBox/index.vue'
 import AnswerBox from '../../components/AnswerBox/index.vue'
-import { questionType } from "@/utils/uitls";
-import { message } from "ant-design-vue";
+import {questionType} from "@/utils/uitls";
+import {message} from "ant-design-vue";
 
 const style = {
   padding: "0 0 24px"
@@ -165,19 +172,26 @@ const columns = [
     title: 'ID',
     dataIndex: 'id',
     key: 'id',
-    width: 100
+    width: 80
   },
   {
     title: '类型',
     key: 'type',
     dataIndex: 'type',
-    width: 100,
+    width: 80,
     slots: {
       customRender: 'type',
     },
   },
   {
+    title: '课程名称',
+    width: 170,
+    dataIndex: 'course_name',
+    key: 'course_name',
+  },
+  {
     title: '问题',
+    width: 700,
     dataIndex: 'question',
     key: 'question',
   },
@@ -242,8 +256,8 @@ export default defineComponent({
       formData,
       style,
       searchValue,
-      labelCol: { span: 8 },
-      wrapperCol: { span: 14 },
+      labelCol: {span: 8},
+      wrapperCol: {span: 14},
       navigateToImport,
       fileList
     }
@@ -264,7 +278,7 @@ export default defineComponent({
   },
   methods: {
     async selectChange(info) {
-      const list = await getCourses({ plat: info })
+      const list = await getCourses({plat: info})
       if (list?.data && list?.data.length) {
         await this.getCourses(list?.data)
       } else {
@@ -377,7 +391,7 @@ export default defineComponent({
 
     async deleteQuestion(id) {
       fileList.value = []
-      await delQuestions({ id: id }).then(res => {
+      await delQuestions({id: id}).then(res => {
         res.status == 200 ? message.success(`删除成功`) : message.error(`删除失败`)
       })
       visible.value = false

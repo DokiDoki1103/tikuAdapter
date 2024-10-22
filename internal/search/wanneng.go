@@ -87,10 +87,13 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 		return [][]string{as, as, as, as, as, as, as, as, as, as}, nil
 	}
 
+	// 万能题库返回的是一个二维数组
 	for _, ans := range res.Result.Answers {
 		var innerArray []string
 		for _, val := range ans.([]interface{}) {
-			innerArray = append(innerArray, val.(string))
+			if len(innerArray) > 0 {
+				innerArray = append(innerArray, val.(string))
+			}
 		}
 		answer = append(answer, innerArray)
 	}
