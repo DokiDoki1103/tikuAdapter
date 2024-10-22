@@ -95,7 +95,10 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 				innerArray = append(innerArray, val.(string))
 			}
 		}
-		answer = append(answer, innerArray)
+
+		if len(innerArray) > 0 {
+			answer = append(answer, innerArray)
+		}
 	}
 	return answer, nil
 }
