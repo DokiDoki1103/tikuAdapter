@@ -64,7 +64,7 @@
             </a-button>
           </template>
           <a-table :columns="columns" :data-source="data" :pagination="false" :row-key="record => record.id"
-                   :loading="tabLoading">
+                   :loading="tabLoading" :scroll="{ x: '2000px' }">
             <template #type="{ record }">
               <a-tag :color="record.type === 0 ? 'green' : record.type === 1 ? 'cyan' : 'orange'">
                 {{ quesType[record.type] }}
@@ -77,6 +77,14 @@
                 </a-tag>
               </div>
             </template>
+
+            <template #plat="{ record }">
+              <span>
+                {{getPlatStr(record.plat)}}
+              </span>
+            </template>
+
+
             <template #action="{ record }">
               <div style="display:flex;justify-content: space-between">
                 <a-button type="primary" ghost @click="showModal(record, 1)">编辑</a-button>
@@ -172,7 +180,7 @@ const columns = [
     title: 'ID',
     dataIndex: 'id',
     key: 'id',
-    width: 80
+    width: 90
   },
   {
     title: '类型',
@@ -202,6 +210,21 @@ const columns = [
     slots: {
       customRender: 'answer',
     },
+  },
+  {
+    title: '平台',
+    dataIndex: 'plat',
+    key: 'plat',
+    width: 100,
+    slots: {
+      customRender: 'plat',
+    },
+  },
+  {
+    title: '拓展参数',
+    dataIndex: 'extra',
+    key: 'extra',
+    width: 300,
   },
   {
     title: '操作',
@@ -326,7 +349,14 @@ export default defineComponent({
           })
         }
       }
+    },
 
+     getPlatStr(plat){
+      for (let valueElement of platType.value) {
+        if (plat === valueElement.value){
+          return valueElement.label
+        }
+      }
     },
     async getPlat() {
       const list = await getPlat()
@@ -338,7 +368,6 @@ export default defineComponent({
           }
         })
       }
-      console.log('platType===>', platType.value)
     },
     async fetchData() {
       fileList.value = []
