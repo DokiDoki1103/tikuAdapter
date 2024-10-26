@@ -65,8 +65,18 @@ func CollectAnswer(resp model.SearchResponse, courseName, extra string) {
 		if err != nil {
 			// 已经收录过，但是可能答案为空的情况，那么就需要去更新答案
 			tk, errNotFind := dao.Tiku.Where(dao.Tiku.Hash.Eq(t.Hash)).First()
-			if errNotFind != nil && tk.Answer == "[]" {
-				dao.Tiku.Where(dao.Tiku.ID.Eq(tk.ID)).Update(dao.Tiku.Answer, ans)
+			if errNotFind != nil {
+				if tk.Answer == "[]" {
+					dao.Tiku.Where(dao.Tiku.ID.Eq(tk.ID)).Update(dao.Tiku.Answer, ans)
+				}
+
+				if tk.Extra == "" {
+					dao.Tiku.Where(dao.Tiku.ID.Eq(tk.ID)).Update(dao.Tiku.Extra, extra)
+				}
+
+				if tk.CourseName == "" {
+					dao.Tiku.Where(dao.Tiku.ID.Eq(tk.ID)).Update(dao.Tiku.CourseName, courseName)
+				}
 			}
 		}
 	}
