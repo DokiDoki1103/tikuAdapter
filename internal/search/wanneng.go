@@ -101,6 +101,5 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 			answer = append(answer, innerArray)
 		}
 	}
-	fmt.Println(res.Result.Answers)
 	return answer, nil
 }
