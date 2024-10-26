@@ -91,8 +91,9 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 	for _, ans := range res.Result.Answers {
 		var innerArray []string
 		for _, val := range ans.([]interface{}) {
-			if len(innerArray) > 0 {
-				innerArray = append(innerArray, val.(string))
+			s := val.(string)
+			if len(s) > 0 {
+				innerArray = append(innerArray, s)
 			}
 		}
 
@@ -100,5 +101,6 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 			answer = append(answer, innerArray)
 		}
 	}
+	fmt.Println(res.Result.Answers)
 	return answer, nil
 }
