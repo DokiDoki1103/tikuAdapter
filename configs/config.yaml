@@ -1,12 +1,12 @@
 limit:
-  enable: false # 是否开启
+  enable: true # 是否开启
   duration: 3  # 时间窗口为3秒
   requests: 1  # 允许用户在3秒内通过1个请求
 mysql: ""
 api:
   - name: '样例接口 json 请求'
     enable: false
-    url: http://lyck6.cn/scriptService/api/autoFreeAnswer
+    url: https://www.doubao.com/chat/301266962139394
     method: POST
     headers:
       - key: Content-Type
