@@ -7,7 +7,6 @@ import (
 	"github.com/itihey/tikuAdapter/internal/entity"
 	"github.com/itihey/tikuAdapter/internal/middleware"
 	"github.com/itihey/tikuAdapter/pkg/logger"
-	"github.com/itihey/tikuAdapter/pkg/util"
 	"net/http"
 	"strconv"
 	"time"
@@ -45,7 +44,6 @@ func GetQuestions(c *gin.Context) {
 		})
 		return
 	}
-	searchValue.Question = util.FormatString(searchValue.Question)
 	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
 	if searchValue.Question != "" {
 		tx.Where(dao.Tiku.Question.Like("%" + searchValue.Question + "%"))
