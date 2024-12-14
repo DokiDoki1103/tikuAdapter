@@ -44,6 +44,26 @@ func GetQuestions(c *gin.Context) {
 		})
 		return
 	}
+	user, _ := c.Get("user")
+	if searchValue.PageSize > 10 {
+		r, _ := json.Marshal(searchValue)
+		l := entity.Log{
+			Qid:        0,
+			Action:     3,
+			UserID:     user.(*entity.User).ID,
+			CreateTime: time.Now(),
+			OldAnswer:  string(r),
+		}
+		dao.Log.Create(&l)
+	}
+
+	if searchValue.PageSize > 100 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "服务器错误",
+		})
+		return
+	}
+
 	tx := dao.Tiku.Order(dao.Tiku.ID.Desc())
 	if searchValue.Question != "" {
 		tx.Where(dao.Tiku.Question.Like("%" + searchValue.Question + "%"))
@@ -67,6 +87,7 @@ func GetQuestions(c *gin.Context) {
 	if searchValue.OnlyShowEmptyAnswer {
 		tx.Where(dao.Tiku.Answer.Eq("[]"))
 	}
+
 	items, total, err := tx.FindByPage(searchValue.PageNo*searchValue.PageSize, searchValue.PageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -113,10 +134,11 @@ func UpdateQuestions(c *gin.Context) {
 		return
 	}
 	if updates.RowsAffected == 1 {
+		user, _ := c.Get("user")
 		l := entity.Log{
 			Qid:        oldTiku.ID,
 			Action:     1,
-			UserID:     0,
+			UserID:     user.(*entity.User).ID,
 			CreateTime: time.Now(),
 			OldAnswer:  oldTiku.Answer,
 			NewAnswer:  tiku.Answer,
@@ -141,10 +163,11 @@ func DeleteQuestion(c *gin.Context) {
 	// 记录删除日志
 	oldTiku, err := dao.Tiku.Where(dao.Tiku.ID.Eq(int32(id))).First()
 	marshal, _ := json.Marshal(oldTiku)
+	user, _ := c.Get("user")
 	l := entity.Log{
 		Qid:        oldTiku.ID,
 		Action:     2,
-		UserID:     0,
+		UserID:     user.(*entity.User).ID,
 		CreateTime: time.Now(),
 		OldAnswer:  string(marshal),
 	}
@@ -173,10 +196,11 @@ func CreateQuestion(c *gin.Context) {
 		err := dao.Tiku.Create(t)
 		if err == nil {
 			marshal, _ := json.Marshal(t)
+			user, _ := c.Get("user")
 			l := entity.Log{
 				Qid:        t.ID,
 				Action:     0,
-				UserID:     0,
+				UserID:     user.(*entity.User).ID,
 				CreateTime: time.Now(),
 				OldAnswer:  string(marshal),
 			}

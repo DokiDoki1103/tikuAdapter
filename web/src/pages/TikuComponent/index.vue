@@ -237,7 +237,7 @@ const columns = [
   },
 ]
 const page = ref({
-  pageSizeOptions: ['10', '20', '50', '100', '500'],
+  pageSizeOptions: ['10', '20', '50', '100'],
   pageNo: 1,
   pageSize: 10,
   total: 0
