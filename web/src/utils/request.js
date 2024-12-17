@@ -5,7 +5,7 @@ import { message } from 'ant-design-vue';
 // 创建axios实例
 const service = axios.create({
   baseURL: "/",
-  timeout: 5 * 1000,
+  timeout: 60 * 1000,
   validateStatus: function (status) {
     return status >= 200 && status <= 500
   }

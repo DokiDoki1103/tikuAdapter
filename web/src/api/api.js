@@ -3,7 +3,7 @@ import qs from 'qs';
 
 const xmig6Instance = axios.create({
     baseURL: '/sqp/api',
-    timeout: 5 * 1000,
+    timeout: 60 * 1000,
     validateStatus: function (status) {
         return status >= 200 && status <= 500
     }
