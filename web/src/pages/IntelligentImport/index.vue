@@ -6,8 +6,8 @@
           题目编辑
         </div>
         <div>
-          <a-upload name="file" action="/sqp/api/upload" @change="handleChange"
-                    :showUploadList="false" :beforeUpload="beforeUpload" accept=".docx">
+          <a-upload name="file" action="/sqp/api/upload" @change="handleChange" :showUploadList="false"
+            :beforeUpload="beforeUpload" accept=".docx">
             <a-button>
               <upload-outlined></upload-outlined>
               上传文件
@@ -22,7 +22,7 @@
         <template v-if="showProblemArr.length > 0">
           <div class="compileContent" ref="compileContent" @scroll="handleScroll">
             <div v-for="(i, index) in showProblemArr" :key="index" contenteditable='true'
-                 :class="type == '全部' ? '' : type == i.typeAlias ? '' : 'display'">
+              :class="type == '全部' ? '' : type == i.typeAlias ? '' : 'display'">
               <p class="line" v-if="i.typeAlias"> 【{{ i.typeAlias }}】</p>
               <p class="lines" v-if="i.content">{{ index + 1 }}. {{ i.content }} </p>
               <template v-if="i.options">
@@ -68,16 +68,16 @@
         </div>
       </div>
       <div class="tabs">
-                <span v-for="(i, index) in problemArr" :key="index" @click="() => { type = i.typeAlias }"
-                      :class="type === i.typeAlias ? 'active tabsBtn' : 'tabsBtn'">
-                    {{ i.typeAlias }}({{ i.paperList.length }})
-                </span>
+        <span v-for="(i, index) in problemArr" :key="index" @click="() => { type = i.typeAlias }"
+          :class="type === i.typeAlias ? 'active tabsBtn' : 'tabsBtn'">
+          {{ i.typeAlias || '其他' }}({{ i.paperList.length }})
+        </span>
       </div>
       <a-spin :spinning="loading">
         <template v-if="showProblemArr.length > 0">
           <div class="previewContent" ref="previewContent" @scroll="handleScroll">
             <div v-for="(i, index) in showProblemArr" :key="index"
-                 :class="type === '全部' ? '' : type === i.typeAlias ? '' : 'display'">
+              :class="type === '全部' ? '' : type === i.typeAlias ? '' : 'display'">
               <p class="line" v-if="i.typeAlias"> 【{{ i.typeAlias }}】</p>
               <p class="lines" v-if="i.content">{{ index + 1 }}. {{ i.content }} </p>
               <template v-if="i.options">
@@ -101,23 +101,23 @@
   </main>
   <footer>
     <a-space>
-      <a-button type="primary" @click="upload">确认导入</a-button>
+      <a-button type="primary" @click="upload" :loading="submitLoading">确认导入</a-button>
       <a-button @click="navigateToHome">返回</a-button>
     </a-space>
   </footer>
 </template>
 
 <script>
-import {message} from 'ant-design-vue';
-import {useRouter} from 'vue-router';
-import {UploadOutlined} from '@ant-design/icons-vue';
-import {defineComponent, ref} from 'vue';
+import { message } from 'ant-design-vue';
+import { useRouter } from 'vue-router';
+import { UploadOutlined } from '@ant-design/icons-vue';
+import { defineComponent, ref } from 'vue';
 import {
   parseFile,
   reParseFile
 } from '@/api/api'
-import {createQuestions} from '@/api/TikuComponentApi'
-import {getQuestionTypeByName} from "@/utils/uitls";
+import { createQuestions } from '@/api/TikuComponentApi'
+import { getQuestionTypeByName } from "@/utils/uitls";
 
 const UploadId = ref('');
 const problemArr = ref([]);
@@ -125,6 +125,7 @@ const showProblemArr = ref([]);
 const loading = ref(false);
 const data = ref([])
 const type = ref('全部')
+const submitLoading = ref(false)
 
 export default defineComponent({
   name: 'IntelligentImport',
@@ -143,7 +144,8 @@ export default defineComponent({
       loading,
       data,
       type,
-      navigateToHome
+      navigateToHome,
+      submitLoading
     };
   },
   methods: {
@@ -152,7 +154,7 @@ export default defineComponent({
       const res = await parseFile({
         file: UploadId.value
       })
-      const {paper} = res
+      const { paper } = res
       if (paper.length > 0) {
         this.processPaperData(paper);
         data.value = paper;
@@ -171,7 +173,7 @@ export default defineComponent({
       const res = await reParseFile({
         html: val
       })
-      const {paper} = res
+      const { paper } = res
       if (paper.length > 0) {
         this.processPaperData(paper);
         data.value = paper;
@@ -185,8 +187,8 @@ export default defineComponent({
       console.log(showProblemArr.value);
       const problemType = [...new Set(paper.map(item => item.typeAlias))];
       const Arr = [
-        {typeAlias: '全部', paperList: paper},
-        ...problemType.map(item => ({typeAlias: item, paperList: paper.filter(i => i.typeAlias === item)}))
+        { typeAlias: '全部', paperList: paper },
+        ...problemType.map(item => ({ typeAlias: item, paperList: paper.filter(i => i.typeAlias === item) }))
       ];
       problemArr.value = Arr;
     },
@@ -226,15 +228,13 @@ export default defineComponent({
           question: item.content,
           type: getQuestionTypeByName(item.typeAlias),
         }
-
         if (item.options) {
           data.options = item.options.map(i => {
             return i.value
           })
         }
-
         if (item.answer) {
-          if (data.options.length > 0) {
+          if (data?.options && data.options.length > 0) {
             data.answer = JSON.stringify(item.answer.map(i => {
               return data.options[i.charCodeAt(0) - 65]
             }))
@@ -245,9 +245,13 @@ export default defineComponent({
         data.options = JSON.stringify(data.options)
         return data
       }).filter(i => i.answer && i.answer.length > 0)
-      console.log(JSON.stringify(result))
+      submitLoading.value = true
       createQuestions(result).then(res => {
         message.success(res.message);
+        submitLoading.value = false
+      }).catch(err => {
+        submitLoading.value = false
+        message.error(err.message)
       })
     }
   }
@@ -331,12 +335,12 @@ footer {
   background-color: #f0f2f5;
 }
 
-.overview > span:nth-child(1) {
+.overview>span:nth-child(1) {
   color: #00B368;
   font-weight: 500;
 }
 
-.overview > span:nth-child(2) {
+.overview>span:nth-child(2) {
   color: #F33131;
   font-weight: 500;
 }
@@ -380,7 +384,7 @@ footer {
 
 }
 
-.compileContent > div {
+.compileContent>div {
   padding: 10px;
   border-radius: 6px;
 }
@@ -396,12 +400,12 @@ footer {
   box-sizing: border-box;
 }
 
-.previewContent > div {
+.previewContent>div {
   padding: 10px;
   border-radius: 6px;
 }
 
-.previewContent > div:hover {
+.previewContent>div:hover {
   background-color: #f0f2f5;
 }
 
