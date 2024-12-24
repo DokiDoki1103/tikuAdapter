@@ -29,7 +29,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 	// 简答题一般只需要随机返回一个即可
 	if (req.Type == 4 || req.Type == -4) && len(answers) > 0 {
 		rand.Seed(time.Now().UnixNano())
-		randomIndex := rand.Intn(len(answers))
+		randomIndex := rand.Intn(len(answers[0]))
 		ans := answers[0][randomIndex]
 		resp.Answer.AllAnswer = [][]string{}
 		resp.Answer.BestAnswer = []string{ans}
