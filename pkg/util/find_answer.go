@@ -4,7 +4,9 @@ import (
 	"github.com/antlabs/strsim"
 	"github.com/gookit/goutil/arrutil"
 	"github.com/itihey/tikuAdapter/pkg/model"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 var sep = "**=====^_^======^_^======**" // 用于分割答案的分隔符
@@ -22,6 +24,16 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		Answer: model.Answer{
 			AllAnswer: answers,
 		},
+	}
+
+	// 简答题一般只需要随机返回一个即可
+	if (req.Type == 4 || req.Type == -4) && len(answers) > 0 {
+		rand.Seed(time.Now().UnixNano())
+		randomIndex := rand.Intn(len(answers))
+		ans := answers[0][randomIndex]
+		resp.Answer.AllAnswer = [][]string{}
+		resp.Answer.BestAnswer = []string{ans}
+		return resp
 	}
 
 	if req.Options == nil || len(req.Options) == 0 { // 用户没有传选项，那么只能返回出现次数最多的答案。
