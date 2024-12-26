@@ -33,6 +33,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		ans := answers[0][randomIndex]
 		resp.Answer.AllAnswer = [][]string{}
 		resp.Answer.BestAnswer = []string{ans}
+		resp.Answer.AnswerIndex = []int{}
 		return resp
 	}
 
