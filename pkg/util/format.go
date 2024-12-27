@@ -23,7 +23,7 @@ func FormatOptions(options []string, questionType int) []string {
 	}
 
 	options = formatOptions(options)
-	if questionType == 3 && len(options) > 0 { // 判断题
+	if questionType == 3 && len(options) == 2 { // 判断题
 		for i := range options {
 			if IsTrue(options[i]) {
 				options[i] = "正确"

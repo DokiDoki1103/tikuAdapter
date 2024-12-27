@@ -22,7 +22,10 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		Type:     req.Type,
 		Plat:     req.Plat,
 		Answer: model.Answer{
-			AllAnswer: answers,
+			AllAnswer:   answers,
+			AnswerIndex: []int{},
+			AnswerKey:   []string{},
+			BestAnswer:  []string{},
 		},
 	}
 
@@ -31,9 +34,8 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		rand.Seed(time.Now().UnixNano())
 		randomIndex := rand.Intn(len(answers[0]))
 		ans := answers[0][randomIndex]
-		resp.Answer.AllAnswer = [][]string{}
+		resp.Answer.AllAnswer = [][]string{{ans}}
 		resp.Answer.BestAnswer = []string{ans}
-		resp.Answer.AnswerIndex = []int{}
 		return resp
 	}
 
