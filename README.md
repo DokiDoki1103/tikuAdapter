@@ -14,6 +14,7 @@
 - [x] icodef：[icodef 题库](https://q.icodef.com) [![免费](https://img.shields.io/badge/-免费-brightgreen)](url)
 - [x] buguake：[不挂科 题库](https://easylearn.baidu.com/edu-page/tiangong/bgklist) [![免费](https://img.shields.io/badge/-免费-brightgreen)](url) 
 - [x] wanneng：[万能题库](https://lyck6.cn/pay) [![付费](https://img.shields.io/badge/免费-付费-brightgreen?color=red&labelColor=4c1)](https://lyck6.cn/pay) 
+- [x] Tikuhai：[题库海题库](https://shop.tikuhai.com/links/2C63E8E8) [![付费](https://img.shields.io/badge/免费-付费-brightgreen?color=red&labelColor=4c1)](https://shop.tikuhai.com/links/2C63E8E8) 
 - [x] aidian：[爱点题库](https://www.51aidian.com) [![付费](https://img.shields.io/badge/-付费-red)](https://tk.enncy.cn/) 
 - [x] enncy：[enncy 言溪题库](https://tk.enncy.cn/) [![付费](https://img.shields.io/badge/-付费-red)](https://tk.enncy.cn/) 
 - [x] lemon：[柠檬题库](https://www.lemtk.xyz)[![付费](https://img.shields.io/badge/-付费-red)](https://www.lemtk.xyz) 
@@ -75,6 +76,7 @@ POST `http://localhost:8060/adapter-service/search`
 | enncyToken     | enncy 题库Token值          | 否    | a21ae2403b414b94b512736c30c69940 | https://tk.enncy.cn      |
 | aidianYToken   | 爱点题库(亿级题库API)Token值     | 否    | cvor7f3HxZ7nF2M3ljmA             | https://www.51aidian.com |
 | lemonToken     | 柠檬题库 Token值             | 否    | 8a3debe92e2ba83d6786e186bef2a424 | https://www.lemtk.xyz    |
+| tikuhaiToken | 题库海题库 Token值 | 否 | Cardabcde1MdljoZk4l4E47NaAK | https://shop.tikuhai.com/links/2C63E8E8 |
 
 例如您想使用万能题库和icodef题库，您的url应为`http://localhost:8060/adapter-service/search?use=wanneng,icodef&icodefToken=UafYcHViJMGzSVNh`
 

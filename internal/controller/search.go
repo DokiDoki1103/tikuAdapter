@@ -2,6 +2,10 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
+	"sync"
+
 	"github.com/gin-gonic/gin"
 	"github.com/itihey/tikuAdapter/internal/middleware"
 	"github.com/itihey/tikuAdapter/internal/registry/manager"
@@ -10,9 +14,6 @@ import (
 	"github.com/itihey/tikuAdapter/pkg/logger"
 	"github.com/itihey/tikuAdapter/pkg/model"
 	"github.com/itihey/tikuAdapter/pkg/util"
-	"net/http"
-	"strings"
-	"sync"
 )
 
 // Search 搜题接口
@@ -47,6 +48,10 @@ func Search(c *gin.Context) {
 			&search.WannengClient{
 				Token:  c.Query("wannengToken"),
 				Enable: strings.Contains(c.Query("use"), "wanneng") || c.Query("use") == "",
+			},
+			&search.TikuhaiClient{
+				Enable: strings.Contains(c.Query("use"), "tikuhai") || c.Query("use") == "",
+				Token:  c.Query("tikuhaiToken"),
 			},
 			&search.EnncyClient{
 				Token:  c.Query("enncyToken"),
