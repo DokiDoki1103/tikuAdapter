@@ -11,4 +11,6 @@ var (
 	ErrTargetNoAnswer = errors.New("对方没有答案")
 	// ErrParserJSON 解析json错误
 	ErrParserJSON = errors.New("解析json错误")
+	// ErrTokenRequired 需要提供卡密
+	ErrTokenRequired = errors.New("需要提供卡密")
 )
