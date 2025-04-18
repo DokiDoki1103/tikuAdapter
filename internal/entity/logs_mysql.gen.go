@@ -8,15 +8,15 @@ import (
 	"time"
 )
 
-const TableNameLog = "logs"
+const TableNameLog_Mysql = "logs"
 
 //以后能不能把sqlite3和Mysql数据的注册代码分开啊
 //autoincrement 是 SQLite 的自增语法
 //AUTO_INCREMENT 是 Mysql 的自增语法
 
 // Log mapped from table <logs>
-type Log struct {
-	ID         int32     `gorm:"type:integer primary key autoincrement" json:"id"`
+type LogsMysql struct {
+	ID         int32     `gorm:"type:integer primary key AUTO_INCREMENT" json:"id"`
 	Qid        int32     `gorm:"column:qid;type:int(11);not null;comment:被修改的qid" json:"qid"`                // 被修改的qid
 	OldAnswer  string    `gorm:"column:old_answer;type:longtext;not null;comment:修改之前的答案" json:"old_answer"` // 修改之前的答案
 	NewAnswer  string    `gorm:"column:new_answer;type:longtext;not null;comment:修改之后的答案" json:"new_answer"` // 修改之后的答案
@@ -25,7 +25,7 @@ type Log struct {
 	Action     int32     `gorm:"column:action;type:tinyint(4);not null;comment:新增0更新1删除2" json:"action"`     // 新增0更新1删除2
 }
 
-// TableName Log's table name
-func (*Log) TableName() string {
-	return TableNameLog
+// TableName LogsMysql's table name
+func (*LogsMysql) TableName() string {
+	return TableNameLog_Mysql
 }

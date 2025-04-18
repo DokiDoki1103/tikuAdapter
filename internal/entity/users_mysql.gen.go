@@ -4,15 +4,15 @@
 
 package entity
 
-const TableNameUser = "users"
+const TableNameUser_Mysql = "users"
 
 //以后能不能把sqlite3和Mysql数据的注册代码分开啊
 //autoincrement 是 SQLite 的自增语法
 //AUTO_INCREMENT 是 Mysql 的自增语法
 
 // User mapped from table <users>
-type User struct {
-	ID       int32  `gorm:"type:integer primary key autoincrement" json:"id"`
+type UsersMysql struct {
+	ID       int32  `gorm:"type:integer primary key AUTO_INCREMENT" json:"id"`
 	Username string `gorm:"column:username;type:varchar(255)" json:"username"`
 	Password string `gorm:"column:password;type:varchar(255)" json:"password"`
 	Perms    string `gorm:"column:perms;type:varchar(255)" json:"perms"`
@@ -20,7 +20,7 @@ type User struct {
 	Nickname string `gorm:"column:nickname;type:varchar(255)" json:"nickname"`
 }
 
-// TableName User's table name
-func (*User) TableName() string {
-	return TableNameUser
+// TableName UsersMysql's table name
+func (*UsersMysql) TableName() string {
+	return TableNameUser_Mysql
 }

@@ -4,15 +4,15 @@
 
 package entity
 
-const TableNameTiku = "tiku"
+const TableNameTiku_Mysql = "tiku"
 
 //以后能不能把sqlite3和Mysql数据的注册代码分开啊
 //autoincrement 是 SQLite 的自增语法
 //AUTO_INCREMENT 是 Mysql 的自增语法
 
 // Tiku mapped from table <tiku>
-type Tiku struct {
-	ID         int32  `gorm:"type:integer primary key autoincrement" json:"id"`
+type TikuMysql struct {
+	ID         int32  `gorm:"type:integer primary key AUTO_INCREMENT" json:"id"`
 	Question   string `gorm:"column:question;type:longtext;not null;comment:问题内容" json:"question"`                                     // 问题内容
 	Type       int32  `gorm:"column:type;type:int(11);not null;comment:问题类型" json:"type"`                                              // 问题类型
 	Options    string `gorm:"column:options;type:longtext;not null;comment:选项内容" json:"options"`                                       // 选项内容
@@ -23,7 +23,7 @@ type Tiku struct {
 	Extra      string `gorm:"column:extra;type:text;comment:扩展字段,多用于tag" json:"extra"`                                                 // 扩展字段,多用于tag
 }
 
-// TableName Tiku's table name
-func (*Tiku) TableName() string {
-	return TableNameTiku
+// TableName TikuMysql's table name
+func (*TikuMysql) TableName() string {
+	return TableNameTiku_Mysql
 }

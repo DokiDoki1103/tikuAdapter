@@ -1,0 +1,33 @@
+limit:
+  enable: false # 是否开启
+  duration: 3  # 时间窗口为3秒
+  requests: 1  # 允许用户在3秒内通过1个请求
+  #Mysql 用户名：、tikuAdapter
+  #Mysql 密码：N4eUp4bZJUDWMcHtU3KF
+  #Mysql 数据库：tikuAdapter
+mysql: "tiku:tiku@tcp(frp.xylg.com:3306)/tiku"
+api:
+  - name: '样例接口 json 请求'
+    enable: false
+    url: http://lyck6.cn/scriptService/api/autoFreeAnswer
+    method: POST
+    headers:
+      - key: Content-Type
+        value: application/json
+    body: '{"question":"${question}"}'
+    answer: 'result.answers.0.0'
+
+  - name: '样例接口 表单请求'
+    enable: false
+    url: https://cx.icodef.com/wyn-nb?v=4
+    method: POST
+    headers:
+      - key: Content-Type
+        value: application/x-www-form-urlencoded
+    body: 'question=${question}'
+    answer: 'data'
+elasticsearch:
+  url: http://127.0.0.1:9200
+  username: "Zelly" # 认证用户名
+  password: "RYGeMAJkCRyzj5f3yRMX" # 认证密码
+recordEmptyAnswer: false # 是否记录空答案（开启之后即便没有答案也会记录在数据库方便后期手动整理题库）
