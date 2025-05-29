@@ -82,24 +82,16 @@ func (in *WannengClient) SearchAnswer(req model.SearchRequest) (answer [][]strin
 	if res.Result.Success {
 		var as []string
 		for _, v := range res.Result.Answers {
-			as = append(as, req.Options[(int)(v.(float64))])
-		}
-		return [][]string{as, as, as, as, as, as, as, as, as, as}, nil
-	}
-
-	// 万能题库返回的是一个二维数组
-	for _, ans := range res.Result.Answers {
-		var innerArray []string
-		for _, val := range ans.([]interface{}) {
-			s := val.(string)
-			if len(s) > 0 {
-				innerArray = append(innerArray, s)
+			switch val := v.(type) {
+			case float64:
+				as = append(as, req.Options[int(val)])
+			case int:
+				as = append(as, req.Options[val])
+			case string:
+				as = append(as, val)
 			}
 		}
-
-		if len(innerArray) > 0 {
-			answer = append(answer, innerArray)
-		}
+		return [][]string{as, as, as, as, as, as, as, as, as, as}, nil
 	}
 	return answer, nil
 }
