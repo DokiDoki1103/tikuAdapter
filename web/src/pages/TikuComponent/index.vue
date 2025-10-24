@@ -10,13 +10,15 @@
       </a-col>
       <a-col :span="5">
         <a-form-item label="课程" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-select v-model:value="courseValue" show-search placeholder="请选择" :options="courses">
+          <a-select v-model:value="courseValue" show-search placeholder="请选择" :options="courses"
+                    @change="onFilterChange">
           </a-select>
         </a-form-item>
       </a-col>
       <a-col :span="3">
         <a-form-item label="类型" :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-select v-model:value="typeValue" show-search placeholder="请选择" :options="typeList">
+          <a-select v-model:value="typeValue" show-search placeholder="请选择" :options="typeList"
+                    @change="onFilterChange">
           </a-select>
         </a-form-item>
       </a-col>
@@ -307,6 +309,14 @@ export default defineComponent({
       } else {
         courses.value = []
       }
+      // Reset page number when platform changes and fetch data
+      this.page.pageNo = 1
+      await this.fetchData()
+    },
+    async onFilterChange() {
+      // Reset page number when any filter changes and fetch data
+      this.page.pageNo = 1
+      await this.fetchData()
     },
     handleChange(info) {
       const status = info.file.status;
@@ -390,6 +400,8 @@ export default defineComponent({
 
     },
     onSearch() {
+      // Reset page number when search filters change
+      this.page.pageNo = 1
       this.fetchData()
     },
     onShowSizeChange(current, pageSize) {
