@@ -14,7 +14,11 @@ var sep = "**=====^_^======^_^======**" // 用于分割答案的分隔符
 // FillAnswerResponse 根据搜题结果填充答案
 func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.SearchResponse {
 
+	req.Question = FormatString(req.Question)
 	req.Options = FormatOptions(req.Options, req.Type)
+
+	// 归一化所有答案，以便匹配
+	normalizedAnswers := normalizeAnswers(answers)
 
 	resp := model.SearchResponse{
 		Question: req.Question,
@@ -22,7 +26,7 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		Type:     req.Type,
 		Plat:     req.Plat,
 		Answer: model.Answer{
-			AllAnswer:   answers,
+			AllAnswer:   answers, // 保留原始答案用于展示
 			AnswerIndex: []int{},
 			AnswerKey:   []string{},
 			BestAnswer:  []string{},
@@ -40,11 +44,12 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 	}
 
 	if req.Options == nil || len(req.Options) == 0 { // 用户没有传选项，那么只能返回出现次数最多的答案。
-		resp.Answer.BestAnswer = SearchRightAnswer(answers)
+		resp.Answer.BestAnswer = SearchRightAnswer(normalizedAnswers)
 	} else {
 		var filterAnswer [][]string
-		for i := range answers {
-			ans := arrutil.Intersects(req.Options, answers[i], arrutil.StringEqualsComparer)
+		// 使用归一化后的答案进行匹配
+		for i := range normalizedAnswers {
+			ans := arrutil.Intersects(req.Options, normalizedAnswers[i], arrutil.StringEqualsComparer)
 			if ((resp.Type == 0 || resp.Type == 3) && len(ans) > 0) || (resp.Type == 1 && len(ans) > 1) {
 				filterAnswer = append(filterAnswer, ans)
 			}
@@ -52,12 +57,12 @@ func FillAnswerResponse(answers [][]string, req *model.SearchRequest) model.Sear
 		resp.Answer.BestAnswer = SearchRightAnswer(filterAnswer)
 
 		if len(resp.Answer.BestAnswer) == 0 { // 开始模糊匹配
-			for i := range answers {
+			for i := range normalizedAnswers {
 				if resp.Type == 0 { // 单选或判断题
-					match := strsim.FindBestMatch(strings.Join(answers[i], ""), req.Options)
+					match := strsim.FindBestMatch(strings.Join(normalizedAnswers[i], ""), req.Options)
 					filterAnswer = append(filterAnswer, []string{resp.Options[match.BestIndex]})
 				} else {
-					ans := arrutil.Intersects(req.Options, answers[i], func(a, b string) int {
+					ans := arrutil.Intersects(req.Options, normalizedAnswers[i], func(a, b string) int {
 						if strsim.Compare(a, b) >= 0.7 {
 							return 0
 						}
@@ -130,4 +135,16 @@ func findIndices(answers []string, options []string) []int {
 		}
 	}
 	return indices
+}
+
+// normalizeAnswers 归一化所有答案，便于匹配
+func normalizeAnswers(answers [][]string) [][]string {
+	normalized := make([][]string, len(answers))
+	for i, answerSet := range answers {
+		normalized[i] = make([]string, len(answerSet))
+		for j, ans := range answerSet {
+			normalized[i][j] = FormatString(ans)
+		}
+	}
+	return normalized
 }
