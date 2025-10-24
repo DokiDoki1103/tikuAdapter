@@ -1,11 +1,11 @@
-FROM node:18 as builder1
+FROM node:18 AS builder1
 
 WORKDIR /build
 COPY ./web .
 RUN npm install && npm run build
 
 
-FROM golang AS builder2
+FROM golang:1.21 AS builder2
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux
