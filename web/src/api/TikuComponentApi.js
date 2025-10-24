@@ -79,10 +79,11 @@ export function addUser(data) {
   })
 }
 
-export function getLogList() {
+export function getLogList(params) {
   return request({
     url: `/adapter-service/logs`,
     method: 'get',
+    params
   })
 }
 
