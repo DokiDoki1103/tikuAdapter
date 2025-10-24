@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/mysql"
 	l "gorm.io/gorm/logger"
 	"os"
+	"path/filepath"
 
 	"github.com/glebarez/sqlite"
 	"github.com/itihey/tikuAdapter/internal/entity"
@@ -15,7 +16,6 @@ import (
 	"sync"
 )
 
-var dbName = "tiku.db"
 var db *gorm.DB
 var once sync.Once
 
@@ -42,7 +42,21 @@ func RegisterDB(config configs.Config) *gorm.DB {
 		} else if os.Getenv("SQL_DSN") != "" {
 			conn = mysql.Open(os.Getenv("SQL_DSN"))
 		} else {
-			conn = sqlite.Open(dbName)
+			// 使用 SQLite，从配置读取路径，默认为 tiku.db（向后兼容）
+			dbPath := config.Database.Path
+			if dbPath == "" {
+				dbPath = "tiku.db"
+			}
+
+			// 确保数据库文件所在目录存在
+			dbDir := filepath.Dir(dbPath)
+			if dbDir != "." && dbDir != "" {
+				if err := os.MkdirAll(dbDir, 0755); err != nil {
+					logger.FatalLog(fmt.Errorf("create database directory fail: %w", err))
+				}
+			}
+
+			conn = sqlite.Open(dbPath)
 		}
 		db, err = gorm.Open(conn, &gorm.Config{
 			PrepareStmt: true,

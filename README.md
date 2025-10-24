@@ -32,21 +32,54 @@
 
 ### 4.个性化配置
 
-- [自定义请求参数](https://github.com/itihey/tikuAdapter#url-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0) 个性化**禁用题库**或者
-  **配置题库Token**
-- 搜题接口的限流措施(
-  个人使用一般不需要开启) [配置限流](https://github.com/itihey/tikuAdapter/tree/main/configs#%E9%99%90%E6%B5%81%E9%85%8D%E7%BD%AE)
+- [自定义请求参数](https://github.com/itihey/tikuAdapter#url-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0) 个性化**禁用题库**或者**配置题库Token**
+- 搜题接口的限流措施(个人使用一般不需要开启) [配置限流](https://github.com/itihey/tikuAdapter/tree/main/configs#%E9%99%90%E6%B5%81%E9%85%8D%E7%BD%AE)
+- **自定义数据库路径**：支持在 `config.yaml` 中配置 SQLite 数据库路径，默认为 `tiku.db`（Docker 部署建议设置为 `data/tiku.db`）
+  ```yaml
+  database:
+    path: "data/tiku.db"  # 自定义数据库文件路径（Docker部署推荐）
+  ```
 
 ## 如何部署使用
 
-### 自行部署
+### 方式一：下载可执行文件
 
 从 [GitHub Releases](https://github.com/itihey/tikuAdapter/releases) 下载对应的版本，解压后运行即可
+
+### 方式二：Docker 部署
+
+**构建镜像**
+```bash
+docker build -t tiku-adapter .
+```
+
+**运行容器**
+```bash
+docker run -d \
+  --name tiku-adapter \
+  -p 8060:8060 \
+  -v ./data:/app/data \
+  tiku-adapter
+```
+
+**推荐方式：使用配置文件**
+```bash
+# 在 config.yaml 中设置 database.path: "data/tiku.db"
+docker run -d \
+  --name tiku-adapter \
+  -p 8060:8060 \
+  -v ./data:/app/data \
+  -v ./config.yaml:/app/config.yaml \
+  tiku-adapter
+```
+
+更多 Docker 部署细节请参考 [部署文档](./deploy/README.md)
 
 ### 使用网页版
 直接访问 `http://localhost:8060` 可以看到网页版，可以实现题库的增删改查，日志记录等功能。
 
 默认账号为 `admin` 密码`123456`
+
 ### 使用API接口
 
 POST `http://localhost:8060/adapter-service/search`

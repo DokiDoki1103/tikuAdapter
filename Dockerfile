@@ -25,6 +25,14 @@ RUN apk update \
     && update-ca-certificates 2>/dev/null || true
 
 COPY --from=builder2 /build/tiku-adapter /app/tiku-adapter
+
+# 创建数据目录用于持久化数据库文件
+RUN mkdir -p /app/data
+
 EXPOSE 8060
 WORKDIR /app
+
+# 声明数据卷用于持久化
+VOLUME ["/app/data"]
+
 ENTRYPOINT ["/app/tiku-adapter"]

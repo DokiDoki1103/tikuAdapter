@@ -3,6 +3,8 @@ limit:
   duration: 3  # 时间窗口为3秒
   requests: 1  # 允许用户在3秒内通过1个请求
 mysql: ""
+database:
+  path: "" # SQLite数据库文件路径，留空默认为 tiku.db（向后兼容），Docker部署建议设置为 data/tiku.db
 api:
   - name: '样例接口 json 请求'
     enable: false

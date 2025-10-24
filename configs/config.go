@@ -12,8 +12,14 @@ type Config struct {
 	Elasticsearch     elasticsearch.Config `yaml:"elasticsearch"`
 	RecordEmptyAnswer bool                 `yaml:"recordEmptyAnswer"`
 	Mysql             string               `yaml:"mysql"`
+	Database          DatabaseConfig       `yaml:"database"`
 	OSS               OSSConfig            `yaml:"oss"`
 	Plat              []PlatConfig         `yaml:"plat"`
+}
+
+// DatabaseConfig 数据库配置
+type DatabaseConfig struct {
+	Path string `yaml:"path"` // SQLite数据库文件路径，默认为 tiku.db（向后兼容），Docker部署建议使用 data/tiku.db
 }
 
 // LimitConfig 限流配置
