@@ -38,7 +38,14 @@ func (in *dBSearch) SearchAnswer(req model.SearchRequest) (answer [][]string, er
 	// 生成hash值
 	Hash := strutil.Md5(req.Question + string(sortOptionsStr) + strconv.Itoa(req.Type) + strconv.Itoa(req.Plat))
 	tiku := dao.Tiku
-	find, err := tiku.Where(tiku.Hash.Eq(Hash)).Find()
+	tx := tiku.Where(tiku.Hash.Eq(Hash))
+
+	// 如果提供了courseName，则也匹配courseName
+	if req.CourseName != "" {
+		tx = tx.Where(tiku.CourseName.Eq(req.CourseName))
+	}
+
+	find, err := tx.Find()
 	if err != nil {
 		return nil, err
 	}
