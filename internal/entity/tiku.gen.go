@@ -9,14 +9,14 @@ const TableNameTiku = "tiku"
 // Tiku mapped from table <tiku>
 type Tiku struct {
 	ID         int32  `gorm:"primaryKey;autoIncrement" json:"id"`
-	Question   string `gorm:"column:question;type:longtext;not null;comment:问题内容" json:"question"`                                     // 问题内容
-	Type       int32  `gorm:"column:type;type:int(11);not null;comment:问题类型" json:"type"`                                              // 问题类型
-	Options    string `gorm:"column:options;type:longtext;not null;comment:选项内容" json:"options"`                                       // 选项内容
-	Answer     string `gorm:"column:answer;type:longtext;not null;comment:正确答案" json:"answer"`                                         // 正确答案
-	Plat       int32  `gorm:"column:plat;type:int(11);not null;comment:有可能区分不同的平台不同的题库" json:"plat"`                                   // 有可能区分不同的平台不同的题库
-	Hash       string `gorm:"column:hash;type:char(32);not null;uniqueIndex:hash_index,priority:1;comment:整个实体的hash,防止重复" json:"hash"` // 整个实体的hash,防止重复
-	CourseName string `gorm:"column:course_name;type:varchar(255);comment:课程名称" json:"course_name"`                                    // 课程名称
-	Extra      string `gorm:"column:extra;type:text;comment:扩展字段,多用于tag" json:"extra"`                                                 // 扩展字段,多用于tag
+	Question   string `gorm:"column:question;type:longtext;not null;comment:问题内容" json:"question"`                                          // 问题内容
+	Type       int32  `gorm:"column:type;type:int(11);not null;comment:问题类型" json:"type"`                                                   // 问题类型
+	Options    string `gorm:"column:options;type:longtext;not null;comment:选项内容" json:"options"`                                            // 选项内容
+	Answer     string `gorm:"column:answer;type:longtext;not null;comment:正确答案" json:"answer"`                                              // 正确答案
+	Plat       int32  `gorm:"column:plat;type:int(11);not null;comment:有可能区分不同的平台不同的题库" json:"plat"`                                        // 有可能区分不同的平台不同的题库
+	Hash       string `gorm:"column:hash;type:char(32);not null;uniqueIndex:hash_course_idx,priority:1;comment:整个实体的hash,防止重复" json:"hash"` // 整个实体的hash,防止重复
+	CourseName string `gorm:"column:course_name;type:varchar(255);uniqueIndex:hash_course_idx,priority:2;comment:课程名称" json:"course_name"`  // 课程名称
+	Extra      string `gorm:"column:extra;type:text;comment:扩展字段,多用于tag" json:"extra"`                                                      // 扩展字段,多用于tag
 }
 
 // TableName Tiku's table name
