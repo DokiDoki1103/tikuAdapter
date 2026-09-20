@@ -70,7 +70,9 @@ func FormatString(src string) string {
 }
 
 // FullWidthStrToHalfWidthStr 全角转半角
-func FullWidthStrToHalfWidthStr(str string) (result string) {
+func FullWidthStrToHalfWidthStr(str string) string {
+	var b strings.Builder
+	b.Grow(len(str))
 	for _, charCode := range str {
 		insideCcode := charCode
 		if insideCcode == 12288 {
@@ -80,11 +82,11 @@ func FullWidthStrToHalfWidthStr(str string) (result string) {
 		}
 
 		if insideCcode < 32 || insideCcode > 126 {
-			result += string(charCode)
+			b.WriteRune(charCode)
 		} else {
-			result += string(insideCcode)
+			b.WriteRune(insideCcode)
 		}
 	}
 
-	return result
+	return b.String()
 }
