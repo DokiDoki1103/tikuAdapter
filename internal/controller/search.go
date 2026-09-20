@@ -35,8 +35,11 @@ func Search(c *gin.Context) {
 		result = append(result, localAnswer...)
 	}
 
+	// 请求体过大时（如含base64图片），跳过第三方搜索，避免超时
+	questionTooLarge := len(req.Question) > 5000
+
 	// 再查询第三方
-	if len(result) == 0 {
+	if len(result) == 0 && !questionTooLarge {
 		var clients = []search.Search{
 			&search.BuguakeClient{
 				Enable: strings.Contains(c.Query("use"), "buguake") || c.Query("use") == "",
